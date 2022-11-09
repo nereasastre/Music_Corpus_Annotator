@@ -6,12 +6,12 @@ import {
   cleanAllBoxes,
   initLocalStorageToNone,
   renderBoxAndContinue
-} from "./boundingBoxes.js";
-import { colorToDifficulty, keyToColor, mousePosition } from "./utils.js";
+} from "./boundingBoxes";
+import { colorToDifficulty, keyToColor, mousePosition } from "./utils";
 
 const selectColor = "#b7bbbd";
 export const musicSheet = new OpenSheetMusicDisplay("musicSheet");
-export let currentBox = 0;
+export let currentBox = 0; 
 export let color = selectColor;
 export const scoreName = "Minuet_in_G";
 let hideBoundingBoxes = false;
