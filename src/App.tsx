@@ -67,8 +67,8 @@ export class App extends Component <{}, {
     this.color = "#b7bbbd";
     this.hideBoundingBoxes = false;
     console.log("PETA")
-    // document.addEventListener("keydown", (event) => this.handleKeyDown(event));
-    // document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
+    document.addEventListener("keydown", (event) => this.handleKeyDown(event));
+    document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
 
   }
 
