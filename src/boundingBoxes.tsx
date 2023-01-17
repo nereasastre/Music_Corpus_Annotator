@@ -1,7 +1,7 @@
 import { convertUnitsToPixels, checkAvailability, colorToDifficulty, difficultyToColor, max } from "./utils";
 
 
-export const renderBoundingBoxes = (numList: Array<number>, color: string, thisMeasureList: any, scoreName: string) => {
+export const renderBoundingBoxes = (numList: Array<number>, color: string, thisMeasureList: any, scoreName: string, saveJson = true) => {
   let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
   for (const measure of thisMeasureList) {
     let measureNumber =  measure[0].MeasureNumber
@@ -63,6 +63,7 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, thisM
     }
   }
   window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
+
 };
 
 export const cleanSelectBoxes = () => {
@@ -83,17 +84,16 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string)
     if (measureDifficulty && measureDifficulty !== "None"){
       // @ts-ignore
       let measureColor = difficultyToColor[measureDifficulty];
-      renderBoundingBoxes([measure], measureColor, measureList, scoreName);
+      renderBoundingBoxes([measure], measureColor, measureList, scoreName, false);
       coloredBoxes.push(measure);
     }
-  } 
+  }
   if (coloredBoxes.length === 0){
     return measureList[0][0].MeasureNumber;
 
   }
+
   return coloredBoxes[coloredBoxes.length - 1] + 1;
-
-
 
 }
 
@@ -116,10 +116,10 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
   window.localStorage.setItem(scoreName, JSON.stringify( highlightedBoxes));
 };
 
-export function initLocalStorageToNone(totalBoxes: number, scoreName: string){
+export function initLocalStorageToNone(firstMeasureNumber: any, lastMeasureNumber: number, scoreName: string){
   let highlightedBoxes = {};
 
-  for (let staff = 0; staff < totalBoxes; staff++) {
+  for (let staff = firstMeasureNumber; staff < lastMeasureNumber + 1; staff++) {
     // @ts-ignore
     highlightedBoxes[staff] = "None";
   }

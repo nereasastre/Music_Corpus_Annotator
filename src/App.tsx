@@ -11,6 +11,8 @@ import {
 import {colorToDifficulty, keyToColor, mousePosition} from "./utils";
 import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 
+
+
 // Point Eel web socket to the instance
 export const eel = window.eel
 eel.set_host( 'ws://localhost:8080' )
@@ -53,9 +55,6 @@ export class App extends Component <{}, {
   currentBox: any;
   highlightedBoxes: any;
 
-  //public state: IAppState = {
-   // file: string;
-   //}
 
   public constructor(props: any) {
     super(props);
@@ -85,7 +84,7 @@ export class App extends Component <{}, {
 
     this.highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     if (!this.highlightedBoxes){
-      this.highlightedBoxes = initLocalStorageToNone(this.lastMeasureNumber, this.state.file);
+      this.highlightedBoxes = initLocalStorageToNone(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
     }
 
     this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
@@ -212,7 +211,7 @@ export class App extends Component <{}, {
       this.currentBox = this.firstMeasureNumber;
       cleanAllBoxes();
       this.color = this.selectColor;
-      initLocalStorageToNone(this.measureList.length, this.state.file);
+      initLocalStorageToNone(this.firstMeasureNumber, this.measureList.length, this.state.file);
       renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file); // render select box
 
     }
@@ -261,20 +260,27 @@ export class App extends Component <{}, {
   }
 
   public pickFile = () => {
+       console.log("PICK FILE")
     eel.pick_file(defPath)(( message: string ) => this.setState( { message } ) )
   }
 
+  public saveToJson = () => {
+       console.log("Highlighted boxes", this.highlightedBoxes);
+       console.log("STATE FILEEEEE: ", this.state.file);
+       eel.save_to_json(this.state.file, this.highlightedBoxes);
+  }
+
   render() {
-      {
-          /*eel.expand_user(defPath)((path: string) => this.setState({path}))*/
-      }
-    return (
+      return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Music Sheet Annotator</h1>
+            {/*<button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>*/}
+
         </header>
-        <select onChange={this.handleClick.bind(this)}>
+
+          <select onChange={this.handleClick.bind(this)}>
           <option value="MuzioClementi_SonatinaOpus36No1_Part2.xml">Muzio Clementi: Sonatina Opus 36 No1 Part2</option>
           <option value="Beethoven_AnDieFerneGeliebte.xml">Beethoven: An Die Ferne Geliebte</option>
           <option value="064-1a-BH-001.musicxml">F. Chopin: Valse No. 1</option>
@@ -284,15 +290,16 @@ export class App extends Component <{}, {
           <option value="070-1-Sam-002.musicxml">F. Chopin: 070-1-Sam-002</option>
           <option value="070-1-Sam-003.musicxml">F. Chopin: 070-1-Sam-003</option>
 
-
-
         </select>
+          <button className='App-button' onClick={this.saveToJson.bind(this)}>Save</button> {/*todo why does it relaod the page?*/}
+
+
+
         <div id="music-sheet" >
 
+
         </div>
-
         <OpenSheetMusicDisplay file={this.state.file} ref={this.divRef} />
-
       </div>
     );
   }

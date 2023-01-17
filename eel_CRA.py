@@ -4,7 +4,7 @@ import os
 import platform
 import random
 import sys
-
+import json
 import eel
 
 # Use latest version of Eel from parent directory
@@ -35,6 +35,19 @@ def pick_file(folder):
         return random.choice(listFiles)
     else:
         return '{} is not a valid folder'.format(folder)
+
+
+@eel.expose
+def save_to_json(score_name, annotations):
+    score_name = score_name.split(".")[0]  # remove .xml extension
+    annotations_folder = os.path.join(os.getcwd(), "public", "annotations")
+    score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
+    with open(score_annotations, 'w') as annotated_score:
+        print(f"Saving annotations to {score_annotations}...")
+        json.dump(annotations, annotated_score)
+        annotated_score.write(str(annotations))
+
+    print("Done!")
 
 
 def start_eel(develop):
