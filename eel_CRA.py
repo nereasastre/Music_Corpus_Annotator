@@ -44,8 +44,7 @@ def save_to_json(score_name, annotations):
     score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
     with open(score_annotations, 'w') as annotated_score:
         print(f"Saving annotations to {score_annotations}...")
-        json.dump(annotations, annotated_score)
-        annotated_score.write(str(annotations))
+        json.dump(annotations, annotated_score, indent=4)
 
     print("Done!")
 
