@@ -1,6 +1,7 @@
 """Main Python application file for the EEL-CRA demo."""
 
 import os
+import pathlib
 import platform
 import random
 import sys
@@ -47,16 +48,17 @@ def pick_next_file(file=''):
         relative_path = file_path.split("public\\")[-1]
         print("Relative path: ", relative_path)
 
-    return relative_path
+    # return relative_path
+    return "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"
 
 
 @eel.expose
 def save_to_json(score_name, annotations):
-    score_name = score_name.split(".")[0]  # remove .xml extension
+    score_name = pathlib.Path(score_name).stem  # get just the file name
     annotations_folder = os.path.join(os.getcwd(), "public", "annotations")
     score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
     with open(score_annotations, 'w') as annotated_score:
-        print(f"Saving annotations to {score_annotations}...")
+        print(f"Saving annotations to {score_annotations} ...")
         json.dump(annotations, annotated_score, indent=4)
 
     print("Done!")

@@ -62,7 +62,7 @@ export class App extends Component <{}, {
 
     // Don't call this.setState() here!
     this.state.file = "MuzioClementi_SonatinaOpus36No1_Part2.xml";
-    //this.state.file = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml\n"
+    //this.state.file = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"
     this.divRef = React.createRef();
     this.selectColor = "#b7bbbd";
     this.color = "#b7bbbd";
@@ -73,9 +73,8 @@ export class App extends Component <{}, {
   }
 
     async initOSMD(){
-        console.log("THIS STATE FILE", this.state.file)
+        console.log("initOSMD state file:", this.state.file)
         this.osmd = this.divRef.current.osmd;
-        console.log("THIS OSMD:", this.osmd)
         await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
 
         this.measureList = this.osmd.GraphicSheet.measureList;
@@ -109,11 +108,11 @@ export class App extends Component <{}, {
 
     async componentDidMount() {
     await this.initOSMD();
-    console.log("mounted!!!")
+    console.log("componentDidMount called")
   }
 
   async componentDidUpdate() {
-        console.log("update!!");
+        console.log("componentDidUpdate called");
 
      await this.initOSMD();
   }
@@ -132,7 +131,6 @@ export class App extends Component <{}, {
       return
     }
     cleanSelectBoxes();
-    console.log("THIS OSMD: ", this.osmd.GraphicSheet);
 
     //let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
     let initPos = mousePosition(eventDown);
@@ -263,7 +261,7 @@ export class App extends Component <{}, {
   }
 
   public pickFile = () => {
-       console.log("PICK FILE")
+       console.log("pickFile() has been called")
     let file = this.state.file;
     eel.pick_file(defPath)(( message: string ) => this.setState( { message } ) )
     eel.save_to_json(file, this.highlightedBoxes);
@@ -271,16 +269,20 @@ export class App extends Component <{}, {
   }
 
   public saveToJson = () => {
-       console.log("Highlighted boxes", this.highlightedBoxes);
-       console.log("STATE FILEEEEE: ", this.state.file);
+       console.log("saveToJson has been called")
+       console.log("saveToJson Highlighted boxes", this.highlightedBoxes);
+       console.log("saveToJson state file: ", this.state.file);
        eel.save_to_json(this.state.file, this.highlightedBoxes);
   }
 
   public selectNextFile = () => {
-       console.log("STATE FILE BEFORE", this.state.file)
-       eel.save_to_json(this.state.file, this.highlightedBoxes);
-       eel.pick_next_file(this.state.file)(( file: string ) => this.setState( { file } ) )
-       console.log("STATEEEE FILE AFTER", this.state.file)
+       console.log("selectNextFile has been called")
+       console.log("selectNextFile state.file before calling eel", this.state.file)
+       // eel.save_to_json(this.state.file, this.highlightedBoxes);
+       eel.pick_next_file()(( file: string ) => this.setState( { file } ))
+       // eel.pick_next_file()(( file: string ) => console.log("File returned by eel", file ))
+
+       console.log("selectNextFile state.file after calling eel", this.state.file)
        this.osmd = this.divRef.current.osmd;
        this.currentBox = this.firstMeasureNumber;
        this.measureList = this.osmd.graphic.measureList;
@@ -293,7 +295,7 @@ export class App extends Component <{}, {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Music Sheet Annotator</h1>
-        <button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>
+            {/*<button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>*/}
 
         </header>
 
@@ -308,7 +310,7 @@ export class App extends Component <{}, {
           <option value="070-1-Sam-003.musicxml">F. Chopin: 070-1-Sam-003</option>
 
         </select>
-          <button className='App-button' onClick={this.saveToJson.bind(this)}>Save</button> {/*todo why does it relaod the page?*/}
+          <button className='App-button' onClick={this.saveToJson}>Save</button> {/*todo why does it relaod the page?*/}
           <button className='App-button' onClick={this.selectNextFile}>></button> {/*todo why does it relaod the page?*/}
 
 
