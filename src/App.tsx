@@ -58,14 +58,15 @@ export class App extends Component <{}, {
 
   public constructor(props: any) {
     super(props);
-    // Don't call this.setState() here!
+    console.log("CONSTRUCTOR CALLED");
 
+    // Don't call this.setState() here!
     this.state.file = "MuzioClementi_SonatinaOpus36No1_Part2.xml";
+    //this.state.file = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml\n"
     this.divRef = React.createRef();
     this.selectColor = "#b7bbbd";
     this.color = "#b7bbbd";
     this.hideBoundingBoxes = false;
-    console.log("PETA")
     document.addEventListener("keydown", (event) => this.handleKeyDown(event));
     document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
 
@@ -73,37 +74,39 @@ export class App extends Component <{}, {
 
     async initOSMD(){
         console.log("THIS STATE FILE", this.state.file)
-    this.osmd = this.divRef.current.osmd;
-      console.log("THIS OSMD:", this.osmd)
-    await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
+        this.osmd = this.divRef.current.osmd;
+        console.log("THIS OSMD:", this.osmd)
+        await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
 
         this.measureList = this.osmd.GraphicSheet.measureList;
-    this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
-    this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
-    this.currentBox = this.firstMeasureNumber;
+        this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
+        this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
+        this.currentBox = this.firstMeasureNumber;
 
-    this.highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
-    if (!this.highlightedBoxes){
-      this.highlightedBoxes = initLocalStorageToNone(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
-    }
+        this.highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
+        if (!this.highlightedBoxes){
+           this.highlightedBoxes = initLocalStorageToNone(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
+        }
 
-    this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
-    renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file);
+        this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
+        renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file);
 
-    // re-render in case of resize
-    let measureList  = this.measureList;
-    let scoreName = this.state.file;
-    let currentBox = this.currentBox;
-    let selectColor = this.selectColor;
+        // re-render in case of resize
+        let measureList  = this.measureList;
+        let scoreName = this.state.file;
+        let currentBox = this.currentBox;
+        let selectColor = this.selectColor;
 
-    window.onresize = async function(){
-      await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
-      cleanAllBoxes();
-      renderBoxesFromLocalStorage(measureList, scoreName)
-      renderBoundingBoxes([currentBox], selectColor, measureList,scoreName);
+        window.onresize = async function(){
+          await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
+          cleanAllBoxes();
+          renderBoxesFromLocalStorage(measureList, scoreName)
+          renderBoundingBoxes([currentBox], selectColor, measureList,scoreName);
 
+        };
     };
-};
+
+
     async componentDidMount() {
     await this.initOSMD();
     console.log("mounted!!!")
@@ -256,12 +259,15 @@ export class App extends Component <{}, {
 
   public state: IAppState = {
    path: defPath,
-    file:  "MuzioClementi_SonatinaOpus36No1_Part2.xml"
+   file:  ""
   }
 
   public pickFile = () => {
        console.log("PICK FILE")
+    let file = this.state.file;
     eel.pick_file(defPath)(( message: string ) => this.setState( { message } ) )
+    eel.save_to_json(file, this.highlightedBoxes);
+
   }
 
   public saveToJson = () => {
@@ -270,13 +276,24 @@ export class App extends Component <{}, {
        eel.save_to_json(this.state.file, this.highlightedBoxes);
   }
 
+  public selectNextFile = () => {
+       console.log("STATE FILE BEFORE", this.state.file)
+       eel.save_to_json(this.state.file, this.highlightedBoxes);
+       eel.pick_next_file(this.state.file)(( file: string ) => this.setState( { file } ) )
+       console.log("STATEEEE FILE AFTER", this.state.file)
+       this.osmd = this.divRef.current.osmd;
+       this.currentBox = this.firstMeasureNumber;
+       this.measureList = this.osmd.graphic.measureList;
+
+  }
+
   render() {
       return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Music Sheet Annotator</h1>
-            {/*<button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>*/}
+        <button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>
 
         </header>
 
@@ -292,7 +309,7 @@ export class App extends Component <{}, {
 
         </select>
           <button className='App-button' onClick={this.saveToJson.bind(this)}>Save</button> {/*todo why does it relaod the page?*/}
-
+          <button className='App-button' onClick={this.selectNextFile}>></button> {/*todo why does it relaod the page?*/}
 
 
         <div id="music-sheet" >

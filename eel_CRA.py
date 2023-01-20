@@ -38,6 +38,19 @@ def pick_file(folder):
 
 
 @eel.expose
+def pick_next_file(file=''):
+    index_path = os.path.join(os.getcwd(), 'public', 'index.json')
+    with open(index_path, 'r+') as f:
+        data = json.load(f)
+        all_files = list(data.keys())
+        file_path = os.path.join(os.getcwd(), 'public', data[all_files[0]]['path']['2'])
+        relative_path = file_path.split("public\\")[-1]
+        print("Relative path: ", relative_path)
+
+    return relative_path
+
+
+@eel.expose
 def save_to_json(score_name, annotations):
     score_name = score_name.split(".")[0]  # remove .xml extension
     annotations_folder = os.path.join(os.getcwd(), "public", "annotations")

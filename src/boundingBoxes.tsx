@@ -1,4 +1,5 @@
 import { convertUnitsToPixels, checkAvailability, colorToDifficulty, difficultyToColor, max } from "./utils";
+import {eel} from "./App";
 
 
 export const renderBoundingBoxes = (numList: Array<number>, color: string, thisMeasureList: any, scoreName: string, saveJson = true) => {
@@ -63,7 +64,10 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, thisM
     }
   }
   window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
-
+  if (saveJson) {
+    console.log("placeholder")
+    // eel.save_to_json(scoreName, highlightedBoxes);
+  }
 };
 
 export const cleanSelectBoxes = () => {
@@ -92,6 +96,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string)
     return measureList[0][0].MeasureNumber;
 
   }
+  // eel.save_to_json(scoreName, highlightedBoxes); // todo if uncommented it is called forever nonstop
 
   return coloredBoxes[coloredBoxes.length - 1] + 1;
 
