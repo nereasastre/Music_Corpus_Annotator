@@ -262,9 +262,7 @@ export class App extends Component <{}, {
 
   public pickFile = () => {
        console.log("pickFile() has been called")
-    let file = this.state.file;
     eel.pick_file(defPath)(( message: string ) => this.setState( { message } ) )
-    eel.save_to_json(file, this.highlightedBoxes);
 
   }
 
