@@ -39,17 +39,80 @@ def pick_file(folder):
 
 
 @eel.expose
-def pick_next_file(file=''):
+def pick_next_file2(file='craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml'):
     index_path = os.path.join(os.getcwd(), 'public', 'index.json')
     with open(index_path, 'r+') as f:
         data = json.load(f)
         all_files = list(data.keys())
-        file_path = os.path.join(os.getcwd(), 'public', data[all_files[0]]['path']['2'])
+        all_values = list(data.values())
+        entry_paths = data[all_files[0]]['path']
+        print("FILE IN STR", file in str(all_values))
+        if len(entry_paths) > 1:
+            print("craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml" in all_values)
+            # print(all_values.index("craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"))
+            print("length 1")
+            print(len(data[all_files[600]]['path']))
+
+        file_path = os.path.join(
+            os.getcwd(), 'public', entry_paths['2']
+        )
         relative_path = file_path.split("public\\")[-1]
         print("Relative path: ", relative_path)
 
-    # return relative_path
-    return "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"
+    return relative_path
+
+
+@eel.expose
+# 'xmander_files/6008128.musicxml'
+def pick_next_file(file):
+    """Finds the current file in index.jon and returns the next file """
+    print(file)
+    index_path = os.path.join(os.getcwd(), 'public', 'index.json')
+    multiple_movements = False
+
+    with open(index_path, 'r+') as f:
+        data = json.load(f)
+        all_files = list(data.keys())
+        file_to_path = \
+            dict([(piece, data[all_files[idx]]['path'])
+                  for idx, piece in enumerate(all_files)])
+
+        found_path_number = 1  # default path number
+        for piece in file_to_path:
+            # Retrieve paths for current piece
+            for path_number in file_to_path[piece]:
+                file_in_path = file in file_to_path[piece][path_number]
+                if file_in_path:  # file has been found in that piece
+                    paths = file_to_path[piece]
+                    if len(paths) > 1:  # if piece has more than 1 movement
+                        multiple_movements = True
+                        for path in range(1, len(paths) + 1):
+                            if file in paths[str(path)]:
+                                # Path number within the piece
+                                found_path_number = path
+                                break
+
+                        print("file to path piece", file_to_path[piece])
+                        print(file_to_path[piece][path_number])
+                    found_piece = piece
+                    break
+            if file_in_path:
+                break
+
+        print(f"Found piece: {found_piece}, "
+              f"Found path number: {found_path_number}")
+
+        if multiple_movements:
+            next_movement = str(found_path_number + 1)
+            if next_movement in data[found_piece]['path']:
+                print("Next file:", data[found_piece]['path'][next_movement])
+                return data[found_piece]['path'][next_movement]
+
+        current_file_index = all_files.index(found_piece)
+        next_file = all_files[current_file_index + 1]
+        next_file = data[next_file]['path']['1']
+        print("Next file:", next_file)
+        return next_file
 
 
 @eel.expose

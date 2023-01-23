@@ -61,8 +61,8 @@ export class App extends Component <{}, {
     console.log("CONSTRUCTOR CALLED");
 
     // Don't call this.setState() here!
-    this.state.file = "MuzioClementi_SonatinaOpus36No1_Part2.xml";
-    //this.state.file = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"
+    // this.state.file = "MuzioClementi_SonatinaOpus36No1_Part2.xml";
+    this.state.file = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"
     this.divRef = React.createRef();
     this.selectColor = "#b7bbbd";
     this.color = "#b7bbbd";
@@ -268,16 +268,17 @@ export class App extends Component <{}, {
 
   public saveToJson = () => {
        console.log("saveToJson has been called")
-       console.log("saveToJson Highlighted boxes", this.highlightedBoxes);
-       console.log("saveToJson state file: ", this.state.file);
+       // console.log("saveToJson Highlighted boxes", this.highlightedBoxes);
+       // console.log("saveToJson state file: ", this.state.file);
        eel.save_to_json(this.state.file, this.highlightedBoxes);
+       // eel.save_to_json("test", "hello");
   }
 
   public selectNextFile = () => {
        console.log("selectNextFile has been called")
        console.log("selectNextFile state.file before calling eel", this.state.file)
        // eel.save_to_json(this.state.file, this.highlightedBoxes);
-       eel.pick_next_file()(( file: string ) => this.setState( { file } ))
+       eel.pick_next_file(this.state.file)(( file: string ) => this.setState( { file } ))
        // eel.pick_next_file()(( file: string ) => console.log("File returned by eel", file ))
 
        console.log("selectNextFile state.file after calling eel", this.state.file)
