@@ -109,7 +109,7 @@ def pick_next_file(file):
                 return data[found_piece]['path'][next_movement]
 
         current_file_index = all_files.index(found_piece)
-        next_file = all_files[current_file_index + 1]
+        next_file = all_files[min(current_file_index + 1, len(file_to_path) - 1)]
         next_file = data[next_file]['path']['1']
         print("Next file:", next_file)
         return next_file
