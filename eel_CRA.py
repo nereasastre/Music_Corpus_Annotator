@@ -62,57 +62,25 @@ def pick_next_file2(file='craig_files/beethoven-piano-sonatas-master/kern/sonata
     return relative_path
 
 
+def load_json(name_file):
+	data = None
+	with open(name_file, 'r') as fp:
+		data = json.load(fp)
+	return data
+
+
 @eel.expose
 # 'xmander_files/6008128.musicxml'
 def pick_next_file(file):
     """Finds the current file in index.jon and returns the next file """
     print(file)
     index_path = os.path.join(os.getcwd(), 'public', 'index.json')
-    multiple_movements = False
+    data = load_json(index_path)
+    all_paths = [p for v in data.values() for p in v['path'].values()]
+    current_index = all_paths.index(file)
+    return all_paths[current_index + 1] if current_index >= len(index_path) else -1
 
-    with open(index_path, 'r+') as f:
-        data = json.load(f)
-        all_files = list(data.keys())
-        file_to_path = \
-            dict([(piece, data[all_files[idx]]['path'])
-                  for idx, piece in enumerate(all_files)])
 
-        found_path_number = 1  # default path number
-        for piece in file_to_path:
-            # Retrieve paths for current piece
-            for path_number in file_to_path[piece]:
-                file_in_path = file in file_to_path[piece][path_number]
-                if file_in_path:  # file has been found in that piece
-                    paths = file_to_path[piece]
-                    if len(paths) > 1:  # if piece has more than 1 movement
-                        multiple_movements = True
-                        for path in range(1, len(paths) + 1):
-                            if file in paths[str(path)]:
-                                # Path number within the piece
-                                found_path_number = path
-                                break
-
-                        print("file to path piece", file_to_path[piece])
-                        print(file_to_path[piece][path_number])
-                    found_piece = piece
-                    break
-            if file_in_path:
-                break
-
-        print(f"Found piece: {found_piece}, "
-              f"Found path number: {found_path_number}")
-
-        if multiple_movements:
-            next_movement = str(found_path_number + 1)
-            if next_movement in data[found_piece]['path']:
-                print("Next file:", data[found_piece]['path'][next_movement])
-                return data[found_piece]['path'][next_movement]
-
-        current_file_index = all_files.index(found_piece)
-        next_file = all_files[min(current_file_index + 1, len(file_to_path) - 1)]
-        next_file = data[next_file]['path']['1']
-        print("Next file:", next_file)
-        return next_file
 
 
 @eel.expose
