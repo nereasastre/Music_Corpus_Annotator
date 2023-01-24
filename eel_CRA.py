@@ -75,9 +75,13 @@ def pick_next_file(file):
     """Finds the current file in index.jon and returns the next file """
     print(file)
     index_path = os.path.join(os.getcwd(), 'public', 'index.json')
+    # load json
     data = load_json(index_path)
+    # order all paths
     all_paths = [p for v in data.values() for p in v['path'].values()]
+    # get index of file in all paths
     current_index = all_paths.index(file)
+    #return next path
     return all_paths[current_index + 1] if current_index >= len(index_path) else -1
 
 
