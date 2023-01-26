@@ -2,7 +2,7 @@ import { convertUnitsToPixels, checkAvailability, colorToDifficulty, difficultyT
 import {eel} from "./App";
 
 
-export const renderBoundingBoxes = (numList: Array<number>, color: string, thisMeasureList: any, scoreName: string, saveJson = true) => {
+export const renderBoundingBoxes = (numList: Array<number>, color: string, thisMeasureList: any, scoreName: string) => {
   let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
   for (const measure of thisMeasureList) {
     let measureNumber =  measure[0].MeasureNumber
@@ -64,10 +64,7 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, thisM
     }
   }
   window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
-  if (saveJson) {
-    console.log("placeholder")
-    // eel.save_to_json(scoreName, highlightedBoxes);
-  }
+
 };
 
 export const cleanSelectBoxes = () => {
@@ -88,7 +85,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string)
     if (measureDifficulty && measureDifficulty !== "None"){
       // @ts-ignore
       let measureColor = difficultyToColor[measureDifficulty];
-      renderBoundingBoxes([measure], measureColor, measureList, scoreName, false);
+      renderBoundingBoxes([measure], measureColor, measureList, scoreName);
       coloredBoxes.push(measure);
     }
   }

@@ -268,8 +268,10 @@ export class App extends Component <{}, {
 
   public saveToJson = () => {
        console.log("saveToJson has been called")
-       // console.log("saveToJson Highlighted boxes", this.highlightedBoxes);
-       // console.log("saveToJson state file: ", this.state.file);
+       console.log("saveToJson Highlighted boxes", this.highlightedBoxes);
+       console.log("saveToJson state file: ", this.state.file);
+       this.highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
+
        eel.save_to_json(this.state.file, this.highlightedBoxes);
        // eel.save_to_json("test", "hello");
   }

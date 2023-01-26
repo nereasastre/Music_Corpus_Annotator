@@ -63,14 +63,13 @@ def pick_next_file2(file='craig_files/beethoven-piano-sonatas-master/kern/sonata
 
 
 def load_json(name_file):
-	data = None
-	with open(name_file, 'r') as fp:
-		data = json.load(fp)
-	return data
+    data = None
+    with open(name_file, 'r') as fp:
+        data = json.load(fp)
+    return data
 
 
 @eel.expose
-# 'xmander_files/6008128.musicxml'
 def pick_next_file(file):
     """Finds the current file in index.jon and returns the next file """
     print(file)
@@ -81,10 +80,8 @@ def pick_next_file(file):
     all_paths = [p for v in data.values() for p in v['path'].values()]
     # get index of file in all paths
     current_index = all_paths.index(file)
-    #return next path
-    return all_paths[current_index + 1] if current_index >= len(index_path) else -1
-
-
+    # return next path
+    return all_paths[current_index + 1] if current_index < len(index_path) else -1
 
 
 @eel.expose
@@ -92,6 +89,14 @@ def save_to_json(score_name, annotations):
     score_name = pathlib.Path(score_name).stem  # get just the file name
     annotations_folder = os.path.join(os.getcwd(), "public", "annotations")
     score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
+
+    print("PATH EXISTS BEFORE", os.path.exists(score_annotations))
+
+    if os.path.isfile(score_annotations):
+        os.remove(score_annotations)
+
+    print("PATH EXISTS AFTER", os.path.exists(score_annotations))
+
     with open(score_annotations, 'w') as annotated_score:
         print(f"Saving annotations to {score_annotations} ...")
         json.dump(annotations, annotated_score, indent=4)
