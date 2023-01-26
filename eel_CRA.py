@@ -6,6 +6,8 @@ import platform
 import random
 import sys
 import json
+from time import sleep
+
 import eel
 
 # Use latest version of Eel from parent directory
@@ -38,30 +40,6 @@ def pick_file(folder):
         return '{} is not a valid folder'.format(folder)
 
 
-@eel.expose
-def pick_next_file2(file='craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml'):
-    index_path = os.path.join(os.getcwd(), 'public', 'index.json')
-    with open(index_path, 'r+') as f:
-        data = json.load(f)
-        all_files = list(data.keys())
-        all_values = list(data.values())
-        entry_paths = data[all_files[0]]['path']
-        print("FILE IN STR", file in str(all_values))
-        if len(entry_paths) > 1:
-            print("craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml" in all_values)
-            # print(all_values.index("craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"))
-            print("length 1")
-            print(len(data[all_files[600]]['path']))
-
-        file_path = os.path.join(
-            os.getcwd(), 'public', entry_paths['2']
-        )
-        relative_path = file_path.split("public\\")[-1]
-        print("Relative path: ", relative_path)
-
-    return relative_path
-
-
 def load_json(name_file):
     data = None
     with open(name_file, 'r') as fp:
@@ -72,7 +50,6 @@ def load_json(name_file):
 @eel.expose
 def pick_next_file(file):
     """Finds the current file in index.jon and returns the next file """
-    print(file)
     index_path = os.path.join(os.getcwd(), 'public', 'index.json')
     # load json
     data = load_json(index_path)
@@ -81,7 +58,9 @@ def pick_next_file(file):
     # get index of file in all paths
     current_index = all_paths.index(file)
     # return next path
-    return all_paths[current_index + 1] if current_index < len(index_path) else -1
+    next_file = all_paths[current_index + 1] if current_index < len(index_path) else -1
+    print(f"Rendering next file: {next_file}")
+    return next_file
 
 
 @eel.expose
@@ -90,12 +69,10 @@ def save_to_json(score_name, annotations):
     annotations_folder = os.path.join(os.getcwd(), "public", "annotations")
     score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
 
-    print("PATH EXISTS BEFORE", os.path.exists(score_annotations))
-
     if os.path.isfile(score_annotations):
         os.remove(score_annotations)
 
-    print("PATH EXISTS AFTER", os.path.exists(score_annotations))
+    sleep(0.5)
 
     with open(score_annotations, 'w') as annotated_score:
         print(f"Saving annotations to {score_annotations} ...")
