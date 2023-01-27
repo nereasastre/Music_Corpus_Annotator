@@ -295,12 +295,12 @@ export class App extends Component <{}, {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Music Sheet Annotator</h1>
-            {/*<button className='App-button' onClick={this.pickFile}>Pick Random File From `{this.state.path}`</button>*/}
 
         </header>
+          {/*
+                        <select onChange={this.handleClick.bind(this)}>
 
-          <select onChange={this.handleClick.bind(this)}>
-          <option value="MuzioClementi_SonatinaOpus36No1_Part2.xml">Muzio Clementi: Sonatina Opus 36 No1 Part2</option>
+               <option value="MuzioClementi_SonatinaOpus36No1_Part2.xml">Muzio Clementi: Sonatina Opus 36 No1 Part2</option>
           <option value="Beethoven_AnDieFerneGeliebte.xml">Beethoven: An Die Ferne Geliebte</option>
           <option value="064-1a-BH-001.musicxml">F. Chopin: Valse No. 1</option>
           <option value="064-1a-BH-002.musicxml">F. Chopin: Valse No. 2</option>
@@ -309,7 +309,12 @@ export class App extends Component <{}, {
           <option value="070-1-Sam-002.musicxml">F. Chopin: 070-1-Sam-002</option>
           <option value="070-1-Sam-003.musicxml">F. Chopin: 070-1-Sam-003</option>
 
+
         </select>
+        */
+
+              }
+
           <button className='App-button' onClick={this.saveToJson}>Save</button>
           <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
           <button className='App-button' disabled={this.state.file === lastFile} onClick={this.selectNextFile}>Next</button>

@@ -1,5 +1,4 @@
 import { convertUnitsToPixels, checkAvailability, colorToDifficulty, difficultyToColor, max } from "./utils";
-import {eel} from "./App";
 
 
 export const renderBoundingBoxes = (numList: Array<number>, color: string, thisMeasureList: any, scoreName: string) => {

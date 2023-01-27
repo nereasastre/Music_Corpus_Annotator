@@ -20,6 +20,23 @@
   color: white;
 }
 
+.App-button {
+  background-color: #f1f1f1;
+  color: black;
+  cursor: pointer;
+
+
+}
+
+.App-button:hover {
+  background-color: #f1f1f1;
+  color: black;
+  cursor: pointer;
+
+
+}
+
+
 .App-title {
   font-size: 1.5em;
 }
