@@ -1,9 +1,8 @@
-"""Main Python application file for the EEL-CRA demo."""
+"""Main Python application file to interact with local files"""
 
 import os
 import pathlib
 import platform
-import random
 import sys
 import json
 from time import sleep
@@ -14,66 +13,84 @@ import eel
 sys.path.insert(1, '../../')
 
 
+def load_json(name_file):
+    """
+    Loads data from a .json file
+    @param str name_file: Path to the .json file
+    @returns dict: The .json data
+    """
+    with open(name_file, 'r') as fp:
+        return json.load(fp)
+
+
+def get_all_paths_from_index():
+    """Returns all paths from index.json"""
+    index_path = os.path.join(os.getcwd(), 'public', 'index.json')
+    print(len(index_path))
+    data = load_json(index_path)
+    # order all paths
+    all_paths = [p for v in data.values() for p in v['path'].values()]
+    # get index of file in all paths
+    return all_paths
+
+
 @eel.expose  # Expose function to JavaScript
 def say_hello_py(x):
-    """Print message from JavaScript on app initialization, then call a JS function."""
+    """Print message from JavaScript on app initialization, then call a JS
+    function."""
     print('Hello from %s' % x)  # noqa T001
     eel.say_hello_js('Python {from within say_hello_py()}!')
 
 
 @eel.expose
-def expand_user(folder):
-    """Return the full path to display in the UI."""
-    return '{}/*'.format(os.path.expanduser(folder))
-
-
-@eel.expose
-def pick_file(folder):
-    """Return a random file from the specified folder."""
-    folder = os.path.expanduser(folder)
-    if os.path.isdir(folder):
-        listFiles = [_f for _f in os.listdir(folder) if not os.path.isdir(os.path.join(folder, _f))]
-        if len(listFiles) == 0:
-            return 'No Files found in {}'.format(folder)
-        return random.choice(listFiles)
-    else:
-        return '{} is not a valid folder'.format(folder)
-
-
-def load_json(name_file):
-    data = None
-    with open(name_file, 'r') as fp:
-        data = json.load(fp)
-    return data
-
-
-@eel.expose
 def pick_next_file(file):
-    """Finds the current file in index.jon and returns the next file """
-    index_path = os.path.join(os.getcwd(), 'public', 'index.json')
-    # load json
-    data = load_json(index_path)
-    # order all paths
-    all_paths = [p for v in data.values() for p in v['path'].values()]
-    # get index of file in all paths
+    """Finds the current file in index.json and returns the next file """
+    all_paths = get_all_paths_from_index()
     current_index = all_paths.index(file)
-    # return next path
-    next_file = all_paths[current_index + 1] if current_index < len(index_path) else -1
+
+    # Return next path. If file is the last file, return file
+    next_file = all_paths[min(current_index + 1, len(all_paths) - 1)]
     print(f"Rendering next file: {next_file}")
     return next_file
 
 
 @eel.expose
+def pick_previous_file(file):
+    """
+    Finds the current file in index.json and returns the previous file
+     @param str file: The path of the current file
+    """
+    all_paths = get_all_paths_from_index()
+    current_index = all_paths.index(file)
+
+    # Return previous path. If file is the first file, return file
+    previous_file = all_paths[max(current_index - 1, 0)]
+    print(f"Rendering previous file: {previous_file}")
+    return previous_file
+
+
+@eel.expose
 def save_to_json(score_name, annotations):
+    """
+    Creates a .json file with the annotations of the current score
+
+    @param str score_name: The path to the score to be saved
+    @param str annotations: The score annotations
+    @return None
+    """
     score_name = pathlib.Path(score_name).stem  # get just the file name
     annotations_folder = os.path.join(os.getcwd(), "public", "annotations")
+
+    # Path to the .json file to write
     score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
 
+    # To avoid the window from reloading, delete file if it exists
     if os.path.isfile(score_annotations):
         os.remove(score_annotations)
 
-    sleep(0.5)
+    sleep(0.5)  # wait 0.5 seconds between deleting and writing to avoid reload
 
+    # Open the file and save annotations
     with open(score_annotations, 'w') as annotated_score:
         print(f"Saving annotations to {score_annotations} ...")
         json.dump(annotations, annotated_score, indent=4)

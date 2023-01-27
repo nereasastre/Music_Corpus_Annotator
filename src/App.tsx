@@ -8,7 +8,7 @@ import {
     renderBoundingBoxes, renderBoxAndContinue,
     renderBoxesFromLocalStorage
 } from "./boundingBoxes";
-import {colorToDifficulty, keyToColor, mousePosition} from "./utils";
+import {colorToDifficulty, IAppState, keyToColor, mousePosition} from "./utils";
 import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 
 
@@ -34,12 +34,9 @@ window.eel.expose(show_log, 'show_log')
 sayHelloJS( 'Javascript World!' )
 eel.say_hello_py( 'Javascript World!' )
 
-// Set the default path. Would be a text input, but this is a basic example after all
-const defPath = '~'
-interface IAppState {
-  file: string;
-  path: string
-}
+const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml";
+const lastFile = "xmander_files/5028687.musicxml";
+
 
 export class App extends Component <{}, {
 
@@ -61,8 +58,7 @@ export class App extends Component <{}, {
     console.log("CONSTRUCTOR CALLED");
 
     // Don't call this.setState() here!
-    // this.state.file = "MuzioClementi_SonatinaOpus36No1_Part2.xml";
-    this.state.file = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"
+    this.state.file = firstFile;
     this.divRef = React.createRef();
     this.selectColor = "#b7bbbd";
     this.color = "#b7bbbd";
@@ -104,6 +100,10 @@ export class App extends Component <{}, {
 
         };
     };
+
+    public state: IAppState = {
+   file:  ""
+  }
 
 
     async componentDidMount() {
@@ -254,18 +254,6 @@ export class App extends Component <{}, {
   }
 }
 
-
-  public state: IAppState = {
-   path: defPath,
-   file:  ""
-  }
-
-  public pickFile = () => {
-       console.log("pickFile() has been called")
-    eel.pick_file(defPath)(( message: string ) => this.setState( { message } ) )
-
-  }
-
   public saveToJson = () => {
        console.log("saveToJson has been called")
        console.log("saveToJson Highlighted boxes", this.highlightedBoxes);
@@ -273,17 +261,28 @@ export class App extends Component <{}, {
        this.highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
        eel.save_to_json(this.state.file, this.highlightedBoxes);
-       // eel.save_to_json("test", "hello");
   }
 
   public selectNextFile = () => {
        console.log("selectNextFile has been called")
        console.log("selectNextFile state.file before calling eel", this.state.file)
-       // eel.save_to_json(this.state.file, this.highlightedBoxes);
+       this.saveToJson();
        eel.pick_next_file(this.state.file)(( file: string ) => this.setState( { file } ))
-       // eel.pick_next_file()(( file: string ) => console.log("File returned by eel", file ))
 
        console.log("selectNextFile state.file after calling eel", this.state.file)
+       this.osmd = this.divRef.current.osmd;
+       this.currentBox = this.firstMeasureNumber;
+       this.measureList = this.osmd.graphic.measureList;
+
+  }
+
+    public selectPreviousFile = () => {
+       console.log("selectPreviousFile has been called")
+       console.log("selectPreviousFile state.file before calling eel", this.state.file)
+       this.saveToJson();
+       eel.pick_previous_file(this.state.file)(( file: string ) => this.setState( { file } ))
+
+       console.log("selectPreviousFile state.file after calling eel", this.state.file)
        this.osmd = this.divRef.current.osmd;
        this.currentBox = this.firstMeasureNumber;
        this.measureList = this.osmd.graphic.measureList;
@@ -311,8 +310,9 @@ export class App extends Component <{}, {
           <option value="070-1-Sam-003.musicxml">F. Chopin: 070-1-Sam-003</option>
 
         </select>
-          <button className='App-button' onClick={this.saveToJson}>Save</button> {/*todo why does it relaod the page?*/}
-          <button className='App-button' onClick={this.selectNextFile}>></button> {/*todo why does it relaod the page?*/}
+          <button className='App-button' onClick={this.saveToJson}>Save</button>
+          <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
+          <button className='App-button' disabled={this.state.file === lastFile} onClick={this.selectNextFile}>Next</button>
 
 
         <div id="music-sheet" >
