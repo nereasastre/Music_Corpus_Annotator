@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {
@@ -10,7 +10,7 @@ import {
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
-import { colorToDifficulty, IAppState, keyToColor, mousePosition } from "./utils";
+import {colorToDifficulty, IAppState, keyToColor, mousePosition} from "./utils";
 import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 
 
@@ -72,7 +72,14 @@ export class App extends Component<{}, {
   async initOSMD() {
     console.log("initOSMD state file:", this.state.file)
     this.osmd = this.divRef.current.osmd;
-    await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
+
+    // wait for osmd.GraphicSheet to not be undefined
+    let iteration = 0;
+    while (this.osmd.GraphicSheet === undefined  && iteration < 1000) {
+      await new Promise(r => setTimeout(r, 100));
+      iteration += 1;
+      console.log("Waiting for osmd to load...")
+    }
 
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;

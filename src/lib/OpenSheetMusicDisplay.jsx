@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { OpenSheetMusicDisplay as OSMD } from 'opensheetmusicdisplay';
-import { renderBoxesFromLocalStorage } from '../boundingBoxes';
+import React, {Component} from 'react';
+import {OpenSheetMusicDisplay as OSMD} from 'opensheetmusicdisplay';
+import {renderBoxesFromLocalStorage} from '../boundingBoxes';
 
 class OpenSheetMusicDisplay extends Component {
   constructor(props) {
@@ -20,6 +20,7 @@ class OpenSheetMusicDisplay extends Component {
   }
 
   resize() {
+    console.log("RESIZE");
     renderBoxesFromLocalStorage(this.osmd.GraphicSheet.MeasureList, this.props.file);
   }
 
