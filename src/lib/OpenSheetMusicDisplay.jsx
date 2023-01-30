@@ -20,8 +20,6 @@ class OpenSheetMusicDisplay extends Component {
     }
   
     resize() {
-      this.forceUpdate();
-      console.log("THIS PROPS FILE", this.props.file);
       renderBoxesFromLocalStorage(this.osmd.GraphicSheet.MeasureList, this.props.file);
     }
   

@@ -1,9 +1,18 @@
-import { convertUnitsToPixels, checkAvailability, colorToDifficulty, difficultyToColor, max } from "./utils";
+import {convertUnitsToPixels, checkAvailability, colorToDifficulty, difficultyToColor, max, min} from "./utils";
 
+const selectColor = "#b7bbbd";
 
-export const renderBoundingBoxes = (numList: Array<number>, color: string, thisMeasureList: any, scoreName: string) => {
+export const renderBoundingBoxes = (numList: Array<number>, color: string, measureList: any, scoreName: string) => {
+  /**
+   * Renders a box on the score
+   * @param  {Array<number>} numList:  A list of measure numbers to render boxes in
+   * @param  {String} color:  The HEX code of the color
+   * @param  {OpenSheetMusicDisplay.measureList} measureList: The osmd measure list.
+   * @param  {String} scoreName:  The score name.
+   * @return None
+   */
   let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  for (const measure of thisMeasureList) {
+  for (const measure of measureList) {
     let measureNumber =  measure[0].MeasureNumber
     if (checkAvailability(numList, measureNumber)) {
       for (let staff = 0; staff < measure.length; staff++) {
@@ -30,6 +39,8 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, thisM
           "http://www.w3.org/2000/svg",
           "rect"
         );
+
+        // Staff's bounding box
         boundingBox.setAttribute("fill", color);
         boundingBox.setAttribute("fill-opacity", "0.25");
         boundingBox.setAttribute("x", x.toString());
@@ -37,8 +48,9 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, thisM
         boundingBox.setAttribute("height", height.toString());
         boundingBox.setAttribute("width", width.toString());
         boundingBox.classList.add("boundingBox");
-        boundingBox.classList.add("box".concat(measureNumber.toString()));
+        boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
 
+        // Bounding box between staffs
         boundingBoxMiddle.setAttribute("fill", color);
         boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
         boundingBoxMiddle.setAttribute("x", x.toString());
@@ -51,7 +63,8 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, thisM
         document.querySelector("svg")!.append(boundingBox);
         document.querySelector("svg")!.append(boundingBoxMiddle);
 
-        if (color === "#b7bbbd") {
+        // if the color is the select color, identify it as erasable
+        if (color === selectColor) {
           boundingBox.classList.add("erasableBoundingBox");
           boundingBoxMiddle.classList.add("erasableBoundingBox");
           
@@ -67,6 +80,10 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, thisM
 };
 
 export const cleanSelectBoxes = () => {
+  /**
+   * Cleans all select (gray) boxes.
+   * @return None
+   */
   const boxes = document.querySelectorAll(".erasableBoundingBox");
   boxes.forEach((box) => {
     box.remove();
@@ -75,6 +92,12 @@ export const cleanSelectBoxes = () => {
 };
 
 export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string) => {
+  /**
+   * Renders boxes as stored in localStorage
+   * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list
+   * @param  {String} scoreName:  The score name.
+   * @return The first available box.
+   */
   let highlightedBoxes = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
   let coloredBoxes = [];
@@ -90,15 +113,18 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string)
   }
   if (coloredBoxes.length === 0){
     return measureList[0][0].MeasureNumber;
-
   }
-  // eel.save_to_json(scoreName, highlightedBoxes); // todo if uncommented it is called forever nonstop
 
-  return coloredBoxes[coloredBoxes.length - 1] + 1;
+  return min(coloredBoxes[coloredBoxes.length - 1] + 1, lastMeasureNumber);
+
 
 }
 
 export const cleanAllBoxes = () => {
+   /**
+   * Cleans all boxes.
+   * @return None.
+   */
   const boxes = document.querySelectorAll(".boundingBox");
   boxes.forEach((box) => {
     box.remove();
@@ -107,6 +133,12 @@ export const cleanAllBoxes = () => {
 };
 
 export const cleanBox = (boxNumber: number, scoreName: string) => {
+    /**
+   * Cleans a bounding box
+   * @param  {number} boxNumber:  The box number to erase.
+   * @param  {String} scoreName:  The score name.
+   * @return None.
+   */
   const boxes = document.querySelectorAll(".box".concat(boxNumber.toString()));
   if (boxes.length > 0){
   boxes.forEach((box) => {
@@ -117,9 +149,16 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
   window.localStorage.setItem(scoreName, JSON.stringify( highlightedBoxes));
 };
 
-export function initLocalStorageToNone(firstMeasureNumber: any, lastMeasureNumber: number, scoreName: string){
-  let highlightedBoxes = {};
 
+export function initLocalStorageToNone(firstMeasureNumber: number, lastMeasureNumber: number, scoreName: string){
+    /**
+   * Initializes a localStorage with key scoreName and all score values set to "None"
+   * @param  {number} firstMeasureNumber:  Score's first measure number
+   * @param  {number} lastMeasureNumber:  Score's last measure number
+   * @param  {String} scoreName:  The score name.
+   * @return {String} highlightedBoxes: The string (JSON format) containing the annotations set to None.
+   */
+  let highlightedBoxes = {};
   for (let staff = firstMeasureNumber; staff < lastMeasureNumber + 1; staff++) {
     // @ts-ignore
     highlightedBoxes[staff] = "None";
@@ -130,9 +169,18 @@ export function initLocalStorageToNone(firstMeasureNumber: any, lastMeasureNumbe
 }
 
 export function renderBoxAndContinue(boxNumber: number, color: string, measureList: any, scoreName: string){
+  /**
+   * Renders a bouning boxes and updates the current Box number to currentBox += 1
+   * @param  {number} boxNumber:  The box number to highlight
+   * @param  {String} color:  The HEX code of the color
+   * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list.
+   * @param  {String} scoreName:  The score's name.
+   * @return {number} boxNumber: The updated box number.
+   */
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
   let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  if (color === "#b7bbbd") {
+
+  if (color === selectColor) {
     boxNumber -= 1;
   }
   cleanSelectBoxes();
@@ -140,14 +188,12 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
   if (highlightedBoxes[boxNumber] !== colorToDifficulty[color]){
     cleanBox(boxNumber, scoreName);
     renderBoundingBoxes([boxNumber], color, measureList, scoreName);
-
   }
   if (boxNumber < lastMeasureNumber){
     boxNumber += 1;
   } else {
     boxNumber = lastMeasureNumber;
   }
-  color = "#b7bbbd"
-  renderBoundingBoxes([boxNumber], color, measureList, scoreName)
+  renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName)
   return boxNumber;
 }
