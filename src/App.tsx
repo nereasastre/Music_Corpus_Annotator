@@ -91,7 +91,6 @@ export class App extends Component<{}, {
     }
 
     this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
-    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
 
     // re-render in case of resize
     let measureList = this.measureList;
@@ -100,7 +99,7 @@ export class App extends Component<{}, {
     window.onresize = async function () {
       await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
       cleanAllBoxes();
-      let currentBox = renderBoxesFromLocalStorage(measureList, scoreName)
+      let currentBox = renderBoxesFromLocalStorage(measureList, scoreName, false)
       renderBoundingBoxes([currentBox], selectColor, measureList, scoreName);
 
     };

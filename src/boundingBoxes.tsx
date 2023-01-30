@@ -91,11 +91,12 @@ export const cleanSelectBoxes = () => {
 
 };
 
-export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string) => {
+export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string, renderSelect = true) => {
   /**
    * Renders boxes as stored in localStorage
    * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list
    * @param  {String} scoreName:  The score name.
+   * @param {boolean} renderSelect: If True, renders the select box.
    * @return The first available box.
    */
   let highlightedBoxes = JSON.parse(window!.localStorage.getItem(scoreName) as string);
@@ -111,11 +112,16 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string)
       coloredBoxes.push(measure);
     }
   }
-  if (coloredBoxes.length === 0) {
-    return measureList[0][0].MeasureNumber;
-  }
 
-  return min(coloredBoxes[coloredBoxes.length - 1] + 1, lastMeasureNumber);
+  let firstAvailableBox = measureList[0][0].MeasureNumber;
+
+  if (coloredBoxes.length !== 0) {
+    firstAvailableBox = min(coloredBoxes[coloredBoxes.length - 1] + 1, lastMeasureNumber);
+  }
+  if (renderSelect){
+    renderBoundingBoxes([firstAvailableBox], selectColor, measureList, scoreName);
+  }
+  return firstAvailableBox;
 
 
 }
@@ -154,8 +160,7 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
 export function initLocalStorageToNone(measureList: any, scoreName: string, renderSelect = true) {
   /**
  * Initializes a localStorage with key scoreName and all score values set to "None"
- * @param  {number} firstMeasureNumber:  Score's first measure number
- * @param  {number} lastMeasureNumber:  Score's last measure number
+ * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list
  * @param  {String} scoreName:  The score name.
  * @param {boolean} renderSelect: If True, renders the select box.
  * @return {String} highlightedBoxes: The string (JSON format) containing the annotations set to None.
