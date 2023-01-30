@@ -37,13 +37,13 @@ eel.say_hello_py('Javascript World!')
 
 const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml";
 const lastFile = "xmander_files/5028687.musicxml";
+const  selectColor = "#b7bbbd";
 
 
 export class App extends Component<{}, {
 
 }> {
   divRef: any;
-  selectColor: string;
   color: string;
   hideBoundingBoxes: boolean;
   osmd: any;
@@ -61,8 +61,7 @@ export class App extends Component<{}, {
     // Don't call this.setState() here!
     this.state.file = firstFile;
     this.divRef = React.createRef();
-    this.selectColor = "#b7bbbd";
-    this.color = "#b7bbbd";
+    this.color = selectColor;
     this.hideBoundingBoxes = false;
     document.addEventListener("keydown", (event) => this.handleKeyDown(event));
     document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
@@ -92,13 +91,12 @@ export class App extends Component<{}, {
     }
 
     this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
-    renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file);
+    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
 
     // re-render in case of resize
     let measureList = this.measureList;
     let scoreName = this.state.file;
     let currentBox = this.currentBox;
-    let selectColor = this.selectColor;
 
     window.onresize = async function () {
       await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
@@ -175,27 +173,25 @@ export class App extends Component<{}, {
 
       this.currentBox += 1;
 
-      renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file);
+      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
     };
   }
 
   selectPreviousBox() {
-    this.color = this.selectColor;
     cleanSelectBoxes();
     this.currentBox -= 1;
     console.log("Current box: ", this.currentBox);
     if (this.currentBox <= this.firstMeasureNumber) { // todo check first measure number!!!!!
       this.currentBox = this.firstMeasureNumber;
     }
-    renderBoundingBoxes([this.currentBox], this.color, this.measureList, this.state.file);
+    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
   };
 
   selectNextBox() {
-    this.color = this.selectColor;
     cleanSelectBoxes();
     this.currentBox += 1;
     console.log("Current box: ", this.currentBox);
-    renderBoundingBoxes([this.currentBox], this.color, this.measureList, this.state.file);
+    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
 
     if (this.currentBox >= this.lastMeasureNumber) {
       this.currentBox = this.lastMeasureNumber;
@@ -220,9 +216,8 @@ export class App extends Component<{}, {
     else if (event.code === "Escape") {
       this.currentBox = this.firstMeasureNumber;
       cleanAllBoxes();
-      this.color = this.selectColor;
       initLocalStorageToNone(this.firstMeasureNumber, this.measureList.length, this.state.file);
-      renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file); // render select box
+      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file); // render select box
 
     }
     else if (event.code === "Backspace") {
@@ -233,7 +228,7 @@ export class App extends Component<{}, {
       } else {
         this.currentBox = this.firstMeasureNumber;
       }
-      renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file); // render select box
+      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file); // render select box
     }
     else if (event.key === "1" || event.key === "2" || event.key === "3") {
       this.color = keyToColor[event.key];
@@ -247,7 +242,7 @@ export class App extends Component<{}, {
       if (this.hideBoundingBoxes) {
         cleanSelectBoxes();
       } else {
-        renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file)
+        renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file)
       }
     }
   }
