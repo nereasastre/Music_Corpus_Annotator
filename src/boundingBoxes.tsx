@@ -1,4 +1,4 @@
-import {convertUnitsToPixels, checkAvailability, colorToDifficulty, difficultyToColor, max, min} from "./utils";
+import {checkAvailability, colorToDifficulty, convertUnitsToPixels, difficultyToColor, max, min} from "./utils";
 
 const selectColor = "#b7bbbd";
 
@@ -189,6 +189,7 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
     cleanBox(boxNumber, scoreName);
     renderBoundingBoxes([boxNumber], color, measureList, scoreName);
   }
+
   if (boxNumber < lastMeasureNumber){
     boxNumber += 1;
   } else {

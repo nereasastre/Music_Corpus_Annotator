@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {
     cleanAllBoxes,
-    cleanBox, cleanSelectBoxes,
+    cleanBox,
+    cleanSelectBoxes,
     initLocalStorageToNone,
-    renderBoundingBoxes, renderBoxAndContinue,
+    renderBoundingBoxes,
+    renderBoxAndContinue,
     renderBoxesFromLocalStorage
 } from "./boundingBoxes";
 import {colorToDifficulty, IAppState, keyToColor, mousePosition} from "./utils";
 import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
-
 
 
 // Point Eel web socket to the instance
@@ -102,20 +103,19 @@ export class App extends Component <{}, {
     };
 
     public state: IAppState = {
-   file:  ""
-  }
+        file:  ""
+    }
 
 
     async componentDidMount() {
-    await this.initOSMD();
-    console.log("componentDidMount called")
-  }
+        console.log("componentDidMount called")
+        await this.initOSMD();
+    }
 
-  async componentDidUpdate() {
+    async componentDidUpdate() {
         console.log("componentDidUpdate called");
-
-     await this.initOSMD();
-  }
+        await this.initOSMD();
+    }
 
   handleClick(event: any) {
       // @ts-ignore
@@ -126,72 +126,74 @@ export class App extends Component <{}, {
     this.currentBox = this.firstMeasureNumber;
     this.measureList = this.osmd.graphic.measureList;
 }
- handleMouseDown(eventDown: MouseEvent){
-    if (!eventDown.shiftKey || this.color === "#b7bbbd"){
-      return
-    }
-    cleanSelectBoxes();
 
-    //let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
-    let initPos = mousePosition(eventDown);
-    const maxDist = {x: 5, y: 5};
-
-    let initNearestNote = this.osmd.graphic.GetNearestNote(initPos, maxDist);
-    let initMeasure = initNearestNote.sourceNote.SourceMeasure.MeasureNumber;
-
-    onmouseup = (eventUp) => {
-      if (this.color === "#b7bbbd" || !eventUp.shiftKey) {
-        return
-      }
-
-      let finalPos = mousePosition(eventUp);
-      // let finalNearestNote = musicSheet.GraphicSheet.GetNearestNote(
-      let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
-
-      let finalMeasure = finalNearestNote.sourceNote.SourceMeasure.MeasureNumber;
-
-      if (finalMeasure < initMeasure) {  // if selection is from right to left, swap init and final
-        const previousFinalMeasure = finalMeasure;
-        finalMeasure = initMeasure;
-        initMeasure = previousFinalMeasure;
-      }
-      this.currentBox = finalMeasure;
-      for (let measure = initMeasure; measure < finalMeasure + 1; measure++) {
-        // @ts-ignore
-        if (this.highlightedBoxes[measure] !== colorToDifficulty[this.color]) {
-          cleanBox(measure, this.state.file);
-          renderBoundingBoxes([measure], this.color, this.measureList, this.state.file);
+    handleMouseDown(eventDown: MouseEvent){
+        // If not pressing shift key, do not do anything
+        if (!eventDown.shiftKey || this.color === "#b7bbbd"){
+          return
         }
+        cleanSelectBoxes();
+
+        //let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
+        let initPos = mousePosition(eventDown);  // find initial position
+        const maxDist = {x: 5, y: 5};
+
+        let initNearestNote = this.osmd.graphic.GetNearestNote(initPos, maxDist);
+        let initMeasure = initNearestNote.sourceNote.SourceMeasure.MeasureNumber;  // measure where closest note is
+
+        onmouseup = (eventUp) => {
+          if (this.color === "#b7bbbd" || !eventUp.shiftKey) {
+            return
+          }
+
+          let finalPos = mousePosition(eventUp);
+          // let finalNearestNote = musicSheet.GraphicSheet.GetNearestNote(
+          let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
+          let finalMeasure = finalNearestNote.sourceNote.SourceMeasure.MeasureNumber;
+
+          // if selection is from right to left, swap initial and final
+          if (finalMeasure < initMeasure) {
+            const previousFinalMeasure = finalMeasure;
+            finalMeasure = initMeasure;
+            initMeasure = previousFinalMeasure;
+          }
+          this.currentBox = finalMeasure;
+          for (let measure = initMeasure; measure < finalMeasure + 1; measure++) {
+            // @ts-ignore
+            if (this.highlightedBoxes[measure] !== colorToDifficulty[this.color]) {
+              cleanBox(measure, this.state.file);
+              renderBoundingBoxes([measure], this.color, this.measureList, this.state.file);
+            }
+          }
+
+          this.currentBox += 1;
+
+          renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file);
+        };
       }
 
-      this.currentBox += 1;
-
-      renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file);
+    selectPreviousBox() {
+        this.color = this.selectColor;
+        cleanSelectBoxes();
+        this.currentBox -= 1;
+        console.log("Current box: ", this.currentBox);
+        if (this.currentBox <= 1) { // todo check first measure number!!!!!
+          this.currentBox = 1;
+        }
+        renderBoundingBoxes([this.currentBox], this.color, this.measureList, this.state.file);
     };
-  }
-
-  selectPreviousBox() {
-    this.color = this.selectColor;
-    cleanSelectBoxes();
-    this.currentBox -= 1;
-    console.log("Current box: ", this.currentBox);
-    if (this.currentBox <= 1) {
-      this.currentBox = 1;
-    }
-    renderBoundingBoxes([this.currentBox], this.color, this.measureList, this.state.file);
-  };
 
     selectNextBox() {
-    this.color = this.selectColor;
-    cleanSelectBoxes();
-    this.currentBox += 1;
-    console.log("Current box: ", this.currentBox);
-    renderBoundingBoxes([this.currentBox], this.color, this.measureList, this.state.file);
+        this.color = this.selectColor;
+        cleanSelectBoxes();
+        this.currentBox += 1;
+        console.log("Current box: ", this.currentBox);
+        renderBoundingBoxes([this.currentBox], this.color, this.measureList, this.state.file);
 
-    if (this.currentBox >= this.lastMeasureNumber) {
-      this.currentBox = this.lastMeasureNumber;
-    }
-  };
+        if (this.currentBox >= this.lastMeasureNumber) {
+          this.currentBox = this.lastMeasureNumber;
+        }
+    };
 
    handleKeyDown(event: KeyboardEvent) {
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
@@ -226,24 +228,13 @@ export class App extends Component <{}, {
       }
       renderBoundingBoxes([this.currentBox], this.selectColor, this.measureList, this.state.file); // render select box
   }
-  else if (event.code === "Digit1" || event.code === "Numpad1"){
-    this.color = keyToColor["1"];
+  else if (event.key === "1" || event.key === "2" || event.key === "3"){
+    this.color = keyToColor[event.key];
     if (this.currentBox <= this.lastMeasureNumber && !event.shiftKey){
       this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
     }
   }
-  else if (event.code === "Digit2" || event.code === "Numpad2"){
-    this.color = keyToColor["2"];
-    if (this.currentBox <= this.lastMeasureNumber && !event.shiftKey){
-      this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
-    }
-  }
-  else if (event.code === "Digit3" || event.code === "Numpad3"){
-    this.color = keyToColor["3"];
-    if (this.currentBox <= this.lastMeasureNumber && !event.shiftKey){
-      this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
-    }
-  }
+
   else if (event.code === "KeyH"){
     this.hideBoundingBoxes = !this.hideBoundingBoxes;
     if (this.hideBoundingBoxes) {
