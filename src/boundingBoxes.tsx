@@ -1,4 +1,4 @@
-import {checkAvailability, colorToDifficulty, convertUnitsToPixels, difficultyToColor, max, min} from "./utils";
+import { checkAvailability, colorToDifficulty, convertUnitsToPixels, difficultyToColor, max, min } from "./utils";
 
 const selectColor = "#b7bbbd";
 
@@ -13,7 +13,7 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
    */
   let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
   for (const measure of measureList) {
-    let measureNumber =  measure[0].MeasureNumber
+    let measureNumber = measure[0].MeasureNumber
     if (checkAvailability(numList, measureNumber)) {
       for (let staff = 0; staff < measure.length; staff++) {
         const positionAndShape = measure[staff].PositionAndShape;
@@ -27,8 +27,8 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
         const y1 = yNew + height;
         const height1 = max(convertUnitsToPixels(
           positionAndShape1.AbsolutePosition.y -
-            positionAndShape.AbsolutePosition.y -
-            4
+          positionAndShape.AbsolutePosition.y -
+          4
         ), 0);
 
         const boundingBox = document.createElementNS(
@@ -67,7 +67,7 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
         if (color === selectColor) {
           boundingBox.classList.add("erasableBoundingBox");
           boundingBoxMiddle.classList.add("erasableBoundingBox");
-          
+
         } else {
           // @ts-ignore
           highlightedBoxes[measureNumber] = colorToDifficulty[color];
@@ -88,7 +88,7 @@ export const cleanSelectBoxes = () => {
   boxes.forEach((box) => {
     box.remove();
   });
- 
+
 };
 
 export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string) => {
@@ -104,14 +104,14 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string)
 
   for (let measure = 0; measure <= lastMeasureNumber; measure++) {
     let measureDifficulty = highlightedBoxes[measure];
-    if (measureDifficulty && measureDifficulty !== "None"){
+    if (measureDifficulty && measureDifficulty !== "None") {
       // @ts-ignore
       let measureColor = difficultyToColor[measureDifficulty];
       renderBoundingBoxes([measure], measureColor, measureList, scoreName);
       coloredBoxes.push(measure);
     }
   }
-  if (coloredBoxes.length === 0){
+  if (coloredBoxes.length === 0) {
     return measureList[0][0].MeasureNumber;
   }
 
@@ -121,10 +121,10 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string)
 }
 
 export const cleanAllBoxes = () => {
-   /**
-   * Cleans all boxes.
-   * @return None.
-   */
+  /**
+  * Cleans all boxes.
+  * @return None.
+  */
   const boxes = document.querySelectorAll(".boundingBox");
   boxes.forEach((box) => {
     box.remove();
@@ -133,42 +133,43 @@ export const cleanAllBoxes = () => {
 };
 
 export const cleanBox = (boxNumber: number, scoreName: string) => {
-    /**
-   * Cleans a bounding box
-   * @param  {number} boxNumber:  The box number to erase.
-   * @param  {String} scoreName:  The score name.
-   * @return None.
-   */
+  /**
+ * Cleans a bounding box
+ * @param  {number} boxNumber:  The box number to erase.
+ * @param  {String} scoreName:  The score name.
+ * @return None.
+ */
   const boxes = document.querySelectorAll(".box".concat(boxNumber.toString()));
-  if (boxes.length > 0){
-  boxes.forEach((box) => {
-    box.remove();
-  });}
+  if (boxes.length > 0) {
+    boxes.forEach((box) => {
+      box.remove();
+    });
+  }
   let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
   highlightedBoxes[boxNumber] = "None";
-  window.localStorage.setItem(scoreName, JSON.stringify( highlightedBoxes));
+  window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
 };
 
 
-export function initLocalStorageToNone(firstMeasureNumber: number, lastMeasureNumber: number, scoreName: string){
-    /**
-   * Initializes a localStorage with key scoreName and all score values set to "None"
-   * @param  {number} firstMeasureNumber:  Score's first measure number
-   * @param  {number} lastMeasureNumber:  Score's last measure number
-   * @param  {String} scoreName:  The score name.
-   * @return {String} highlightedBoxes: The string (JSON format) containing the annotations set to None.
-   */
+export function initLocalStorageToNone(firstMeasureNumber: number, lastMeasureNumber: number, scoreName: string) {
+  /**
+ * Initializes a localStorage with key scoreName and all score values set to "None"
+ * @param  {number} firstMeasureNumber:  Score's first measure number
+ * @param  {number} lastMeasureNumber:  Score's last measure number
+ * @param  {String} scoreName:  The score name.
+ * @return {String} highlightedBoxes: The string (JSON format) containing the annotations set to None.
+ */
   let highlightedBoxes = {};
   for (let staff = firstMeasureNumber; staff < lastMeasureNumber + 1; staff++) {
     // @ts-ignore
     highlightedBoxes[staff] = "None";
   }
-  window.localStorage.setItem(scoreName, JSON.stringify( highlightedBoxes));
+  window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
 
   return highlightedBoxes;
 }
 
-export function renderBoxAndContinue(boxNumber: number, color: string, measureList: any, scoreName: string){
+export function renderBoxAndContinue(boxNumber: number, color: string, measureList: any, scoreName: string) {
   /**
    * Renders a bouning boxes and updates the current Box number to currentBox += 1
    * @param  {number} boxNumber:  The box number to highlight
@@ -185,12 +186,12 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
   }
   cleanSelectBoxes();
   // @ts-ignore
-  if (highlightedBoxes[boxNumber] !== colorToDifficulty[color]){
+  if (highlightedBoxes[boxNumber] !== colorToDifficulty[color]) {
     cleanBox(boxNumber, scoreName);
     renderBoundingBoxes([boxNumber], color, measureList, scoreName);
   }
 
-  if (boxNumber < lastMeasureNumber){
+  if (boxNumber < lastMeasureNumber) {
     boxNumber += 1;
   } else {
     boxNumber = lastMeasureNumber;

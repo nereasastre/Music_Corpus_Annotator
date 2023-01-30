@@ -1,15 +1,18 @@
 .App {
   text-align: center;
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+  -webkit-user-select: none;
+  /* Safari */
+  -ms-user-select: none;
+  /* IE 10 and IE 11 */
+  user-select: none;
+  /* Standard syntax */
 
 }
 
 .App-logo {
   animation:
-      App-logo-spin 3s linear,
-      App-logo-spin 3s ease;
+    App-logo-spin 3s linear,
+    App-logo-spin 3s ease;
   height: 80px;
 }
 
@@ -46,7 +49,11 @@
 }
 
 @keyframes App-logo-spin {
-   from { transform: rotateY(0deg); }
-   to { transform: rotateY(360deg); }
-}
+  from {
+    transform: rotateY(0deg);
+  }
 
+  to {
+    transform: rotateY(360deg);
+  }
+}

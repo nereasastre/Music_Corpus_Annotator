@@ -16,20 +16,20 @@ export function mousePosition1(event: MouseEvent) {
 
 export function mousePosition(event: MouseEvent) {
   const units = 10;
-  const xpos = event.pageX / units; 
+  const xpos = event.pageX / units;
   const ypos = (event.pageY - 200) / units;  // Subtract the pixels corresponding to the page header 
-  return {x: xpos, y: ypos};
+  return { x: xpos, y: ypos };
 }
 
-export function max(a: number, b: number){
-  if (a > b){
+export function max(a: number, b: number) {
+  if (a > b) {
     return a;
   }
   return b;
 }
 
-export function min(a: number, b: number){
-  if (a < b){
+export function min(a: number, b: number) {
+  if (a < b) {
     return a;
   }
   return b;
@@ -39,7 +39,7 @@ export interface IAppState {
   file: string;
 }
 
-export let keyToColor = {"1": "#33FF42", "2": "#FFBE33", "3": "#FF4633"};
-export let colorToDifficulty = {"#33FF42": "easy", "#FFBE33": "medium", "#FF4633": "hard"};
-export let difficultyToColor = {"easy": "#33FF42", "medium": "#FFBE33", "hard": "#FF4633"};
+export let keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633" };
+export let colorToDifficulty = { "#33FF42": "easy", "#FFBE33": "medium", "#FF4633": "hard" };
+export let difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard": "#FF4633" };
 
