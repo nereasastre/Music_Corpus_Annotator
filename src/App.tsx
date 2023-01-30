@@ -184,8 +184,8 @@ export class App extends Component<{}, {
     cleanSelectBoxes();
     this.currentBox -= 1;
     console.log("Current box: ", this.currentBox);
-    if (this.currentBox <= 1) { // todo check first measure number!!!!!
-      this.currentBox = 1;
+    if (this.currentBox <= this.firstMeasureNumber) { // todo check first measure number!!!!!
+      this.currentBox = this.firstMeasureNumber;
     }
     renderBoundingBoxes([this.currentBox], this.color, this.measureList, this.state.file);
   };
