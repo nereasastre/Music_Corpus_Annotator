@@ -5,6 +5,7 @@ import {
   cleanAllBoxes,
   cleanBox,
   cleanSelectBoxes,
+  deleteBoxAndGoBack,
   initLocalStorageToNone,
   renderBoundingBoxes,
   renderBoxAndContinue,
@@ -99,8 +100,7 @@ export class App extends Component<{}, {
     window.onresize = async function () {
       await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
       cleanAllBoxes();
-      let currentBox = renderBoxesFromLocalStorage(measureList, scoreName, false)
-      renderBoundingBoxes([currentBox], selectColor, measureList, scoreName);
+      renderBoxesFromLocalStorage(measureList, scoreName)
 
     };
   };
@@ -170,7 +170,6 @@ export class App extends Component<{}, {
       }
 
       this.currentBox += 1;
-
       renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
     };
   }
@@ -217,14 +216,8 @@ export class App extends Component<{}, {
 
     }
     else if (event.code === "Backspace") {
-      cleanBox(this.currentBox, this.state.file);
-      if (this.currentBox > this.firstMeasureNumber) {
-        cleanSelectBoxes();
-        this.currentBox -= 1;
-      } else {
-        this.currentBox = this.firstMeasureNumber;
-      }
-      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file); // render select box
+      this.currentBox = deleteBoxAndGoBack(this.currentBox, this.measureList, this.state.file);
+
     }
     else if (event.code === "Digit1" || event.code === "Digit2" || event.code === "Digit3"
     || event.code === "Numpad1" || event.code === "Numpad2" || event.code === "Numpad3") {

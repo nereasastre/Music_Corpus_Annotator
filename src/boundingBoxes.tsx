@@ -212,3 +212,23 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
   renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName)
   return boxNumber;
 }
+
+export function deleteBoxAndGoBack(boxNumber: number, measureList: any, scoreName: string) {
+  /**
+   * Deletes a bounding box, updates boxNumber and renders the selectBox.
+   * @param  {number} boxNumber:  The box number to delete
+   * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list.
+   * @param  {String} scoreName:  The score's name.
+   * @return {number} boxNumber: The updated box number.
+   */
+  let firstMeasureNumber = measureList[0][0].MeasureNumber;
+  cleanBox(boxNumber, scoreName);
+  if (boxNumber > firstMeasureNumber) {
+    cleanSelectBoxes();
+    boxNumber -= 1;
+  } else {
+    boxNumber = firstMeasureNumber;
+  }
+  renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName); // render select box
+  return boxNumber;
+}
