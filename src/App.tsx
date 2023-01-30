@@ -51,7 +51,6 @@ export class App extends Component<{}, {
   lastMeasureNumber: any;
   firstMeasureNumber: any;
   currentBox: any;
-  highlightedBoxes: any;
 
 
   public constructor(props: any) {
@@ -69,7 +68,7 @@ export class App extends Component<{}, {
   }
 
   async initOSMD() {
-    console.log("initOSMD state file:", this.state.file)
+    console.log("initOSMD with state file:", this.state.file)
     this.osmd = this.divRef.current.osmd;
 
     // wait for osmd.GraphicSheet to not be undefined
@@ -85,9 +84,10 @@ export class App extends Component<{}, {
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
     this.currentBox = this.firstMeasureNumber;
 
-    this.highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
-    if (!this.highlightedBoxes) {
-      this.highlightedBoxes = initLocalStorageToNone(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
+    let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
+
+    if (!highlightedBoxes) {
+      initLocalStorageToNone(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
     }
 
     this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
@@ -139,7 +139,7 @@ export class App extends Component<{}, {
     }
     cleanSelectBoxes();
 
-    //let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
+    let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     let initPos = mousePosition(eventDown);  // find initial position
     const maxDist = { x: 5, y: 5 };
 
@@ -165,7 +165,7 @@ export class App extends Component<{}, {
       this.currentBox = finalMeasure;
       for (let measure = initMeasure; measure < finalMeasure + 1; measure++) {
         // @ts-ignore
-        if (this.highlightedBoxes[measure] !== colorToDifficulty[this.color]) {
+        if (highlightedBoxes[measure] !== colorToDifficulty[this.color]) {
           cleanBox(measure, this.state.file);
           renderBoundingBoxes([measure], this.color, this.measureList, this.state.file);
         }
@@ -230,8 +230,11 @@ export class App extends Component<{}, {
       }
       renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file); // render select box
     }
-    else if (event.key === "1" || event.key === "2" || event.key === "3") {
-      this.color = keyToColor[event.key];
+    else if (event.code === "Digit1" || event.code === "Digit2" || event.code === "Digit3"
+    || event.code === "Numpad1" || event.code === "Numpad2" || event.code === "Numpad3") {
+      let difficulty = event.code[event.code.length -1]; // last char is difficulty
+      // @ts-ignore
+      this.color = keyToColor[difficulty];
       if (this.currentBox <= this.lastMeasureNumber && !event.shiftKey) {
         this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
       }
@@ -248,12 +251,12 @@ export class App extends Component<{}, {
   }
 
   public saveToJson = () => {
+    let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     console.log("saveToJson has been called")
-    console.log("saveToJson Highlighted boxes", this.highlightedBoxes);
+    console.log("saveToJson Highlighted boxes", highlightedBoxes);
     console.log("saveToJson state file: ", this.state.file);
-    this.highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
-    eel.save_to_json(this.state.file, this.highlightedBoxes);
+    eel.save_to_json(this.state.file, highlightedBoxes);
   }
 
   public selectNextFile = () => {
