@@ -87,7 +87,7 @@ export class App extends Component<{}, {
     let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
     if (!highlightedBoxes) {
-      initLocalStorageToNone(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
+      initLocalStorageToNone(this.measureList, this.state.file);
     }
 
     this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
@@ -96,12 +96,11 @@ export class App extends Component<{}, {
     // re-render in case of resize
     let measureList = this.measureList;
     let scoreName = this.state.file;
-    let currentBox = this.currentBox;
 
     window.onresize = async function () {
       await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
       cleanAllBoxes();
-      renderBoxesFromLocalStorage(measureList, scoreName)
+      let currentBox = renderBoxesFromLocalStorage(measureList, scoreName)
       renderBoundingBoxes([currentBox], selectColor, measureList, scoreName);
 
     };
@@ -180,8 +179,7 @@ export class App extends Component<{}, {
   selectPreviousBox() {
     cleanSelectBoxes();
     this.currentBox -= 1;
-    console.log("Current box: ", this.currentBox);
-    if (this.currentBox <= this.firstMeasureNumber) { // todo check first measure number!!!!!
+    if (this.currentBox <= this.firstMeasureNumber) {
       this.currentBox = this.firstMeasureNumber;
     }
     renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
@@ -190,12 +188,12 @@ export class App extends Component<{}, {
   selectNextBox() {
     cleanSelectBoxes();
     this.currentBox += 1;
-    console.log("Current box: ", this.currentBox);
-    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
 
     if (this.currentBox >= this.lastMeasureNumber) {
       this.currentBox = this.lastMeasureNumber;
     }
+    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+
   };
 
   handleKeyDown(event: KeyboardEvent) {
@@ -216,8 +214,7 @@ export class App extends Component<{}, {
     else if (event.code === "Escape") {
       this.currentBox = this.firstMeasureNumber;
       cleanAllBoxes();
-      initLocalStorageToNone(this.firstMeasureNumber, this.measureList.length, this.state.file);
-      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file); // render select box
+      initLocalStorageToNone(this.measureList, this.state.file);
 
     }
     else if (event.code === "Backspace") {

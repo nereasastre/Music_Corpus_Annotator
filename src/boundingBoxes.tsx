@@ -1,4 +1,4 @@
-import { checkAvailability, colorToDifficulty, convertUnitsToPixels, difficultyToColor, max, min } from "./utils";
+import {checkAvailability, colorToDifficulty, convertUnitsToPixels, difficultyToColor, max, min} from "./utils";
 
 const selectColor = "#b7bbbd";
 
@@ -151,20 +151,28 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
 };
 
 
-export function initLocalStorageToNone(firstMeasureNumber: number, lastMeasureNumber: number, scoreName: string) {
+export function initLocalStorageToNone(measureList: any, scoreName: string, renderSelect = true) {
   /**
  * Initializes a localStorage with key scoreName and all score values set to "None"
  * @param  {number} firstMeasureNumber:  Score's first measure number
  * @param  {number} lastMeasureNumber:  Score's last measure number
  * @param  {String} scoreName:  The score name.
+ * @param {boolean} renderSelect: If True, renders the select box.
  * @return {String} highlightedBoxes: The string (JSON format) containing the annotations set to None.
  */
   let highlightedBoxes = {};
+  let firstMeasureNumber = measureList[0][0].MeasureNumber;
+  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
+
   for (let staff = firstMeasureNumber; staff < lastMeasureNumber + 1; staff++) {
     // @ts-ignore
     highlightedBoxes[staff] = "None";
   }
   window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
+
+  if (renderSelect){
+    renderBoundingBoxes([firstMeasureNumber], selectColor, measureList, scoreName);
+  }
 
   return highlightedBoxes;
 }

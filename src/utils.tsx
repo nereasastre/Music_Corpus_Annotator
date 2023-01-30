@@ -39,6 +39,7 @@ export interface IAppState {
   file: string;
 }
 
+
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633" };
 export const colorToDifficulty = { "#33FF42": "easy", "#FFBE33": "medium", "#FF4633": "hard" };
 export const difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard": "#FF4633" };
