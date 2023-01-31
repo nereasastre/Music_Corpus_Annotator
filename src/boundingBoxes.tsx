@@ -11,7 +11,7 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
    * @param  {String} scoreName:  The score name.
    * @return None
    */
-  let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
   for (const measure of measureList) {
     let measureNumber = measure[0].MeasureNumber;
     if (checkAvailability(numList, measureNumber)) {
@@ -73,12 +73,12 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
 
         } else {
           // @ts-ignore
-          highlightedBoxes[measureNumber] = colorToDifficulty[color];
+          annotations[measureNumber] = colorToDifficulty[color];
         }
       }
     }
   }
-  window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
+  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 
 };
 
@@ -102,12 +102,12 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
    * @param {boolean} renderSelect: If True, renders the select box.
    * @return The first available box.
    */
-  let highlightedBoxes = JSON.parse(window!.localStorage.getItem(scoreName) as string);
+  let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
   let coloredBoxes = [];
 
   for (let measure = 0; measure <= lastMeasureNumber; measure++) {
-    let measureDifficulty = highlightedBoxes[measure];
+    let measureDifficulty = annotations[measure];
     if (measureDifficulty && measureDifficulty !== "None") {
       // @ts-ignore
       let measureColor = difficultyToColor[measureDifficulty];
@@ -138,7 +138,6 @@ export const cleanAllBoxes = () => {
   boxes.forEach((box) => {
     box.remove();
   });
-
 };
 
 export const cleanBox = (boxNumber: number, scoreName: string) => {
@@ -154,9 +153,9 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
       box.remove();
     });
   }
-  let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  highlightedBoxes[boxNumber] = "None";
-  window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
+  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  annotations[boxNumber] = "None";
+  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 };
 
 
@@ -166,23 +165,23 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
  * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list
  * @param  {String} scoreName:  The score name.
  * @param {boolean} renderSelect: If True, renders the select box.
- * @return {String} highlightedBoxes: The string (JSON format) containing the annotations set to None.
+ * @return {String} annotations: The string (JSON format) containing the annotations set to None.
  */
-  let highlightedBoxes = {};
+  let annotations = {};
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
 
   for (let staff = firstMeasureNumber; staff < lastMeasureNumber + 1; staff++) {
     // @ts-ignore
-    highlightedBoxes[staff] = "None";
+    annotations[staff] = "None";
   }
-  window.localStorage.setItem(scoreName, JSON.stringify(highlightedBoxes));
+  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 
   if (renderSelect){
     renderBoundingBoxes([firstMeasureNumber], selectColor, measureList, scoreName);
   }
 
-  return highlightedBoxes;
+  return annotations;
 }
 
 export function renderBoxAndContinue(boxNumber: number, color: string, measureList: any, scoreName: string) {
@@ -195,14 +194,14 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
    * @return {number} boxNumber: The updated box number.
    */
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
-  let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
 
   if (color === selectColor) {
     boxNumber -= 1;
   }
   cleanSelectBoxes();
   // @ts-ignore
-  if (highlightedBoxes[boxNumber] !== colorToDifficulty[color]) {
+  if (annotations[boxNumber] !== colorToDifficulty[color]) {
     cleanBox(boxNumber, scoreName);
     renderBoundingBoxes([boxNumber], color, measureList, scoreName);
   }

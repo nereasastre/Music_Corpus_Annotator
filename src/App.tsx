@@ -82,14 +82,13 @@ export class App extends Component<{}, {
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
+    let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
-    let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
-
-    if (!highlightedBoxes) {
+    if (!annotations) {
       this.currentBox = this.firstMeasureNumber;
       initLocalStorageToNone(this.measureList, this.state.file);
     } else {
-          this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
+      this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
     }
 
     // re-render in case of resize
@@ -136,7 +135,6 @@ export class App extends Component<{}, {
     }
     cleanSelectBoxes();
 
-    let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     let initPos = mousePosition(eventDown);  // find initial position
     const maxDist = { x: 5, y: 5 };
 
@@ -168,6 +166,8 @@ export class App extends Component<{}, {
   selectPreviousBox() {
     cleanSelectBoxes();
     this.currentBox -= 1;
+    this.hideBoundingBoxes = false;
+
     if (this.currentBox <= this.firstMeasureNumber) {
       this.currentBox = this.firstMeasureNumber;
     }
@@ -177,12 +177,12 @@ export class App extends Component<{}, {
   selectNextBox() {
     cleanSelectBoxes();
     this.currentBox += 1;
+    this.hideBoundingBoxes = false;
 
     if (this.currentBox >= this.lastMeasureNumber) {
       this.currentBox = this.lastMeasureNumber;
     }
     renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
-
   };
 
   handleKeyDown(event: KeyboardEvent) {
@@ -190,14 +190,11 @@ export class App extends Component<{}, {
     if (event.code === "ArrowLeft") {
       if (this.currentBox > 0) {
         this.selectPreviousBox();
-        this.hideBoundingBoxes = false;
       }
     }
     else if (event.code === "ArrowRight") {
       if (this.currentBox < this.lastMeasureNumber) {
         this.selectNextBox();
-        this.hideBoundingBoxes = false;
-
       }
     }
     else if (event.code === "Escape") {
@@ -219,7 +216,6 @@ export class App extends Component<{}, {
         this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
       }
     }
-
     else if (event.code === "KeyH") {
       this.hideBoundingBoxes = !this.hideBoundingBoxes;
       if (this.hideBoundingBoxes) {
@@ -231,12 +227,10 @@ export class App extends Component<{}, {
   }
 
   public saveToJson = () => {
-    let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
+    let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     console.log("saveToJson has been called")
-    console.log("saveToJson Highlighted boxes", highlightedBoxes);
     console.log("saveToJson state file: ", this.state.file);
-
-    eel.save_to_json(this.state.file, highlightedBoxes);
+    eel.save_to_json(this.state.file, annotations);
   }
 
   public selectNextFile = () => {
@@ -273,8 +267,8 @@ export class App extends Component<{}, {
           <h1 className="App-title">Music Sheet Annotator</h1>
 
         </header>
-        {/*
-                        <select onChange={this.handleClick.bind(this)}>
+        {/* TODO REMOVE ONCE I AM SURE I DO NOT NEED IT
+        <select onChange={this.handleClick.bind(this)}>
 
                <option value="MuzioClementi_SonatinaOpus36No1_Part2.xml">Muzio Clementi: Sonatina Opus 36 No1 Part2</option>
           <option value="Beethoven_AnDieFerneGeliebte.xml">Beethoven: An Die Ferne Geliebte</option>

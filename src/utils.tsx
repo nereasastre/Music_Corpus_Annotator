@@ -7,12 +7,6 @@ export function checkAvailability(arr: Array<number>, val: number) {
     return val === arrVal;
   });
 }
-export function mousePosition1(event: MouseEvent) {
-  let units = 10;
-  let xpos = event.clientX / units;
-  let ypos = event.clientY / units;
-  return { x: xpos, y: ypos };
-}
 
 export function mousePosition(event: MouseEvent) {
   const units = 10;
