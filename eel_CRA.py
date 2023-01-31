@@ -1,16 +1,17 @@
 """Main Python application file to interact with local files"""
 
+import json
 import os
 import pathlib
 import platform
 import sys
-import json
 from time import sleep
 
 import eel
 
 # Use latest version of Eel from parent directory
 sys.path.insert(1, '../../')
+INDEX_PATH = os.path.join(os.getcwd(), 'public', 'index.json')
 
 
 def load_json(name_file):
@@ -25,9 +26,7 @@ def load_json(name_file):
 
 def get_all_paths_from_index():
     """Returns all paths from index.json"""
-    index_path = os.path.join(os.getcwd(), 'public', 'index.json')
-    print(len(index_path))
-    data = load_json(index_path)
+    data = load_json(INDEX_PATH)
     # order all paths
     all_paths = [p for v in data.values() for p in v['path'].values()]
     # get index of file in all paths
@@ -40,6 +39,26 @@ def say_hello_py(x):
     function."""
     print('Hello from %s' % x)  # noqa T001
     eel.say_hello_js('Python {from within say_hello_py()}!')
+
+
+@eel.expose
+def pick_last_annotated():
+    """Finds the last annotated score in index.json and returns the file """
+    data = load_json(INDEX_PATH)
+
+    # order all paths
+    all_paths = [(p, v['annotated']) for v in data.values()
+                 for p in v['path'].values()]
+
+    # List of annotated files
+    annotated_scores = [t[0] for t in all_paths if t[1]]
+
+    # If no scores have been annotated
+    if not annotated_scores:
+        return all_paths[0][0]
+
+    last_annotated_index = all_paths.index((annotated_scores[-1], True))
+    return all_paths[max(0, last_annotated_index)][0]
 
 
 @eel.expose

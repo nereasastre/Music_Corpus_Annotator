@@ -13,8 +13,11 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
    */
   let highlightedBoxes = JSON.parse(window.localStorage.getItem(scoreName) as string);
   for (const measure of measureList) {
-    let measureNumber = measure[0].MeasureNumber
+    let measureNumber = measure[0].MeasureNumber;
     if (checkAvailability(numList, measureNumber)) {
+      if (color !== selectColor) {
+        cleanBox(measureNumber, scoreName);  // clean previous boxes to avolid infiniteBoxes
+      }
       for (let staff = 0; staff < measure.length; staff++) {
         const positionAndShape = measure[staff].PositionAndShape;
         const positionAndShape1 = measure[1].PositionAndShape;

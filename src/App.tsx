@@ -3,7 +3,6 @@ import logo from './logo.svg';
 import './App.css';
 import {
   cleanAllBoxes,
-  cleanBox,
   cleanSelectBoxes,
   deleteBoxAndGoBack,
   initLocalStorageToNone,
@@ -11,7 +10,7 @@ import {
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
-import {colorToDifficulty, IAppState, keyToColor, mousePosition} from "./utils";
+import {IAppState, keyToColor, mousePosition, range} from "./utils";
 import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 
 
@@ -83,15 +82,15 @@ export class App extends Component<{}, {
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
-    this.currentBox = this.firstMeasureNumber;
 
     let highlightedBoxes = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
     if (!highlightedBoxes) {
+      this.currentBox = this.firstMeasureNumber;
       initLocalStorageToNone(this.measureList, this.state.file);
+    } else {
+          this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
     }
-
-    this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
 
     // re-render in case of resize
     let measureList = this.measureList;
@@ -160,16 +159,8 @@ export class App extends Component<{}, {
         finalMeasure = initMeasure;
         initMeasure = previousFinalMeasure;
       }
-      this.currentBox = finalMeasure;
-      for (let measure = initMeasure; measure < finalMeasure + 1; measure++) {
-        // @ts-ignore
-        if (highlightedBoxes[measure] !== colorToDifficulty[this.color]) {
-          cleanBox(measure, this.state.file);
-          renderBoundingBoxes([measure], this.color, this.measureList, this.state.file);
-        }
-      }
-
-      this.currentBox += 1;
+      renderBoundingBoxes(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
+      this.currentBox = finalMeasure + 1;
       renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
     };
   }

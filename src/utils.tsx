@@ -35,9 +35,18 @@ export function min(a: number, b: number) {
   return b;
 }
 
+export function range(start: number, end: number){
+  let list = []
+  for (let i = start; i <= end; i++){
+    list.push(i)
+  }
+  return list
+}
+
 export interface IAppState {
   file: string;
 }
+
 
 
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633" };
