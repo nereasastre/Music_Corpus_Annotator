@@ -206,11 +206,7 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
     renderBoundingBoxes([boxNumber], color, measureList, scoreName);
   }
 
-  if (boxNumber < lastMeasureNumber) {
-    boxNumber += 1;
-  } else {
-    boxNumber = lastMeasureNumber;
-  }
+  boxNumber = min(boxNumber + 1, lastMeasureNumber);
   renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName)
   return boxNumber;
 }
@@ -225,12 +221,8 @@ export function deleteBoxAndGoBack(boxNumber: number, measureList: any, scoreNam
    */
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   cleanBox(boxNumber, scoreName);
-  if (boxNumber > firstMeasureNumber) {
-    cleanSelectBoxes();
-    boxNumber -= 1;
-  } else {
-    boxNumber = firstMeasureNumber;
-  }
+  cleanSelectBoxes();
+  boxNumber = max(boxNumber - 1, firstMeasureNumber);
   renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName); // render select box
   return boxNumber;
 }

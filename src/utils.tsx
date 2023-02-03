@@ -41,6 +41,10 @@ export interface IAppState {
   file: string;
 }
 
+export const contains = (array: Array<any>, element: any ) =>
+    array.indexOf(element) > -1;
+
+
 
 
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633" };

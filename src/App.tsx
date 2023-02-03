@@ -10,7 +10,7 @@ import {
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
-import {IAppState, keyToColor, mousePosition, range} from "./utils";
+import {contains, IAppState, keyToColor, max, min, mousePosition, range} from "./utils";
 import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 
 
@@ -167,62 +167,39 @@ export class App extends Component<{}, {
     cleanSelectBoxes();
     this.currentBox -= 1;
     this.hideBoundingBoxes = false;
+    this.currentBox = max(this.firstMeasureNumber, this.currentBox - 1)
 
-    if (this.currentBox <= this.firstMeasureNumber) {
-      this.currentBox = this.firstMeasureNumber;
-    }
     renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
   };
 
   selectNextBox() {
     cleanSelectBoxes();
-    this.currentBox += 1;
     this.hideBoundingBoxes = false;
-
-    if (this.currentBox >= this.lastMeasureNumber) {
-      this.currentBox = this.lastMeasureNumber;
-    }
+    this.currentBox = min(this.currentBox + 1, this.lastMeasureNumber);
     renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
   };
 
-  handleKeyDown(event: KeyboardEvent) {
-    this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
-    if (event.code === "ArrowLeft") {
-      if (this.currentBox > 0) {
-        this.selectPreviousBox();
-      }
+  hideBoxes() {
+    this.hideBoundingBoxes = !this.hideBoundingBoxes;
+    if (this.hideBoundingBoxes) {
+      cleanSelectBoxes();
+    } else {
+      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file)
     }
-    else if (event.code === "ArrowRight") {
-      if (this.currentBox < this.lastMeasureNumber) {
-        this.selectNextBox();
-      }
-    }
-    else if (event.code === "Escape") {
-      this.currentBox = this.firstMeasureNumber;
-      cleanAllBoxes();
-      initLocalStorageToNone(this.measureList, this.state.file);
+  }
 
-    }
-    else if (event.code === "Backspace") {
-      this.currentBox = deleteBoxAndGoBack(this.currentBox, this.measureList, this.state.file);
+  clear() {
+    this.currentBox = this.firstMeasureNumber;
+    cleanAllBoxes();
+    initLocalStorageToNone(this.measureList, this.state.file);
+  }
 
-    }
-    else if (event.code === "Digit1" || event.code === "Digit2" || event.code === "Digit3"
-    || event.code === "Numpad1" || event.code === "Numpad2" || event.code === "Numpad3") {
-      let difficulty = event.code[event.code.length -1]; // last char is difficulty
-      // @ts-ignore
-      this.color = keyToColor[difficulty];
-      if (this.currentBox <= this.lastMeasureNumber && !event.shiftKey) {
-        this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
-      }
-    }
-    else if (event.code === "KeyH") {
-      this.hideBoundingBoxes = !this.hideBoundingBoxes;
-      if (this.hideBoundingBoxes) {
-        cleanSelectBoxes();
-      } else {
-        renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file)
-      }
+  annotate(event: KeyboardEvent) {
+    let difficulty = event.code[event.code.length -1]; // last char is difficulty
+    // @ts-ignore
+    this.color = keyToColor[difficulty];
+    if (!event.shiftKey) {
+      this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
     }
   }
 
@@ -259,6 +236,31 @@ export class App extends Component<{}, {
 
   }
 
+    handleKeyDown(event: KeyboardEvent) {
+      this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
+      let annotation_keycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Numpad2", "Numpad3"];
+
+      if (event.code === "ArrowLeft") {
+        this.selectPreviousBox();
+      }
+      else if (event.code === "ArrowRight") {
+          this.selectNextBox();
+      }
+      else if (event.code === "Escape") {
+        this.clear();
+      }
+      else if (event.code === "Backspace") {
+        this.currentBox = deleteBoxAndGoBack(this.currentBox, this.measureList, this.state.file);
+
+      }
+      else if (contains(annotation_keycodes, event.code)) {  // if event.code is in annotations_folder
+        this.annotate(event);
+      }
+      else if (event.code === "KeyH") {
+        this.hideBoxes();
+      }
+  }
+
   render() {
     return (
       <div className="App">
@@ -267,23 +269,6 @@ export class App extends Component<{}, {
           <h1 className="App-title">Music Sheet Annotator</h1>
 
         </header>
-        {/* TODO REMOVE ONCE I AM SURE I DO NOT NEED IT
-        <select onChange={this.handleClick.bind(this)}>
-
-               <option value="MuzioClementi_SonatinaOpus36No1_Part2.xml">Muzio Clementi: Sonatina Opus 36 No1 Part2</option>
-          <option value="Beethoven_AnDieFerneGeliebte.xml">Beethoven: An Die Ferne Geliebte</option>
-          <option value="064-1a-BH-001.musicxml">F. Chopin: Valse No. 1</option>
-          <option value="064-1a-BH-002.musicxml">F. Chopin: Valse No. 2</option>
-          <option value="064-1a-BH-003.musicxml">F. Chopin: Valse No. 3</option>
-          <option value="070-1-Sam-001.musicxml">F. Chopin: 070-1-Sam-001</option>
-          <option value="070-1-Sam-002.musicxml">F. Chopin: 070-1-Sam-002</option>
-          <option value="070-1-Sam-003.musicxml">F. Chopin: 070-1-Sam-003</option>
-
-
-        </select>
-        */
-
-        }
 
         <button className='App-button' onClick={this.saveToJson}>Save</button>
         <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
