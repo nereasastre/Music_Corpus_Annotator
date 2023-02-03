@@ -90,7 +90,7 @@ export class App extends Component<{}, {
     let scoreName = this.state.file;
 
     window.onresize = async function () {
-      await new Promise(r => setTimeout(r, 2000)); // wait for osmd to load
+      await new Promise(r => setTimeout(r, 1000)); // wait for osmd to load
       cleanAllBoxes();
       renderBoxesFromLocalStorage(measureList, scoreName)
 
@@ -161,7 +161,6 @@ export class App extends Component<{}, {
 
   selectPreviousBox() {
     cleanSelectBoxes();
-    this.currentBox -= 1;
     this.hideBoundingBoxes = false;
     this.currentBox = max(this.firstMeasureNumber, this.currentBox - 1)
 
@@ -232,24 +231,25 @@ export class App extends Component<{}, {
     handleKeyDown(event: KeyboardEvent) {
       this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
       let annotation_keycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Numpad2", "Numpad3"];
+      let keyCode = event.code;
 
-      if (event.code === "ArrowLeft") {
+      if (keyCode === "ArrowLeft") {
         this.selectPreviousBox();
       }
-      else if (event.code === "ArrowRight") {
+      else if (keyCode === "ArrowRight") {
           this.selectNextBox();
       }
-      else if (event.code === "Escape") {
+      else if (keyCode === "Escape") {
         this.clear();
       }
-      else if (event.code === "Backspace") {
+      else if (keyCode === "Backspace") {
         this.currentBox = deleteBoxAndGoBack(this.currentBox, this.measureList, this.state.file);
 
       }
-      else if (contains(annotation_keycodes, event.code)) {  // if event.code is in annotations_folder
+      else if (contains(annotation_keycodes, keyCode)) {  // if event.code is in annotations_folder
         this.annotate(event);
       }
-      else if (event.code === "KeyH") {
+      else if (keyCode === "KeyH") {
         this.hideBoxes();
       }
   }
@@ -267,15 +267,7 @@ export class App extends Component<{}, {
         <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
         <button className='App-button' disabled={this.state.file === lastFile} onClick={this.selectNextFile}>Next</button>
 
-
-        <div id="music-sheet" >
-
-
-
-        </div>
         <div id="score"/>
-
-        {/*<OpenSheetMusicDisplay file={this.state.file} ref={this.divRef}/>*/}
       </div>
     );
   }

@@ -200,13 +200,16 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
     boxNumber -= 1;
   }
   cleanSelectBoxes();
+  let no_annotations = annotations[boxNumber] === "None";
   // @ts-ignore
-  if (annotations[boxNumber] !== colorToDifficulty[color]) {
+  if (annotations[boxNumber] !== colorToDifficulty[color] || no_annotations) {
     cleanBox(boxNumber, scoreName);
     renderBoundingBoxes([boxNumber], color, measureList, scoreName);
   }
+  console.log("BOX NUMBER BEFORE", boxNumber);
 
   boxNumber = min(boxNumber + 1, lastMeasureNumber);
+  console.log("RENDER BOXES AND CONTINUE BOX NUMBER", boxNumber);
   renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName)
   return boxNumber;
 }
