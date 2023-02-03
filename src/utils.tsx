@@ -1,6 +1,8 @@
 // @ts-ignore
 // import { PointF2D } from "opensheetmusicdisplay";
 
+import {PointF2D} from "opensheetmusicdisplay";
+
 export const convertUnitsToPixels = (units: number) => units * 10;
 export function checkAvailability(arr: Array<number>, val: number) {
   return arr.some(function (arrVal) {
@@ -12,7 +14,7 @@ export function mousePosition(event: MouseEvent) {
   const units = 10;
   const xpos = event.pageX / units;
   const ypos = (event.pageY - 200) / units;  // Subtract the pixels corresponding to the page header 
-  return { x: xpos, y: ypos };
+  return new PointF2D(xpos, ypos);
 }
 
 export function max(a: number, b: number) {

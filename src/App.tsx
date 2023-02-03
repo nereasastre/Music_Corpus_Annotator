@@ -11,7 +11,8 @@ import {
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
 import {contains, IAppState, keyToColor, max, min, mousePosition, range} from "./utils";
-import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
+// import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
+import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
 
 
 // Point Eel web socket to the instance
@@ -59,7 +60,6 @@ export class App extends Component<{}, {
 
     // Don't call this.setState() here!
     this.state.file = firstFile;
-    this.divRef = React.createRef();
     this.color = selectColor;
     this.hideBoundingBoxes = false;
     document.addEventListener("keydown", (event) => this.handleKeyDown(event));
@@ -69,17 +69,11 @@ export class App extends Component<{}, {
 
   async initOSMD() {
     console.log("initOSMD with state file:", this.state.file)
-    this.osmd = this.divRef.current.osmd;
-
-    // wait for osmd.GraphicSheet to not be undefined
-    let iteration = 0;
-    while (this.osmd.GraphicSheet === undefined  && iteration < 1000) {
-      await new Promise(r => setTimeout(r, 100));
-      iteration += 1;
-      console.log("Waiting for osmd to load...")
-    }
+    await this.osmd.load(this.state.file);
+    await this.osmd.render();
 
     this.measureList = this.osmd.GraphicSheet.measureList;
+    console.log(this.measureList);
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
@@ -110,6 +104,9 @@ export class App extends Component<{}, {
 
   async componentDidMount() {
     console.log("componentDidMount called")
+    var container = document.getElementById("score");
+    // @ts-ignore
+    this.osmd = new OpenSheetMusicDisplay(container);
     await this.initOSMD();
   }
 
@@ -136,18 +133,17 @@ export class App extends Component<{}, {
     cleanSelectBoxes();
 
     let initPos = mousePosition(eventDown);  // find initial position
-    const maxDist = { x: 5, y: 5 };
+    const maxDist = new PointF2D(5, 5);
 
     let initNearestNote = this.osmd.graphic.GetNearestNote(initPos, maxDist);
     let initMeasure = initNearestNote.sourceNote.SourceMeasure.MeasureNumber;  // measure where closest note is
 
     onmouseup = (eventUp) => {
-      if (this.color === "#b7bbbd" || !eventUp.shiftKey) {
+      if (this.color === "#b7bbbd" || !eventUp.shiftKey) {  // if not pressing shift key, return
         return
       }
 
       let finalPos = mousePosition(eventUp);
-      // let finalNearestNote = musicSheet.GraphicSheet.GetNearestNote(
       let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
       let finalMeasure = finalNearestNote.sourceNote.SourceMeasure.MeasureNumber;
 
@@ -210,29 +206,26 @@ export class App extends Component<{}, {
     eel.save_to_json(this.state.file, annotations);
   }
 
-  public selectNextFile = () => {
-    console.log("selectNextFile has been called")
-    console.log("selectNextFile state.file before calling eel", this.state.file)
-    this.saveToJson();
-    eel.pick_next_file(this.state.file)((file: string) => this.setState({ file }))
+   selectNextFile = async () => {
+     console.log("selectNextFile has been called")
+     console.log("selectNextFile state.file before calling eel", this.state.file)
+     this.saveToJson();
+     eel.pick_next_file(this.state.file)((file: string) => this.setState({file}))
 
-    console.log("selectNextFile state.file after calling eel", this.state.file)
-    this.osmd = this.divRef.current.osmd;
-    this.currentBox = this.firstMeasureNumber;
-    this.measureList = this.osmd.graphic.measureList;
+     console.log("selectNextFile state.file after calling eel", this.state.file)
+     await this.initOSMD();
 
-  }
+   }
 
-  public selectPreviousFile = () => {
+  public selectPreviousFile = async () => {
     console.log("selectPreviousFile has been called")
     console.log("selectPreviousFile state.file before calling eel", this.state.file)
     this.saveToJson();
     eel.pick_previous_file(this.state.file)((file: string) => this.setState({ file }))
 
     console.log("selectPreviousFile state.file after calling eel", this.state.file)
-    this.osmd = this.divRef.current.osmd;
-    this.currentBox = this.firstMeasureNumber;
-    this.measureList = this.osmd.graphic.measureList;
+    await this.initOSMD();
+
 
   }
 
@@ -278,8 +271,11 @@ export class App extends Component<{}, {
         <div id="music-sheet" >
 
 
+
         </div>
-        <OpenSheetMusicDisplay file={this.state.file} ref={this.divRef} />
+        <div id="score"/>
+
+        {/*<OpenSheetMusicDisplay file={this.state.file} ref={this.divRef}/>*/}
       </div>
     );
   }
