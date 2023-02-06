@@ -36,7 +36,7 @@ window.eel.expose(show_log, 'show_log')
 sayHelloJS('Javascript World!')
 eel.say_hello_py('Javascript World!')
 
-const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml";
+const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";
 const lastFile = "xmander_files/5028687.musicxml";
 const  selectColor = "#b7bbbd";
 
@@ -262,7 +262,6 @@ export class App extends Component<{}, {
           <h1 className="App-title">Music Sheet Annotator</h1>
 
         </header>
-
         <button className='App-button' onClick={this.saveToJson}>Save</button>
         <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
         <button className='App-button' disabled={this.state.file === lastFile} onClick={this.selectNextFile}>Next</button>
