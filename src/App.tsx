@@ -10,7 +10,7 @@ import {
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
-import {contains, IAppState, keyToColor, max, min, mousePosition, range} from "./utils";
+import {contains, IAppState, keyToColor, max, min, mousePosition, range, selectColor} from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
 
@@ -38,7 +38,6 @@ eel.say_hello_py('Javascript World!')
 
 const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";
 const lastFile = "xmander_files/5028687.musicxml";
-const  selectColor = "#b7bbbd";
 
 
 export class App extends Component<{}, {

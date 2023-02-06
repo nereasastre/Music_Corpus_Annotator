@@ -46,8 +46,7 @@ export interface IAppState {
 export const contains = (array: Array<any>, element: any ) =>
     array.indexOf(element) > -1;
 
-
-
+export const selectColor = "#b7bbbd";
 
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633" };
 export const colorToDifficulty = { "#33FF42": "easy", "#FFBE33": "medium", "#FF4633": "hard" };

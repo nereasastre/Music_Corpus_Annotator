@@ -1,6 +1,13 @@
-import {checkAvailability, colorToDifficulty, convertUnitsToPixels, difficultyToColor, max, min} from "./utils";
+import {
+  checkAvailability,
+  colorToDifficulty,
+  convertUnitsToPixels,
+  difficultyToColor,
+  max,
+  min,
+  selectColor
+} from "./utils";
 
-const selectColor = "#b7bbbd";
 
 export const renderBoundingBoxes = (numList: Array<number>, color: string, measureList: any, scoreName: string) => {
   /**
