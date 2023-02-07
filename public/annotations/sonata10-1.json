@@ -1,14 +1,14 @@
 {
     "0": "easy",
-    "1": "None",
-    "2": "None",
-    "3": "None",
-    "4": "None",
-    "5": "None",
-    "6": "None",
-    "7": "None",
-    "8": "None",
-    "9": "None",
+    "1": "medium",
+    "2": "hard",
+    "3": "easy",
+    "4": "medium",
+    "5": "hard",
+    "6": "easy",
+    "7": "medium",
+    "8": "hard",
+    "9": "medium",
     "10": "None",
     "11": "None",
     "12": "None",
@@ -196,8 +196,5 @@
     "194": "None",
     "195": "None",
     "196": "None",
-    "197": "None",
-    "198": "None",
-    "199": "None",
-    "200": "None"
+    "197": "None"
 }

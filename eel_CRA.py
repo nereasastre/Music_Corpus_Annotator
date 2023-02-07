@@ -9,9 +9,11 @@ from time import sleep
 
 import eel
 
+global index_path
+global app_path
+
 # Use latest version of Eel from parent directory
 sys.path.insert(1, '../../')
-INDEX_PATH = os.path.join(os.getcwd(), 'public', 'index.json')
 
 
 def load_json(name_file):
@@ -26,7 +28,7 @@ def load_json(name_file):
 
 def get_all_paths_from_index():
     """Returns all paths from index.json"""
-    data = load_json(INDEX_PATH)
+    data = load_json(index_path)
     # order all paths
     all_paths = [p for v in data.values() for p in v['path'].values()]
     # get index of file in all paths
@@ -44,7 +46,7 @@ def say_hello_py(x):
 @eel.expose
 def pick_last_annotated():
     """Finds the last annotated score in index.json and returns the file """
-    data = load_json(INDEX_PATH)
+    data = load_json(index_path)
 
     # order all paths
     all_paths = [(p, v['annotated']) for v in data.values()
@@ -98,7 +100,13 @@ def save_to_json(score_name, annotations):
     @return None
     """
     score_name = pathlib.Path(score_name).stem  # get just the file name
-    annotations_folder = os.path.join(os.getcwd(), "public", "annotations")
+    annotations_folder = os.path.join(app_path, "public", "annotations")
+
+    if not os.path.isdir(annotations_folder):
+        os.mkdir(annotations_folder)
+
+    print("App path: ", app_path)
+    print("Annotations folder: ", annotations_folder)
 
     # Path to the .json file to write
     score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
@@ -119,21 +127,29 @@ def save_to_json(score_name, annotations):
 
 def start_eel(develop):
     """Start Eel with either production or development configuration."""
-
+    global index_path
+    global app_path
     if develop:
         directory = 'src'
         app = None
         page = {'port': 3000}
+        app_path = os.getcwd()
+        index_path = os.path.join(app_path, 'public', 'index.json')
     else:
         directory = 'build'
         app = 'chrome-app'
         page = 'index.html'
+        app_path = pathlib.Path(os.getcwd()).parent
+        print("Build app_path: ", app_path)
+        index_path = os.path.join(app_path, 'public', 'index.json')
 
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
 
-    # These will be queued until the first connection is made, but won't be repeated on a page reload
+    # These will be queued until the first connection is made,
+    # but won't be repeated on a page reload
     say_hello_py('Python World!')
-    eel.say_hello_js('Python World!')   # Call a JavaScript function (must be after `eel.init()`)
+    # Call a JavaScript function (must be after `eel.init()`)
+    eel.say_hello_js('Python World!')
 
     eel.show_log('https://github.com/samuelhwilliams/Eel/issues/363 (show_log)')
 
