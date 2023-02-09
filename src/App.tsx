@@ -10,7 +10,19 @@ import {
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
-import {contains, IAppState, keyToColor, max, min, mousePosition, range, selectColor} from "./utils";
+import {
+  contains,
+  firstFile,
+  IAppState,
+  isFullyAnnotated,
+  keyToColor,
+  lastFile,
+  max,
+  min,
+  mousePosition,
+  range,
+  selectColor
+} from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
 
@@ -36,9 +48,6 @@ window.eel.expose(show_log, 'show_log')
 sayHelloJS('Javascript World!')
 eel.say_hello_py('Javascript World!')
 
-const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";
-const lastFile = "xmander_files/5028687.musicxml";
-
 
 export class App extends Component<{}, {
 
@@ -63,6 +72,7 @@ export class App extends Component<{}, {
     this.hideBoundingBoxes = false;
     document.addEventListener("keydown", (event) => this.handleKeyDown(event));
     document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
+    document.addEventListener("beforeunload", (event) => this.saveToJson());
 
   }
 
@@ -188,12 +198,19 @@ export class App extends Component<{}, {
     initLocalStorageToNone(this.measureList, this.state.file);
   }
 
-  annotate(event: KeyboardEvent) {
+  annotate = async (event: KeyboardEvent) => {
     let difficulty = event.code[event.code.length -1]; // last char is difficulty
     // @ts-ignore
     this.color = keyToColor[difficulty];
     if (!event.shiftKey) {
       this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
+      if (this.currentBox === this.lastMeasureNumber){
+        let isAnnotated = isFullyAnnotated(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
+        if (isAnnotated){
+          console.log("score is annotated!")
+          await this.markAnnotated()
+        }
+      }
     }
   }
 
@@ -224,6 +241,12 @@ export class App extends Component<{}, {
     console.log("selectPreviousFile state.file after calling eel", this.state.file)
     await this.initOSMD();
 
+
+  }
+  public markAnnotated = async () => {
+    console.log("markAnnotated has been called")
+    console.log("markAnnotated state.file before calling eel", this.state.file)
+    eel.mark_annotated(this.state.file)
 
   }
 
@@ -261,10 +284,11 @@ export class App extends Component<{}, {
           <h1 className="App-title">Music Sheet Annotator</h1>
 
         </header>
+        <p>You are annotating: {this.state.file}</p>
         <button className='App-button' onClick={this.saveToJson}>Save</button>
         <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
         <button className='App-button' disabled={this.state.file === lastFile} onClick={this.selectNextFile}>Next</button>
-
+        <button className='App-button' onClick={this.markAnnotated}>Annotated</button>
         <div id="score"/>
       </div>
     );

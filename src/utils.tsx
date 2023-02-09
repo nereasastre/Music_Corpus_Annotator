@@ -46,9 +46,19 @@ export interface IAppState {
 export const contains = (array: Array<any>, element: any ) =>
     array.indexOf(element) > -1;
 
+export function isFullyAnnotated(firstMeasureNumber: number, lastMeasureNumber: number, scoreName: string){
+  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  for (let measure = firstMeasureNumber; measure <= lastMeasureNumber; measure ++) {
+    if (annotations[measure] === "None")
+      return false  // some measure has not been annotated
+  }
+      return true
+}
 export const selectColor = "#b7bbbd";
-
+export const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";
+export const lastFile = "xmander_files/5028687.musicxml";
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633" };
 export const colorToDifficulty = { "#33FF42": "easy", "#FFBE33": "medium", "#FF4633": "hard" };
 export const difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard": "#FF4633" };
+
 

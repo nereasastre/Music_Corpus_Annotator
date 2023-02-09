@@ -47,7 +47,7 @@ def say_hello_py(x):
 def pick_last_annotated():
     """Finds the last annotated score in index.json and returns the file """
     data = load_json(index_path)
-
+    print("HELLOOOOO")
     # order all paths
     all_paths = [(p, v['annotated']) for v in data.values()
                  for p in v['path'].values()]
@@ -57,10 +57,47 @@ def pick_last_annotated():
 
     # If no scores have been annotated
     if not annotated_scores:
-        return all_paths[0][0]
-
+        return all_paths[0][0]  # return first file
     last_annotated_index = all_paths.index((annotated_scores[-1], True))
+    print(last_annotated_index)
     return all_paths[max(0, last_annotated_index)][0]
+
+
+@eel.expose
+def mark_annotated(file):
+    # Open the file and save annotations
+    data = load_json(index_path)
+
+    # Return a dict with {path: title}
+    paths_titles = dict([(p, t) for t in data.keys()
+                         for p in data[t]["path"].values()])
+    title = paths_titles[file]
+    paths_list = list(paths_titles)
+    try:
+        next_file = paths_list[paths_list.index(file) + 1]
+        print(next_file)
+    except (ValueError, IndexError):
+        next_file = file
+        print(next_file)
+
+    # Score will be annotated when file is the last path of the title
+    next_title = paths_titles[next_file]
+    if next_title == title:
+        return
+
+    print("Next title != title")
+    data[title]["annotated"] = True
+
+    # To avoid the window from reloading, delete file if it exists
+    if os.path.isfile(index_path):
+        os.remove(index_path)
+
+    sleep(0.5)  # wait 0.5 seconds between deleting and writing to avoid reload
+
+    # Open the file and save annotations
+    with open(index_path, 'w') as index:
+        json.dump(data, index, indent=4)
+        index.close()
 
 
 @eel.expose
