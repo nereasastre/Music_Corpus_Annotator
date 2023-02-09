@@ -72,7 +72,7 @@ export class App extends Component<{}, {
     this.hideBoundingBoxes = false;
     document.addEventListener("keydown", (event) => this.handleKeyDown(event));
     document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
-    document.addEventListener("beforeunload", (event) => this.saveToJson());
+    window.addEventListener("beforeunload", (event) => this.saveToJson());
 
   }
 
@@ -288,7 +288,6 @@ export class App extends Component<{}, {
         <button className='App-button' onClick={this.saveToJson}>Save</button>
         <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
         <button className='App-button' disabled={this.state.file === lastFile} onClick={this.selectNextFile}>Next</button>
-        <button className='App-button' onClick={this.markAnnotated}>Annotated</button>
         <div id="score"/>
       </div>
     );
