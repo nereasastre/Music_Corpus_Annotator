@@ -18,15 +18,6 @@ the eel example https://github.com/python-eel/Eel/tree/main/examples/07%20-%20Cr
 
 If you run into any issues with the app, open a [new issue](https://github.com/nereasastre/Music_Corpus_Annotator/issues) and tag @nereasastre
 
-## Quick Start
-Clone the repository to use the app. Run `git clone https://github.com/nereasastre/Music_Corpus_Annotator/`
-
-1. **Configure:** In the app's directory, run `npm install` and `pip install bottle bottle-websocket future whichcraft pyinstaller`
-2. **Demo:** Build static files with `npm run build` then run the application with `python eel_CRA.py`. A Chrome-app window should open running the built code from `build/`
-3. **Distribute:** (Run `npm run build` first) Build a binary distribution with PyInstaller using `python -m eel eel_CRA.py build --onefile --name Music_Corpus_Annotator` (See more detailed PyInstaller instructions at bottom of [the main README](https://github.com/ChrisKnott/Eel))
-4. **Develop:** Open two prompts. In one, run  `python eel_CRA.py true` and the other, `npm start`. A browser window should open in your default web browser at: [http://localhost:3000/](http://localhost:3000/). As you make changes to the JavaScript in `src/` the browser will reload. Any changes to `eel_CRA.py` will require a restart to take effect. You may need to refresh the browser window if it gets out of sync with eel.
-
-
 ## Usage
 Music Corpus Annotator allows the user to annotate the difficulty of music scores. Some functionalities and buttons that control them:
 - **Annotate**: The current score is highlighted in gray. To annotate such score, just press 1 (easy), 2 (medium) or 3 (hard) 
@@ -41,9 +32,19 @@ press the "Previous" button.
 - **Save annotations**: If you want to save your annotations to a .json file, press the "Save" button. This is not mandatory, since
 as saving is automatically triggered before closing the page, and before rendering the next/previous score.
 
+This is what the application will look like after some annotations:
+![Demo.png](Demo.png)
+
 That is it! Please also bear in mind that the application is currently slow. I am actively trying to improve this inconvenience.
 
-![Demo.png](Demo.png)
+
+## Quick Start
+Clone the repository to use the app. Run `git clone https://github.com/nereasastre/Music_Corpus_Annotator/`
+
+1. **Configure:** In the app's directory, run `npm install` and `pip install bottle bottle-websocket future whichcraft pyinstaller`
+2. **Demo:** Build static files with `npm run build` then run the application with `python eel_CRA.py`. A Chrome-app window should open running the built code from `build/`
+3. **Distribute:** (Run `npm run build` first) Build a binary distribution with PyInstaller using `python -m eel eel_CRA.py build --onefile --name Music_Corpus_Annotator` (See more detailed PyInstaller instructions at bottom of [the main README](https://github.com/ChrisKnott/Eel))
+4. **Develop:** Open two prompts. In one, run  `python eel_CRA.py true` and the other, `npm start`. A browser window should open in your default web browser at: [http://localhost:3000/](http://localhost:3000/). As you make changes to the JavaScript in `src/` the browser will reload. Any changes to `eel_CRA.py` will require a restart to take effect. You may need to refresh the browser window if it gets out of sync with eel.
 
 
 ## Main Files
