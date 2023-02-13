@@ -29,16 +29,16 @@ Clone the repository to use the app. Run `git clone https://github.com/nereasast
 
 ## Usage
 Music Corpus Annotator allows the user to annotate the difficulty of music scores. Some functionalities and buttons that control them:
-- Annotate: The current score is highlighted in gray. To annotate such score, just press 1 (easy), 2 (medium) or 3 (hard) 
+- **Annotate**: The current score is highlighted in gray. To annotate such score, just press 1 (easy), 2 (medium) or 3 (hard) 
 in your keyboard. This will render a green, orange or red box, depending on the chosen difficulty.
-- Annotate with the mouse: In order to annotate multiple boxes at once, press que shift button + the annotation (1, 2, 3 key). 
+- **Annotate with the mouse**: In order to annotate multiple boxes at once, press que shift button + the annotation (1, 2, 3 key). 
   Then, hold the shift key and click on the first score that you wish to annotate. Drag until the last score to annotate and release the mouse click. This will render a box from the 
   first score you clicked on to the score where you released the mouse button. 
-- Select a box: In order to move to another box without annotating, just use the arrow keys (left to move backwards, right
+- **Select a box**: In order to move to another box without annotating, just use the arrow keys (left to move backwards, right
   to move forward). This will update the select box.
-- Go to the next/previous score: In order to render the next score, press the "Next" button. To render the previous score,
+- **Go to the next/previous score**: In order to render the next score, press the "Next" button. To render the previous score,
 press the "Previous" button.
-- Save annotations: If you want to save your annotations to a .json file, press the "Save" button. This is not mandatory, since
+- **Save annotations**: If you want to save your annotations to a .json file, press the "Save" button. This is not mandatory, since
 as saving is automatically triggered before closing the page, and before rendering the next/previous score.
 
 That is it! Please also bear in mind that the application is currently slow. I am actively trying to improve this inconvenience.
