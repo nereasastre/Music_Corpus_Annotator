@@ -54,6 +54,7 @@ export function isFullyAnnotated(firstMeasureNumber: number, lastMeasureNumber: 
   }
       return true
 }
+
 export const selectColor = "#b7bbbd";
 export const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";
 export const lastFile = "xmander_files/5028687.musicxml";

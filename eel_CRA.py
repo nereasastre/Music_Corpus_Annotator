@@ -47,7 +47,7 @@ def say_hello_py(x):
 def pick_last_annotated():
     """Finds the last annotated score in index.json and returns the file """
     data = load_json(index_path)
-    print("HELLOOOOO")
+    print("pick_last_annotated() called")
     # order all paths
     all_paths = [(p, v['annotated']) for v in data.values()
                  for p in v['path'].values()]
@@ -59,8 +59,9 @@ def pick_last_annotated():
     if not annotated_scores:
         return all_paths[0][0]  # return first file
     last_annotated_index = all_paths.index((annotated_scores[-1], True))
-    print(last_annotated_index)
-    return all_paths[max(0, last_annotated_index)][0]
+    last_annotated_file = all_paths[max(0, last_annotated_index)][0]
+    print(f"Rendering last annotated file: {last_annotated_file} ...")
+    return last_annotated_file
 
 
 @eel.expose

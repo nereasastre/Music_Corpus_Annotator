@@ -62,19 +62,24 @@ export class App extends Component<{}, {
   currentBox: any;
 
 
+  // @ts-ignore
   public constructor(props: any) {
     super(props);
-    console.log("CONSTRUCTOR CALLED");
-
-    // Don't call this.setState() here!
-    this.state.file = firstFile;
+    console.log("Constructor called");
     this.color = selectColor;
     this.hideBoundingBoxes = false;
     document.addEventListener("keydown", (event) => this.handleKeyDown(event));
     document.addEventListener("mousedown", (event) => this.handleMouseDown(event));
     window.addEventListener("beforeunload", (event) => this.saveToJson());
-
+    this.getLastAnnotated();
   }
+
+  async getLastAnnotated() {
+    console.log("getLastAnnotated called")
+    await eel.pick_last_annotated()((file: string) => this.setState({file}))  // todo is this allowed?
+    console.log("getLastAnnotated state file: ", this.state.file)
+  }
+
 
   async initOSMD() {
     console.log("initOSMD with state file:", this.state.file)
@@ -82,7 +87,6 @@ export class App extends Component<{}, {
     await this.osmd.render();
 
     this.measureList = this.osmd.GraphicSheet.measureList;
-    console.log(this.measureList);
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
@@ -207,7 +211,7 @@ export class App extends Component<{}, {
       if (this.currentBox === this.lastMeasureNumber){
         let isAnnotated = isFullyAnnotated(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
         if (isAnnotated){
-          console.log("score is annotated!")
+          console.log("Score is annotated!")
           await this.markAnnotated()
         }
       }
@@ -217,28 +221,23 @@ export class App extends Component<{}, {
   public saveToJson = () => {
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     console.log("saveToJson has been called")
-    console.log("saveToJson state file: ", this.state.file);
     eel.save_to_json(this.state.file, annotations);
   }
 
    selectNextFile = async () => {
      console.log("selectNextFile has been called")
-     console.log("selectNextFile state.file before calling eel", this.state.file)
      this.saveToJson();
      eel.pick_next_file(this.state.file)((file: string) => this.setState({file}))
 
-     console.log("selectNextFile state.file after calling eel", this.state.file)
      await this.initOSMD();
 
    }
 
   public selectPreviousFile = async () => {
     console.log("selectPreviousFile has been called")
-    console.log("selectPreviousFile state.file before calling eel", this.state.file)
     this.saveToJson();
     eel.pick_previous_file(this.state.file)((file: string) => this.setState({ file }))
 
-    console.log("selectPreviousFile state.file after calling eel", this.state.file)
     await this.initOSMD();
 
 
