@@ -278,9 +278,9 @@ export class App extends Component<{}, {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        <header className="header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Music Corpus Annotator</h1>
+          <h1>Music Corpus Annotator</h1>
 
         </header>
         <p>You are annotating: {this.state.file}</p>

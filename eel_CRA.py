@@ -47,7 +47,6 @@ def say_hello_py(x):
 def pick_last_annotated():
     """Finds the last annotated score in index.json and returns the file """
     data = load_json(index_path)
-    print("pick_last_annotated() called")
     # order all paths
     all_paths = [(p, v['annotated']) for v in data.values()
                  for p in v['path'].values()]
@@ -76,17 +75,15 @@ def mark_annotated(file):
     paths_list = list(paths_titles)
     try:
         next_file = paths_list[paths_list.index(file) + 1]
-        print(next_file)
     except (ValueError, IndexError):
         next_file = file
-        print(next_file)
 
     # Score will be annotated when file is the last path of the title
     next_title = paths_titles[next_file]
     if next_title == title:
         return
 
-    print("Next title != title")
+    print("Score has been annotated!")
     data[title]["annotated"] = True
 
     # To avoid the window from reloading, delete file if it exists
@@ -143,9 +140,6 @@ def save_to_json(score_name, annotations):
     if not os.path.isdir(annotations_folder):
         os.mkdir(annotations_folder)
 
-    print("App path: ", app_path)
-    print("Annotations folder: ", annotations_folder)
-
     # Path to the .json file to write
     score_annotations = os.path.join(annotations_folder, f"{score_name}.json")
 
@@ -160,8 +154,6 @@ def save_to_json(score_name, annotations):
         print(f"Saving annotations to {score_annotations} ...")
         json.dump(annotations, annotated_score, indent=4)
 
-    print("Done!")
-
 
 def start_eel(develop):
     """Start Eel with either production or development configuration."""
@@ -173,12 +165,12 @@ def start_eel(develop):
         page = {'port': 3000}
         app_path = os.getcwd()
         index_path = os.path.join(app_path, 'public', 'index.json')
+
     else:
         directory = 'build'
         app = 'chrome-app'
         page = 'index.html'
         app_path = pathlib.Path(os.getcwd()).parent
-        print("Build app_path: ", app_path)
         index_path = os.path.join(app_path, 'public', 'index.json')
 
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
