@@ -1,4 +1,4 @@
-> "Eello World example": Create-React-App (CRA) and Eel
+Music Corpus Annotator
 
 **Table of Contents**
 
