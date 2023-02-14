@@ -148,7 +148,7 @@ export class App extends Component<{}, {
     let initPos = mousePosition(eventDown);  // find initial position
     const maxDist = new PointF2D(5, 5);
 
-    let initNearestNote = this.osmd.graphic.GetNearestNote(initPos, maxDist);
+    let initNearestNote = this.osmd.GraphicSheet.GetNearestNote(initPos, maxDist);
     let initMeasure = initNearestNote.sourceNote.SourceMeasure.MeasureNumber;  // measure where closest note is
 
     onmouseup = (eventUp) => {
@@ -280,7 +280,7 @@ export class App extends Component<{}, {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Music Sheet Annotator</h1>
+          <h1 className="App-title">Music Corpus Annotator</h1>
 
         </header>
         <p>You are annotating: {this.state.file}</p>
