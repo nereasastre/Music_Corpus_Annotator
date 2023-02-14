@@ -11,7 +11,7 @@
 
 <!-- /TOC -->
 
-## Music-Corpus-Annotator-Documentation
+## Music Corpus Annotator Documentation
 
 Music Corpus Annotator is an app to annotate the difficulty of music scores. This particular project was generated from 
 the eel example https://github.com/python-eel/Eel/tree/main/examples/07%20-%20CreateReactApp.
