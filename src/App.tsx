@@ -17,6 +17,7 @@ import {
   isFullyAnnotated,
   keyToColor,
   lastFile,
+  markCorrupted,
   max,
   min,
   mousePosition,
@@ -221,7 +222,12 @@ export class App extends Component<{}, {
   public saveToJson = () => {
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     console.log("saveToJson has been called")
-    eel.save_to_json(this.state.file, annotations);
+    console.log("ANNOTATIONS IS CORRUPTED", annotations["isCorrupted"])
+    if (!annotations["isCorrupted"]) {
+      eel.save_to_json(this.state.file, annotations);
+    } else {
+      eel.save_to_json(this.state.file, "corrupted file");
+    }
   }
 
    selectNextFile = async () => {
@@ -272,6 +278,9 @@ export class App extends Component<{}, {
       }
       else if (keyCode === "KeyH") {
         this.hideBoxes();
+      }
+      else if (keyCode ==="Delete" && event.ctrlKey){
+        markCorrupted(this.state.file);
       }
   }
 

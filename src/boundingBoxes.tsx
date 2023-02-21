@@ -182,6 +182,8 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
     // @ts-ignore
     annotations[staff] = "None";
   }
+  // @ts-ignore
+  annotations["isCorrupted"] = false;
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 
   if (renderSelect){

@@ -31,6 +31,8 @@ in your keyboard. This will render a green, orange or red box, depending on the 
 press the "Previous" button.
 - **Save annotations**: If you want to save your annotations to a .json file, press the "Save" button. This is not mandatory, since
 as saving is automatically triggered before closing the page, and before rendering the next/previous score.
+- **Flag file as corrupted**: Press Ctrl+Delete to flag a file as corrupted. This will replace the .json associated to the file
+to say "Corrupted file", and the annotations will not be saved.
 
 This is what the application will look like after some annotations:
 ![Demo.png](Demo.png)
