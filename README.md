@@ -1,12 +1,11 @@
-> "Eello World example": Create-React-App (CRA) and Eel
-
+Music_Corpus_Annotator
 **Table of Contents**
 
 <!-- TOC -->
 
-- [07 - CreateReactApp Documentation](#07---createreactapp-documentation)
-    - [Quick Start](#quick-start)
-    - [About](#about)
+- [Music Corpus Annotator Documentation](#music-corpus-annotator-documentation)
+    - [Usage](#usage)
+    - [Quick start](#quick-start)
     - [Main Files](#main-files)
 
 <!-- /TOC -->
