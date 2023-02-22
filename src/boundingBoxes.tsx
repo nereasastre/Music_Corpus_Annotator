@@ -3,6 +3,8 @@ import {
   colorToDifficulty,
   convertUnitsToPixels,
   difficultyToColor,
+  isFullyAnnotated,
+  markAnnotated,
   max,
   min,
   selectColor
@@ -19,6 +21,9 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
    * @return None
    */
   let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  let firstMeasureNumber = measureList[0][0].MeasureNumber;
+  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
+
   for (const measure of measureList) {
     let measureNumber = measure[0].MeasureNumber;
     if (checkAvailability(numList, measureNumber)) {
@@ -72,7 +77,15 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
 
         document.querySelector("svg")!.append(boundingBox);
         document.querySelector("svg")!.append(boundingBoxMiddle);
-
+        if (measureNumber === lastMeasureNumber){
+          console.log("BB: measureNumber === lastMeasureNumber", measureNumber, lastMeasureNumber)
+        let isAnnotated = isFullyAnnotated(firstMeasureNumber, lastMeasureNumber, scoreName);
+          console.log(isAnnotated);
+        if (isAnnotated){
+          console.log("Score is annotated!")
+          markAnnotated(scoreName)
+        }
+      }
         // if the color is the select color, identify it as erasable
         if (color === selectColor) {
           boundingBox.classList.add("erasableBoundingBox");

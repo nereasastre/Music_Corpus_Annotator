@@ -14,7 +14,6 @@ import {
   contains,
   firstFile,
   IAppState,
-  isFullyAnnotated,
   keyToColor,
   lastFile,
   markCorrupted,
@@ -168,7 +167,7 @@ export class App extends Component<{}, {
         initMeasure = previousFinalMeasure;
       }
       renderBoundingBoxes(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
-      this.currentBox = finalMeasure + 1;
+      this.currentBox = max(finalMeasure + 1, this.lastMeasureNumber);
       renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
     };
   }
@@ -209,13 +208,7 @@ export class App extends Component<{}, {
     this.color = keyToColor[difficulty];
     if (!event.shiftKey) {
       this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
-      if (this.currentBox === this.lastMeasureNumber){
-        let isAnnotated = isFullyAnnotated(this.firstMeasureNumber, this.lastMeasureNumber, this.state.file);
-        if (isAnnotated){
-          console.log("Score is annotated!")
-          await this.markAnnotated()
-        }
-      }
+
     }
   }
 
@@ -249,9 +242,6 @@ export class App extends Component<{}, {
 
   }
   public markAnnotated = async () => {
-    console.log("markAnnotated has been called")
-    console.log("markAnnotated state.file before calling eel", this.state.file)
-    eel.mark_annotated(this.state.file)
 
   }
 

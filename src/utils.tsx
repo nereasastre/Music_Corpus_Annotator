@@ -2,6 +2,7 @@
 // import { PointF2D } from "opensheetmusicdisplay";
 
 import {PointF2D} from "opensheetmusicdisplay";
+import {eel} from "./App";
 
 export const convertUnitsToPixels = (units: number) => units * 10;
 export function checkAvailability(arr: Array<number>, val: number) {
@@ -61,6 +62,11 @@ export function markCorrupted(scoreName: string){
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
 
+export function markAnnotated(scoreName: string){
+  console.log("markAnnotated has been called")
+  console.log("markAnnotated state.file before calling eel", scoreName)
+  eel.mark_annotated(scoreName)
+}
 
 export const selectColor = "#b7bbbd";
 export const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";

@@ -48,17 +48,17 @@ def pick_last_annotated():
     """Finds the last annotated score in index.json and returns the file """
     data = load_json(index_path)
     # order all paths
-    all_paths = [(p, v['annotated']) for v in data.values()
-                 for p in v['path'].values()]
+    all_paths = dict([(p, a) for v in data.values()
+                      for p, a in zip(v['path'].values(), v['annotated'].values())])
 
     # List of annotated files
-    annotated_scores = [t[0] for t in all_paths if t[1]]
+    annotated_scores = [t for t in all_paths if all_paths[t]]
 
     # If no scores have been annotated
     if not annotated_scores:
-        return all_paths[0][0]  # return first file
-    last_annotated_index = all_paths.index((annotated_scores[-1], True))
-    last_annotated_file = all_paths[max(0, last_annotated_index)][0]
+        return list(all_paths.keys())[0]  # return first file
+
+    last_annotated_file = annotated_scores[-1]
     print(f"Rendering last annotated file: {last_annotated_file} ...")
     return last_annotated_file
 
@@ -71,20 +71,11 @@ def mark_annotated(file):
     # Return a dict with {path: title}
     paths_titles = dict([(p, t) for t in data.keys()
                          for p in data[t]["path"].values()])
-    title = paths_titles[file]
-    paths_list = list(paths_titles)
-    try:
-        next_file = paths_list[paths_list.index(file) + 1]
-    except (ValueError, IndexError):
-        next_file = file
 
-    # Score will be annotated when file is the last path of the title
-    next_title = paths_titles[next_file]
-    if next_title == title:
-        return
-
-    print("Score has been annotated!")
-    data[title]["annotated"] = True
+    title = paths_titles[file]  # title in index
+    # Get path index
+    path_index = str(list(data[title]["path"].values()).index(file) + 1)
+    data[title]["annotated"][path_index] = True
 
     # To avoid the window from reloading, delete file if it exists
     if os.path.isfile(index_path):
@@ -96,7 +87,6 @@ def mark_annotated(file):
     with open(index_path, 'w') as index:
         json.dump(data, index, indent=4)
         index.close()
-
 
 @eel.expose
 def pick_next_file(file):
