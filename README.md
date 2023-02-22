@@ -1,4 +1,3 @@
-Music_Corpus_Annotator
 **Table of Contents**
 
 <!-- TOC -->
