@@ -47,13 +47,14 @@ export interface IAppState {
 export const contains = (array: Array<any>, element: any ) =>
     array.indexOf(element) > -1;
 
-export function isFullyAnnotated(firstMeasureNumber: number, lastMeasureNumber: number, scoreName: string){
+export function isFullyAnnotated(firstMeasureNumber: number, lastMeasureNumber: number, scoreName: string) {
   let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  for (let measure = firstMeasureNumber; measure <= lastMeasureNumber; measure ++) {
-    if (annotations[measure] === "None")
+  for (let measure = firstMeasureNumber; measure <= lastMeasureNumber; measure++) {
+    if (annotations[measure] === "None") {
       return false  // some measure has not been annotated
+    }
   }
-      return true
+  return true
 }
 
 export function markCorrupted(scoreName: string){
@@ -62,10 +63,10 @@ export function markCorrupted(scoreName: string){
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
 
-export function markAnnotated(scoreName: string){
+export function markAnnotated(scoreName: string, annotated = true){
   console.log("markAnnotated has been called")
   console.log("markAnnotated state.file before calling eel", scoreName)
-  eel.mark_annotated(scoreName)
+  eel.mark_annotated(scoreName, annotated)
 }
 
 export const selectColor = "#b7bbbd";

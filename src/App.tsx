@@ -75,9 +75,8 @@ export class App extends Component<{}, {
   }
 
   async getLastAnnotated() {
-    console.log("getLastAnnotated called")
     await eel.pick_last_annotated()((file: string) => this.setState({file}))  // todo is this allowed?
-    console.log("getLastAnnotated state file: ", this.state.file)
+    console.log("Getting last annotated file: ", this.state.file)
   }
 
 
@@ -128,16 +127,6 @@ export class App extends Component<{}, {
     await this.initOSMD();
   }
 
-  handleClick(event: any) {
-    // @ts-ignore
-    const file = event.target.value;
-    // this.setState(state => state.file = file);
-    this.setState({ file: file });
-    this.osmd = this.divRef.current.osmd;
-    this.currentBox = this.firstMeasureNumber;
-    this.measureList = this.osmd.graphic.measureList;
-  }
-
   handleMouseDown(eventDown: MouseEvent) {
     // If not pressing shift key, do not do anything
     if (!eventDown.shiftKey || this.color === "#b7bbbd") {
@@ -167,7 +156,7 @@ export class App extends Component<{}, {
         initMeasure = previousFinalMeasure;
       }
       renderBoundingBoxes(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
-      this.currentBox = max(finalMeasure + 1, this.lastMeasureNumber);
+      this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
       renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
     };
   }
@@ -214,8 +203,7 @@ export class App extends Component<{}, {
 
   public saveToJson = () => {
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
-    console.log("saveToJson has been called")
-    console.log("ANNOTATIONS IS CORRUPTED", annotations["isCorrupted"])
+    console.log("Saving annotations to json...")
     if (!annotations["isCorrupted"]) {
       eel.save_to_json(this.state.file, annotations);
     } else {
@@ -224,7 +212,7 @@ export class App extends Component<{}, {
   }
 
    selectNextFile = async () => {
-     console.log("selectNextFile has been called")
+     console.log("Rendering next file...")
      this.saveToJson();
      eel.pick_next_file(this.state.file)((file: string) => this.setState({file}))
 
@@ -233,7 +221,7 @@ export class App extends Component<{}, {
    }
 
   public selectPreviousFile = async () => {
-    console.log("selectPreviousFile has been called")
+    console.log("Rendering previous file...")
     this.saveToJson();
     eel.pick_previous_file(this.state.file)((file: string) => this.setState({ file }))
 

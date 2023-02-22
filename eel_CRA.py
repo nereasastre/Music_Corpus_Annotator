@@ -64,7 +64,7 @@ def pick_last_annotated():
 
 
 @eel.expose
-def mark_annotated(file):
+def mark_annotated(file, annotated=True):
     # Open the file and save annotations
     data = load_json(index_path)
 
@@ -75,7 +75,13 @@ def mark_annotated(file):
     title = paths_titles[file]  # title in index
     # Get path index
     path_index = str(list(data[title]["path"].values()).index(file) + 1)
-    data[title]["annotated"][path_index] = True
+
+    previous_value = data[title]["annotated"][path_index]
+
+    if previous_value == annotated:
+        return
+
+    data[title]["annotated"][path_index] = annotated
 
     # To avoid the window from reloading, delete file if it exists
     if os.path.isfile(index_path):

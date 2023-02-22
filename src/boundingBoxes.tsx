@@ -77,15 +77,14 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
 
         document.querySelector("svg")!.append(boundingBox);
         document.querySelector("svg")!.append(boundingBoxMiddle);
-        if (measureNumber === lastMeasureNumber){
-          console.log("BB: measureNumber === lastMeasureNumber", measureNumber, lastMeasureNumber)
+
         let isAnnotated = isFullyAnnotated(firstMeasureNumber, lastMeasureNumber, scoreName);
-          console.log(isAnnotated);
         if (isAnnotated){
           console.log("Score is annotated!")
           markAnnotated(scoreName)
+        } else {
+          markAnnotated(scoreName, false)
         }
-      }
         // if the color is the select color, identify it as erasable
         if (color === selectColor) {
           boundingBox.classList.add("erasableBoundingBox");
