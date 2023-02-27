@@ -7,6 +7,7 @@ import {
   markAnnotated,
   max,
   min,
+  recordAnnotationTime,
   selectColor
 } from "./utils";
 
@@ -97,9 +98,8 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
       }
     }
   }
-  annotations["annotationTime"] += (Date.now() - annotations["startTime"])
-  annotations["startTime"] = Date.now()
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
+  recordAnnotationTime(scoreName);
 
 };
 

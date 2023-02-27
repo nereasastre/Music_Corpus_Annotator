@@ -69,6 +69,14 @@ export function markAnnotated(scoreName: string, annotated = true){
   eel.mark_annotated(scoreName, annotated)
 }
 
+export function recordAnnotationTime(scoreName: string) {
+    let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+    annotations["annotationTime"] += (Date.now() - annotations["startTime"])
+    annotations["startTime"] = Date.now()
+    console.log("Annotation time:", annotations["annotationTime"]);
+    window.localStorage.setItem(scoreName, JSON.stringify(annotations));
+}
+
 export const selectColor = "#b7bbbd";
 export const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";
 export const lastFile = "xmander_files/5028687.musicxml";

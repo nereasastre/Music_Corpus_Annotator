@@ -21,6 +21,7 @@ import {
   min,
   mousePosition,
   range,
+  recordAnnotationTime,
   selectColor
 } from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
@@ -207,11 +208,14 @@ export class App extends Component<{}, {
   }
 
   public saveToJson = () => {
+    recordAnnotationTime(this.state.file);
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
     let annotationsToSave = annotations;
+
+    // do not save the following fields to .json
     // @ts-ignore
     delete annotationsToSave["startTime"]
-    console.log(annotations)
+    delete annotationsToSave["isCorrupted"]
 
     console.log("Saving annotations to json...")
     if (!annotations["isCorrupted"]) {
