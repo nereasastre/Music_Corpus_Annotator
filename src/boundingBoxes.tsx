@@ -97,6 +97,8 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
       }
     }
   }
+  annotations["annotationTime"] += (Date.now() - annotations["startTime"])
+  annotations["startTime"] = Date.now()
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 
 };
@@ -196,6 +198,8 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   }
   // @ts-ignore
   annotations["isCorrupted"] = false;
+  // @ts-ignore
+  annotations["startTime"] = Date.now();
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 
   if (renderSelect){
@@ -230,6 +234,7 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
 
   boxNumber = min(boxNumber + 1, lastMeasureNumber);
   renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName)
+
   return boxNumber;
 }
 

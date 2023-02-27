@@ -93,9 +93,14 @@ export class App extends Component<{}, {
     if (!annotations) {
       this.currentBox = this.firstMeasureNumber;
       initLocalStorageToNone(this.measureList, this.state.file);
+
     } else {
+      annotations["startTime"] = Date.now();
+      window.localStorage.setItem(this.state.file, JSON.stringify(annotations));
       this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
     }
+
+
 
     // re-render in case of resize
     let measureList = this.measureList;
@@ -203,9 +208,14 @@ export class App extends Component<{}, {
 
   public saveToJson = () => {
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
+    let annotationsToSave = annotations;
+    // @ts-ignore
+    delete annotationsToSave["startTime"]
+    console.log(annotations)
+
     console.log("Saving annotations to json...")
     if (!annotations["isCorrupted"]) {
-      eel.save_to_json(this.state.file, annotations);
+      eel.save_to_json(this.state.file, annotationsToSave);
     } else {
       eel.save_to_json(this.state.file, "corrupted file");
     }
