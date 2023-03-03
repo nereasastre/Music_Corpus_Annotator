@@ -12,7 +12,7 @@ import {
 } from "./utils";
 
 
-export const renderBoundingBoxes = (numList: Array<number>, color: string, measureList: any, scoreName: string) => {
+export const renderBoundingBoxes = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
   /**
    * Renders a box on the score
    * @param  {Array<number>} numList:  A list of measure numbers to render boxes in
@@ -21,13 +21,11 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
    * @param  {String} scoreName:  The score name.
    * @return None
    */
-  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  let firstMeasureNumber = measureList[0][0].MeasureNumber;
-  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
+  measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
 
   for (const measure of measureList) {
     let measureNumber = measure[0].MeasureNumber;
-    if (checkAvailability(numList, measureNumber)) {
+    if (checkAvailability(measureNumbers, measureNumber)) {
       if (color !== selectColor) {
         cleanBox(measureNumber, scoreName);  // clean previous boxes to avolid infiniteBoxes
       }
@@ -79,29 +77,48 @@ export const renderBoundingBoxes = (numList: Array<number>, color: string, measu
         document.querySelector("svg")!.append(boundingBox);
         document.querySelector("svg")!.append(boundingBoxMiddle);
 
-        let isAnnotated = isFullyAnnotated(firstMeasureNumber, lastMeasureNumber, scoreName);
-        if (isAnnotated){
+        // if the color is the select color, identify it as erasable
+        if (color === selectColor) {
+          boundingBox.classList.add("erasableBoundingBox");
+          boundingBoxMiddle.classList.add("erasableBoundingBox");
+        }
+      }
+    }
+  }
+};
+
+function annotate(measureNumbers: number | Array<number>, color: string, measureList: any,  scoreName: string){
+  measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
+  let firstMeasureNumber = measureList[0][0].MeasureNumber;
+  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
+  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  for (let measure of measureNumbers){
+    if (measure >= firstMeasureNumber && measure <= lastMeasureNumber) {
+          // @ts-ignore
+      annotations[measure] = colorToDifficulty[color];
+    }
+  }
+  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
+}
+
+
+export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
+  measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
+  renderBoundingBoxes(measureNumbers, color, measureList, scoreName)
+  annotate(measureNumbers, color, measureList, scoreName)
+
+  // check if whole score is annotated
+  let isAnnotated = isFullyAnnotated(measureList, scoreName);
+
+  if (isAnnotated){
           console.log("Score is annotated!")
           markAnnotated(scoreName)
         } else {
           markAnnotated(scoreName, false)
         }
-        // if the color is the select color, identify it as erasable
-        if (color === selectColor) {
-          boundingBox.classList.add("erasableBoundingBox");
-          boundingBoxMiddle.classList.add("erasableBoundingBox");
-
-        } else {
-          // @ts-ignore
-          annotations[measureNumber] = colorToDifficulty[color];
-        }
-      }
-    }
-  }
-  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
   recordAnnotationTime(scoreName);
 
-};
+}
 
 export const cleanSelectBoxes = () => {
   /**
@@ -174,10 +191,12 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
       box.remove();
     });
   }
-  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  annotations[boxNumber] = "None";
-  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 };
+
+function cleanBoxAndAnnotate(boxNumber: number, measureList: any, scoreName: string){
+  cleanBox(boxNumber, scoreName);
+  annotate(boxNumber, selectColor, measureList, scoreName)
+}
 
 
 export function initLocalStorageToNone(measureList: any, scoreName: string, renderSelect = true) {
@@ -229,7 +248,7 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
   // @ts-ignore
   if (annotations[boxNumber] !== colorToDifficulty[color] || no_annotations) {
     cleanBox(boxNumber, scoreName);
-    renderBoundingBoxes([boxNumber], color, measureList, scoreName);
+    renderBoundingBoxesAndAnnotate([boxNumber], color, measureList, scoreName);
   }
 
   boxNumber = min(boxNumber + 1, lastMeasureNumber);
@@ -247,7 +266,7 @@ export function deleteBoxAndGoBack(boxNumber: number, measureList: any, scoreNam
    * @return {number} boxNumber: The updated box number.
    */
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
-  cleanBox(boxNumber, scoreName);
+  cleanBoxAndAnnotate(boxNumber, measureList, scoreName)
   cleanSelectBoxes();
   boxNumber = max(boxNumber - 1, firstMeasureNumber);
   renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName); // render select box
