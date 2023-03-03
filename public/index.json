@@ -12,9 +12,9 @@
         },
         "work_name": "Piano Sonata f minor op. 2,1",
         "annotated": {
-            "1": false,
-            "2": false,
-            "3": false,
+            "1": true,
+            "2": true,
+            "3": true,
             "4": false
         }
     },

@@ -5,7 +5,6 @@ import {
   cleanAllBoxes,
   cleanSelectBoxes,
   deleteBoxAndGoBack,
-  initLocalStorageToNone,
   renderBoundingBoxes, renderBoundingBoxesAndAnnotate,
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
@@ -26,6 +25,7 @@ import {
 } from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
+import {initLocalStorageToNone} from "./annotations";
 
 
 // Point Eel web socket to the instance
@@ -100,8 +100,6 @@ export class App extends Component<{}, {
       window.localStorage.setItem(this.state.file, JSON.stringify(annotations));
       this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
     }
-
-
 
     // re-render in case of resize
     let measureList = this.measureList;

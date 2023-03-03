@@ -10,12 +10,13 @@ import {
   recordAnnotationTime,
   selectColor
 } from "./utils";
+import {annotate, annotateWholeMeasures} from "./annotations";
 
 
 export const renderBoundingBoxes = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
   /**
    * Renders a box on the score
-   * @param  {Array<number>} numList:  A list of measure numbers to render boxes in
+   * @param  {Array<number> | number} measureNumbers:  A list of measure numbers or a measure number to render boxes in
    * @param  {String} color:  The HEX code of the color
    * @param  {OpenSheetMusicDisplay.measureList} measureList: The osmd measure list.
    * @param  {String} scoreName:  The score name.
@@ -87,26 +88,15 @@ export const renderBoundingBoxes = (measureNumbers: Array<number> | number, colo
   }
 };
 
-function annotate(measureNumbers: number | Array<number>, color: string, measureList: any,  scoreName: string){
-  measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
-  let firstMeasureNumber = measureList[0][0].MeasureNumber;
-  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
-  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  for (let measure of measureNumbers){
-    if (measure >= firstMeasureNumber && measure <= lastMeasureNumber) {
-          // @ts-ignore
-      annotations[measure] = colorToDifficulty[color];
-    }
-  }
-  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
-}
 
-
-export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
+export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string, measure = true) => {
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
   renderBoundingBoxes(measureNumbers, color, measureList, scoreName)
-  annotate(measureNumbers, color, measureList, scoreName)
-
+  if (measure){
+    annotateWholeMeasures(measureNumbers, color, measureList, scoreName);
+  } else {
+    annotate(measureNumbers, color, measureList, scoreName) // todo modify
+  }
   // check if whole score is annotated
   let isAnnotated = isFullyAnnotated(measureList, scoreName);
 
@@ -117,7 +107,6 @@ export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | n
           markAnnotated(scoreName, false)
         }
   recordAnnotationTime(scoreName);
-
 }
 
 export const cleanSelectBoxes = () => {
@@ -196,36 +185,6 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
 function cleanBoxAndAnnotate(boxNumber: number, measureList: any, scoreName: string){
   cleanBox(boxNumber, scoreName);
   annotate(boxNumber, selectColor, measureList, scoreName)
-}
-
-
-export function initLocalStorageToNone(measureList: any, scoreName: string, renderSelect = true) {
-  /**
- * Initializes a localStorage with key scoreName and all score values set to "None"
- * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list
- * @param  {String} scoreName:  The score name.
- * @param {boolean} renderSelect: If True, renders the select box.
- * @return {String} annotations: The string (JSON format) containing the annotations set to None.
- */
-  let annotations = {};
-  let firstMeasureNumber = measureList[0][0].MeasureNumber;
-  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
-
-  for (let staff = firstMeasureNumber; staff < lastMeasureNumber + 1; staff++) {
-    // @ts-ignore
-    annotations[staff] = "None";
-  }
-  // @ts-ignore
-  annotations["isCorrupted"] = false;
-  // @ts-ignore
-  annotations["startTime"] = Date.now();
-  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
-
-  if (renderSelect){
-    renderBoundingBoxes([firstMeasureNumber], selectColor, measureList, scoreName);
-  }
-
-  return annotations;
 }
 
 export function renderBoxAndContinue(boxNumber: number, color: string, measureList: any, scoreName: string) {
