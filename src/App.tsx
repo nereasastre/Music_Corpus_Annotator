@@ -6,7 +6,7 @@ import {
   cleanSelectBoxes,
   deleteBoxAndGoBack,
   initLocalStorageToNone,
-  renderBoundingBoxes,
+  renderBoundingBoxes, renderBoundingBoxesAndAnnotate,
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
@@ -161,7 +161,7 @@ export class App extends Component<{}, {
         finalMeasure = initMeasure;
         initMeasure = previousFinalMeasure;
       }
-      renderBoundingBoxes(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
+      renderBoundingBoxesAndAnnotate(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
       this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
       renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
     };
