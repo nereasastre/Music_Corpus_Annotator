@@ -10,7 +10,7 @@ import {
   recordAnnotationTime,
   selectColor
 } from "./utils";
-import {annotate, annotateWholeMeasures} from "./annotations";
+import {annotate, annotateWholeMeasures, areAllNotesAnnotatedWithSameDifficulty} from "./annotations";
 
 
 export const renderBoundingBoxes = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
@@ -134,17 +134,18 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
   let coloredBoxes = [];
 
   for (let measure = 0; measure <= lastMeasureNumber; measure++) {
-    let measureDifficulty = annotations[measure];
-    if (measureDifficulty && measureDifficulty !== "None") {
-      // @ts-ignore
-      let measureColor = difficultyToColor[measureDifficulty];
-      renderBoundingBoxes([measure], measureColor, measureList, scoreName);
-      coloredBoxes.push(measure);
+    if (areAllNotesAnnotatedWithSameDifficulty(measureList[measure], scoreName)) {
+      let measureDifficulty = annotations[`measure-${measure}`][`staff-${0}`][`note-${0}`];
+
+      if (measureDifficulty && measureDifficulty !== "None") {
+        // @ts-ignore
+        let measureColor = difficultyToColor[measureDifficulty];
+        renderBoundingBoxes([measure], measureColor, measureList, scoreName);
+        coloredBoxes.push(measure);
+      }
     }
   }
-
   let firstAvailableBox = measureList[0][0].MeasureNumber;
-
   if (coloredBoxes.length !== 0) {
     firstAvailableBox = min(coloredBoxes[coloredBoxes.length - 1] + 1, lastMeasureNumber);
   }
@@ -152,9 +153,8 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
     renderBoundingBoxes([firstAvailableBox], selectColor, measureList, scoreName);
   }
   return firstAvailableBox;
-
-
 }
+
 
 export const cleanAllBoxes = () => {
   /**

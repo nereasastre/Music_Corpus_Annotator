@@ -68,3 +68,20 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
 
   return annotations;
 }
+
+export function areAllNotesAnnotatedWithSameDifficulty(measure: any, scoreName: string) {
+    let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+    let measureNumber = measure[0].measureNumber;
+    let firstNoteAnnotations = annotations[`measure-${measureNumber}`][`staff-${0}`][`note-${0}`];
+
+    for (let staff = 0; staff < measure.length; staff++ ) {
+        // @ts-ignore
+      let notesInStaff = measure[staff].staffEntries.length
+      for (let note = 0; note < notesInStaff; note++){
+        if (annotations[`measure-${measureNumber}`][`staff-${staff}`][`note-${note}`] !== firstNoteAnnotations){
+          return false
+        }
+      }
+    }
+    return true
+}
