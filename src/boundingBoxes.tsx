@@ -11,6 +11,7 @@ import {
   selectColor
 } from "./utils";
 import {annotate, annotateWholeMeasures, areAllNotesAnnotatedWithSameDifficulty} from "./annotations";
+import {render} from "react-dom";
 
 
 export const renderBoundingBoxes = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
@@ -39,8 +40,8 @@ export const renderBoundingBoxes = (measureNumbers: Array<number> | number, colo
         );
         const x = convertUnitsToPixels(positionAndShape.AbsolutePosition.x);
         const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
-        const y1 = yNew + height;
-        const height1 = max(convertUnitsToPixels(
+        const yMiddle = yNew + height;
+        const heightMiddle = max(convertUnitsToPixels(
           positionAndShape1.AbsolutePosition.y -
           positionAndShape.AbsolutePosition.y -
           4
@@ -69,8 +70,8 @@ export const renderBoundingBoxes = (measureNumbers: Array<number> | number, colo
         boundingBoxMiddle.setAttribute("fill", color);
         boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
         boundingBoxMiddle.setAttribute("x", x.toString());
-        boundingBoxMiddle.setAttribute("y", y1.toString());
-        boundingBoxMiddle.setAttribute("height", height1.toString());
+        boundingBoxMiddle.setAttribute("y", yMiddle.toString());
+        boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
         boundingBoxMiddle.setAttribute("width", width.toString());
         boundingBoxMiddle.classList.add("boundingBox");
         boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
@@ -88,6 +89,74 @@ export const renderBoundingBoxes = (measureNumbers: Array<number> | number, colo
   }
 };
 
+export function renderBoxNote(measureNumber: number, color: string, osmd: any, scoreName: string, noteNum: number){
+  let measureList = osmd.GraphicSheet.measureList;
+  console.log(osmd)
+  let measure = measureList[measureNumber];
+  let noteBoundingBox = osmd.cursor.GNotesUnderCursor()[0].getSVGGElement().getBBox();
+  console.log(noteBoundingBox)
+  console.log("SVG element: ", osmd.cursor.GNotesUnderCursor()[0].getSVGGElement())
+
+  if (color !== selectColor) {
+    cleanBox(measureNumber, scoreName);  // clean previous boxes to avolid infiniteBoxes
+  }
+  for (let staff = 0; staff < measure.length; staff++) {
+    const positionAndShape = measure[staff].PositionAndShape;
+    const positionAndShape1 = measure[1].PositionAndShape;
+    const height = convertUnitsToPixels(4);
+    let width = convertUnitsToPixels(
+      positionAndShape.BoundingRectangle.width
+    );
+    width = noteBoundingBox.width;
+    let x = convertUnitsToPixels(positionAndShape.AbsolutePosition.x);
+    x = noteBoundingBox.x
+    const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
+    const yMiddle = yNew + height;
+    const heightMiddle = max(convertUnitsToPixels(
+      positionAndShape1.AbsolutePosition.y -
+      positionAndShape.AbsolutePosition.y -
+      4
+    ), 0);
+
+    const boundingBox = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    const boundingBoxMiddle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+
+    // Staff's bounding box
+    boundingBox.setAttribute("fill", color);
+    boundingBox.setAttribute("fill-opacity", "0.25");
+    boundingBox.setAttribute("x", noteBoundingBox.x.toString());
+    boundingBox.setAttribute("y", yNew.toString());
+    boundingBox.setAttribute("height", height.toString());
+    boundingBox.setAttribute("width", noteBoundingBox.width.toString());
+    boundingBox.classList.add("boundingBox");
+    boundingBox.classList.add("boxNote".concat(measureNumber.toString()));  // unique box id
+
+    // Bounding box between staffs
+    boundingBoxMiddle.setAttribute("fill", color);
+    boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
+    boundingBoxMiddle.setAttribute("x", x.toString());
+    boundingBoxMiddle.setAttribute("y", yMiddle.toString());
+    boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
+    boundingBoxMiddle.setAttribute("width", width.toString());
+    boundingBoxMiddle.classList.add("boundingBox");
+    boundingBoxMiddle.classList.add("boxNote".concat(measureNumber.toString()));
+
+    document.querySelector("svg")!.append(boundingBox);
+    document.querySelector("svg")!.append(boundingBoxMiddle);
+
+    // if the color is the select color, identify it as erasable
+    if (color === selectColor) {
+      boundingBox.classList.add("erasableBoundingBox");
+      boundingBoxMiddle.classList.add("erasableBoundingBox");
+    }
+}
+}
 
 export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string, measure = true) => {
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
@@ -182,14 +251,18 @@ export const cleanBox = (boxNumber: number, scoreName: string) => {
   }
 };
 
-function cleanBoxAndAnnotate(boxNumber: number, measureList: any, scoreName: string){
+function cleanBoxAndAnnotate(boxNumber: number, measureList: any, scoreName: string, measure=true){
   cleanBox(boxNumber, scoreName);
-  annotate(boxNumber, selectColor, measureList, scoreName)
+  if (measure){
+    annotateWholeMeasures(boxNumber, selectColor, measureList, scoreName)
+  } else {
+    annotate(boxNumber, selectColor, measureList, scoreName) // todo use with note
+  }
 }
 
 export function renderBoxAndContinue(boxNumber: number, color: string, measureList: any, scoreName: string) {
   /**
-   * Renders a bouning boxes and updates the current Box number to currentBox += 1
+   * Renders a bounding box and updates the current Box number to currentBox += 1
    * @param  {number} boxNumber:  The box number to highlight
    * @param  {String} color:  The HEX code of the color
    * @param  {OpenSheetMusicDisplay.measureList} measureList:  OSMD's measure list.

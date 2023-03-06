@@ -7,7 +7,7 @@ import {
   deleteBoxAndGoBack,
   renderBoundingBoxes, renderBoundingBoxesAndAnnotate,
   renderBoxAndContinue,
-  renderBoxesFromLocalStorage
+  renderBoxesFromLocalStorage, renderBoxNote
 } from "./boundingBoxes";
 import {
   contains,
@@ -24,7 +24,7 @@ import {
   selectColor
 } from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
-import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
+import {Cursor, Fraction, MusicPartManagerIterator, OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
 import {initLocalStorageToNone} from "./annotations";
 
 
@@ -61,9 +61,11 @@ export class App extends Component<{}, {
   lastMeasureNumber: any;
   firstMeasureNumber: any;
   currentBox: any;
+  cursor: any
 
 
   // @ts-ignore
+  private currentNote: number;
   public constructor(props: any) {
     super(props);
     console.log("Constructor called");
@@ -83,8 +85,10 @@ export class App extends Component<{}, {
 
   async initOSMD() {
     console.log("initOSMD with state file:", this.state.file)
+    this.currentNote = 0
     await this.osmd.load(this.state.file);
     await this.osmd.render();
+
 
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
@@ -139,6 +143,7 @@ export class App extends Component<{}, {
     cleanSelectBoxes();
 
     let initPos = mousePosition(eventDown);  // find initial position
+    console.log("INITI POSTIION: ", initPos)
     const maxDist = new PointF2D(5, 5);
 
     let initNearestNote = this.osmd.GraphicSheet.GetNearestNote(initPos, maxDist);
@@ -150,6 +155,8 @@ export class App extends Component<{}, {
       }
 
       let finalPos = mousePosition(eventUp);
+      console.log("FINAL POSTIION: ", finalPos)
+
       let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
       let finalMeasure = finalNearestNote.sourceNote.SourceMeasure.MeasureNumber;
 
@@ -195,7 +202,7 @@ export class App extends Component<{}, {
     initLocalStorageToNone(this.measureList, this.state.file);
   }
 
-  annotate = async (event: KeyboardEvent) => {
+  annotateMeasure = async (event: KeyboardEvent) => {
     let difficulty = event.code[event.code.length -1]; // last char is difficulty
     // @ts-ignore
     this.color = keyToColor[difficulty];
@@ -203,6 +210,20 @@ export class App extends Component<{}, {
       this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
 
     }
+  }
+
+  annotateSingleNote() {
+    console.log("CURRENT COLOR", this.color)
+    this.osmd.cursor.cursorOptions.color = "#FF4633";
+    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
+    // this.osmd.cursor.show()
+
+    renderBoxNote(this.currentBox, "#FF4633", this.osmd, this.state.file, this.currentNote)
+    this.currentNote = min(this.measureList[this.currentBox][0].staffEntries.length - 1 , this.currentNote + 1)
+    this.osmd.cursor.next();
+    console.log(this.osmd.cursor)
+
+
   }
 
   public saveToJson = () => {
@@ -264,10 +285,14 @@ export class App extends Component<{}, {
 
       }
       else if (contains(annotation_keycodes, keyCode)) {  // if event.code is in annotations_folder
-        this.annotate(event);
+        this.annotateMeasure(event);
       }
       else if (keyCode === "KeyH") {
         this.hideBoxes();
+      }
+      else if (keyCode === "KeyN") {
+        console.log("CURSOR", this.osmd.cursor)
+        this.annotateSingleNote();
       }
       else if (keyCode ==="Delete" && event.ctrlKey){
         markCorrupted(this.state.file);
