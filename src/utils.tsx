@@ -44,6 +44,11 @@ export interface IAppState {
   file: string;
 }
 
+export interface MouseData {
+  pos: any;
+  nearestNote: any;
+  measure: number;
+}
 export const contains = (array: Array<any>, element: any ) =>
     array.indexOf(element) > -1;
 

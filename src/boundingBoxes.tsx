@@ -6,14 +6,60 @@ import {
   isFullyAnnotated,
   markAnnotated,
   max,
-  min,
+  min, MouseData, range,
   recordAnnotationTime,
   selectColor
 } from "./utils";
-import {annotate, annotateWholeMeasures, areAllNotesAnnotatedWithSameDifficulty} from "./annotations";
+import {
+  annotate,
+  annotateWholeMeasures,
+  annotateWithinCoordinates,
+  areAllNotesAnnotatedWithSameDifficulty
+} from "./annotations";
 import {render} from "react-dom";
+import {measure_font} from "../../../../../../anaconda3/Lib/site-packages/bokeh/server/static/js/types/core/util/text";
 
+const createBoundingBox = (x: any, y: any, height: any, width: any, yMiddle: any, heightMiddle: any, color: string, measureNumber: number, wholeMeasure = true) => {
+   const boundingBox = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    const boundingBoxMiddle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
 
+    // Staff's bounding box
+        boundingBox.setAttribute("fill", color);
+        boundingBox.setAttribute("fill-opacity", "0.25");
+        boundingBox.setAttribute("x", x.toString());
+        boundingBox.setAttribute("y", y.toString());
+        boundingBox.setAttribute("height", height.toString());
+        boundingBox.setAttribute("width", width.toString());
+        boundingBox.classList.add("boundingBox");
+
+        // Bounding box between staffs
+        boundingBoxMiddle.setAttribute("fill", color);
+        boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
+        boundingBoxMiddle.setAttribute("x", x.toString());
+        boundingBoxMiddle.setAttribute("y", yMiddle.toString());
+        boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
+        boundingBoxMiddle.setAttribute("width", width.toString());
+        boundingBoxMiddle.classList.add("boundingBox");
+        if (wholeMeasure) {
+          boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
+          boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
+        }
+        document.querySelector("svg")!.append(boundingBox);
+        document.querySelector("svg")!.append(boundingBoxMiddle);
+
+        // if the color is the select color, identify it as erasable
+        if (color === selectColor) {
+          boundingBox.classList.add("erasableBoundingBox");
+          boundingBoxMiddle.classList.add("erasableBoundingBox");
+        }
+
+}
 export const renderBoundingBoxes = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
   /**
    * Renders a box on the score
@@ -46,126 +92,67 @@ export const renderBoundingBoxes = (measureNumbers: Array<number> | number, colo
           positionAndShape.AbsolutePosition.y -
           4
         ), 0);
-
-        const boundingBox = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "rect"
-        );
-        const boundingBoxMiddle = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "rect"
-        );
-
-        // Staff's bounding box
-        boundingBox.setAttribute("fill", color);
-        boundingBox.setAttribute("fill-opacity", "0.25");
-        boundingBox.setAttribute("x", x.toString());
-        boundingBox.setAttribute("y", yNew.toString());
-        boundingBox.setAttribute("height", height.toString());
-        boundingBox.setAttribute("width", width.toString());
-        boundingBox.classList.add("boundingBox");
-        boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
-
-        // Bounding box between staffs
-        boundingBoxMiddle.setAttribute("fill", color);
-        boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
-        boundingBoxMiddle.setAttribute("x", x.toString());
-        boundingBoxMiddle.setAttribute("y", yMiddle.toString());
-        boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
-        boundingBoxMiddle.setAttribute("width", width.toString());
-        boundingBoxMiddle.classList.add("boundingBox");
-        boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
-
-        document.querySelector("svg")!.append(boundingBox);
-        document.querySelector("svg")!.append(boundingBoxMiddle);
-
-        // if the color is the select color, identify it as erasable
-        if (color === selectColor) {
-          boundingBox.classList.add("erasableBoundingBox");
-          boundingBoxMiddle.classList.add("erasableBoundingBox");
-        }
+        createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber)
       }
     }
   }
 };
 
-export function renderBoxNote(measureNumber: number, color: string, osmd: any, scoreName: string, noteNum: number){
-  let measureList = osmd.GraphicSheet.measureList;
-  console.log(osmd)
-  let measure = measureList[measureNumber];
-  let noteBoundingBox = osmd.cursor.GNotesUnderCursor()[0].getSVGGElement().getBBox();
-  console.log(noteBoundingBox)
-  console.log("SVG element: ", osmd.cursor.GNotesUnderCursor()[0].getSVGGElement())
 
-  if (color !== selectColor) {
-    cleanBox(measureNumber, scoreName);  // clean previous boxes to avolid infiniteBoxes
-  }
-  for (let staff = 0; staff < measure.length; staff++) {
-    const positionAndShape = measure[staff].PositionAndShape;
-    const positionAndShape1 = measure[1].PositionAndShape;
-    const height = convertUnitsToPixels(4);
-    let width = convertUnitsToPixels(
-      positionAndShape.BoundingRectangle.width
-    );
-    width = noteBoundingBox.width;
-    let x = convertUnitsToPixels(positionAndShape.AbsolutePosition.x);
-    x = noteBoundingBox.x
-    const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
-    const yMiddle = yNew + height;
-    const heightMiddle = max(convertUnitsToPixels(
-      positionAndShape1.AbsolutePosition.y -
-      positionAndShape.AbsolutePosition.y -
-      4
-    ), 0);
+export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: MouseData,  color: string, measureList: any, scoreName: string) {
+  // initData = [initPos, initNearestNote, initMeasure]
+  // finalData = [finalPos, finalNearestNote, finalMeasure]
+  let measureNumbers: Array<number>
+  // @ts-ignore
+  measureNumbers = range(initData.measure, finalData.measure)
+  const height = convertUnitsToPixels(4);
 
-    const boundingBox = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    );
-    const boundingBoxMiddle = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    );
+  for (let measureNumber of measureNumbers) {
+    console.log("--------------------------------------------------------")
+    let measure = measureList[measureNumber]
+      if (color !== selectColor) {
+        // @ts-ignore
+        cleanBox(measureNumber, scoreName);  // clean previous boxes to avoid infiniteBoxes
+      }
+      if (measureNumber !== initData.measure && measureNumber !== finalData.measure){
+        console.log("calling renderBoundingBoxesAndAnnotate with measure: ", measureNumber)
+        renderBoundingBoxesAndAnnotate([measureNumber], color, measureList, scoreName)
+      }
+      else {
+        for (let staff = 0; staff < measure.length; staff++) {
+          const positionAndShape = measure[staff].PositionAndShape;
+          const positionAndShape1 = measure[1].PositionAndShape;
+          let x = measureNumber === initData.measure ? convertUnitsToPixels(initData.pos.x) : convertUnitsToPixels(positionAndShape.AbsolutePosition.x);
+          const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
 
-    // Staff's bounding box
-    boundingBox.setAttribute("fill", color);
-    boundingBox.setAttribute("fill-opacity", "0.25");
-    boundingBox.setAttribute("x", noteBoundingBox.x.toString());
-    boundingBox.setAttribute("y", yNew.toString());
-    boundingBox.setAttribute("height", height.toString());
-    boundingBox.setAttribute("width", noteBoundingBox.width.toString());
-    boundingBox.classList.add("boundingBox");
-    boundingBox.classList.add("boxNote".concat(measureNumber.toString()));  // unique box id
-
-    // Bounding box between staffs
-    boundingBoxMiddle.setAttribute("fill", color);
-    boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
-    boundingBoxMiddle.setAttribute("x", x.toString());
-    boundingBoxMiddle.setAttribute("y", yMiddle.toString());
-    boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
-    boundingBoxMiddle.setAttribute("width", width.toString());
-    boundingBoxMiddle.classList.add("boundingBox");
-    boundingBoxMiddle.classList.add("boxNote".concat(measureNumber.toString()));
-
-    document.querySelector("svg")!.append(boundingBox);
-    document.querySelector("svg")!.append(boundingBoxMiddle);
-
-    // if the color is the select color, identify it as erasable
-    if (color === selectColor) {
-      boundingBox.classList.add("erasableBoundingBox");
-      boundingBoxMiddle.classList.add("erasableBoundingBox");
-    }
-}
+          let width;
+          if (measureNumber === initData.measure && measureNumber === finalData.measure) { // annotation within the same measure
+            console.log("measure number within same measure", measureNumber)
+            width = convertUnitsToPixels(finalData.pos.x - initData.pos.x);
+            annotateWithinCoordinates(x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
+          } else if (measureNumber === initData.measure) {
+            console.log("measure: ", measureNumber, "MEASURE IS INIT DATA MEASURE")
+            const finalX = positionAndShape.AbsolutePosition.x + positionAndShape.BoundingRectangle.width;
+            width = convertUnitsToPixels(positionAndShape.BoundingRectangle.width - (initData.pos.x - positionAndShape.AbsolutePosition.x))
+            annotateWithinCoordinates(initData.pos.x, finalX, measureNumber, staff, measureList, color, scoreName)
+          } else if (measureNumber === finalData.measure) {
+            console.log("measure: ", measureNumber, "MEASURE IS FINAL DATA MEASURE")
+            width = convertUnitsToPixels( finalData.pos.x - positionAndShape.AbsolutePosition.x)
+            annotateWithinCoordinates(positionAndShape.AbsolutePosition.x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
+          }
+          const yMiddle = yNew + height;
+          const heightMiddle = max(convertUnitsToPixels(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4), 0);
+          createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, false)
+        }
+      }
+      }
 }
 
-export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string, measure = true) => {
+export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
   renderBoundingBoxes(measureNumbers, color, measureList, scoreName)
-  if (measure){
-    annotateWholeMeasures(measureNumbers, color, measureList, scoreName);
-  } else {
-    annotate(measureNumbers, color, measureList, scoreName) // todo modify
-  }
+  annotateWholeMeasures(measureNumbers, color, measureList, scoreName);
+
   // check if whole score is annotated
   let isAnnotated = isFullyAnnotated(measureList, scoreName);
 

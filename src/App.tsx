@@ -5,9 +5,9 @@ import {
   cleanAllBoxes,
   cleanSelectBoxes,
   deleteBoxAndGoBack,
-  renderBoundingBoxes, renderBoundingBoxesAndAnnotate,
+  renderBoundingBoxes, renderBoundingBoxesAndAnnotate, renderBoundingBoxesFromCoords,
   renderBoxAndContinue,
-  renderBoxesFromLocalStorage, renderBoxNote
+  renderBoxesFromLocalStorage
 } from "./boundingBoxes";
 import {
   contains,
@@ -17,7 +17,7 @@ import {
   lastFile,
   markCorrupted,
   max,
-  min,
+  min, MouseData,
   mousePosition,
   range,
   recordAnnotationTime,
@@ -84,12 +84,14 @@ export class App extends Component<{}, {
 
 
   async initOSMD() {
+
     console.log("initOSMD with state file:", this.state.file)
     this.currentNote = 0
     await this.osmd.load(this.state.file);
     await this.osmd.render();
 
 
+    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
@@ -137,7 +139,7 @@ export class App extends Component<{}, {
 
   handleMouseDown(eventDown: MouseEvent) {
     // If not pressing shift key, do not do anything
-    if (!eventDown.shiftKey || this.color === "#b7bbbd") {
+    if ((!eventDown.shiftKey && !eventDown.altKey) || this.color === "#b7bbbd") {
       return
     }
     cleanSelectBoxes();
@@ -146,18 +148,24 @@ export class App extends Component<{}, {
     console.log("INITI POSTIION: ", initPos)
     const maxDist = new PointF2D(5, 5);
 
-    let initNearestNote = this.osmd.GraphicSheet.GetNearestNote(initPos, maxDist);
+    let initNearestNote = this.osmd.GraphicSheet.GetNearestNote(initPos, maxDist);  // nearest note at start
+    if (initNearestNote === undefined){
+      return
+    }
     let initMeasure = initNearestNote.sourceNote.SourceMeasure.MeasureNumber;  // measure where closest note is
 
     onmouseup = (eventUp) => {
-      if (this.color === "#b7bbbd" || !eventUp.shiftKey) {  // if not pressing shift key, return
-        return
-      }
+    if ((!eventDown.shiftKey && !eventDown.altKey) || this.color === "#b7bbbd") {
+      return
+    }
 
       let finalPos = mousePosition(eventUp);
       console.log("FINAL POSTIION: ", finalPos)
 
       let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
+      if (finalNearestNote === undefined){
+      return
+      }
       let finalMeasure = finalNearestNote.sourceNote.SourceMeasure.MeasureNumber;
 
       // if selection is from right to left, swap initial and final
@@ -166,9 +174,24 @@ export class App extends Component<{}, {
         finalMeasure = initMeasure;
         initMeasure = previousFinalMeasure;
       }
-      renderBoundingBoxesAndAnnotate(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
-      this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
-      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+      if (eventUp.shiftKey) {
+        renderBoundingBoxesAndAnnotate(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
+        this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
+        renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+      } else if (eventUp.altKey){
+        const initData: MouseData = {
+          pos: initPos,
+          nearestNote: initNearestNote,
+          measure: initMeasure
+          }
+
+        const finalData: MouseData = {
+          pos: finalPos,
+          nearestNote: finalNearestNote,
+          measure: finalMeasure
+          }
+          renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
+      }
     };
   }
 
@@ -206,19 +229,20 @@ export class App extends Component<{}, {
     let difficulty = event.code[event.code.length -1]; // last char is difficulty
     // @ts-ignore
     this.color = keyToColor[difficulty];
-    if (!event.shiftKey) {
+    if (!event.shiftKey && !event.altKey) {
       this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
-
     }
   }
 
   annotateSingleNote() {
     console.log("CURRENT COLOR", this.color)
+    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
+    this.osmd.cursor.show()
     this.osmd.cursor.cursorOptions.color = "#FF4633";
     this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
     // this.osmd.cursor.show()
 
-    renderBoxNote(this.currentBox, "#FF4633", this.osmd, this.state.file, this.currentNote)
+    // renderBoxNote(this.currentBox, "#FF4633", this.osmd, this.state.file, this.currentNote)
     this.currentNote = min(this.measureList[this.currentBox][0].staffEntries.length - 1 , this.currentNote + 1)
     this.osmd.cursor.next();
     console.log(this.osmd.cursor)

@@ -34,6 +34,23 @@ export function annotateWholeMeasures(measureNumbers: number | Array<number>, co
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
 
+export function annotateWithinCoordinates(initX: any, finalX: any, measureNumber: number, staffNumber: number, measureList: any, color: string, scoreName: string){
+  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  let staffEntries = measureList[measureNumber][staffNumber].staffEntries
+  for (let noteIdx = 0; noteIdx < staffEntries.length; noteIdx++ ){
+    let note = measureList[measureNumber][staffNumber].staffEntries[noteIdx]
+    let notePosition = note.PositionAndShape.absolutePosition.x;
+    console.log("Note position: ", notePosition)
+    console.log("LIMITS: ", initX, finalX)
+    if (initX <= notePosition && notePosition <= finalX ){
+      // @ts-ignore
+      annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteIdx}`] = colorToDifficulty[color];
+      console.log("Note: ", noteIdx, "from measure", measureNumber, "and staff", staffNumber, "is in area")
+    }
+  }
+  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
+
+}
 
 
 export function initLocalStorageToNone(measureList: any, scoreName: string, renderSelect = true) {
