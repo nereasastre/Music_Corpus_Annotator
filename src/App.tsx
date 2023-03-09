@@ -78,13 +78,12 @@ export class App extends Component<{}, {
   }
 
   async getLastAnnotated() {
-    await eel.pick_last_annotated()((file: string) => this.setState({file}))  // todo is this allowed?
+    await eel.pick_last_annotated()((file: string) => this.setState({file}))
     console.log("Getting last annotated file: ", this.state.file)
   }
 
 
   async initOSMD() {
-
     console.log("initOSMD with state file:", this.state.file)
     this.currentNote = 0
     await this.osmd.load(this.state.file);

@@ -1,4 +1,4 @@
-import {colorToDifficulty, selectColor} from "./utils";
+import {colorToDifficulty, convertUnitsToPixels, selectColor} from "./utils";
 import {renderBoundingBoxesMeasures} from "./boundingBoxes";
 
 export function annotate(measureNumbers: number | Array<number>, color: string, measureList: any,  scoreName: string){
@@ -36,20 +36,19 @@ export function annotateWholeMeasures(measureNumbers: number | Array<number>, co
 
 export function annotateWithinCoordinates(initX: any, finalX: any, measureNumber: number, staffNumber: number, measureList: any, color: string, scoreName: string){
   let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  let staffEntries = measureList[measureNumber][staffNumber].staffEntries
+  let firstMeasureNumber = measureList[0][0].measureNumber;
+  let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
+  let staff = measure[staffNumber]
+  let staffEntries = staff.staffEntries
   for (let noteIdx = 0; noteIdx < staffEntries.length; noteIdx++ ){
-    let note = measureList[measureNumber][staffNumber].staffEntries[noteIdx]
+    let note = staffEntries[noteIdx]
     let notePosition = note.PositionAndShape.absolutePosition.x;
-    console.log("Note position: ", notePosition)
-    console.log("LIMITS: ", initX, finalX)
     if (initX <= notePosition && notePosition <= finalX ){
       // @ts-ignore
       annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteIdx}`] = colorToDifficulty[color];
-      console.log("Note: ", noteIdx, "from measure", measureNumber, "and staff", staffNumber, "is in area")
     }
   }
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
-
 }
 
 
@@ -57,18 +56,21 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   let annotations = {};
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
-
-  for (let measure = firstMeasureNumber; measure < lastMeasureNumber + 1; measure++) {
+  console.log(measureList)
+  for (let measureNumber = firstMeasureNumber; measureNumber < lastMeasureNumber + 1; measureNumber++) {
+    // some measureNumbers start at 1 and some at 0 but measureList always starts at 0
+    let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
     // @ts-ignore
-    annotations[`measure-${measure}`] = {}
-    for( let staff = 0; staff < measureList[measure].length; staff++ ) {
+    annotations[`measure-${measureNumber}`] = {}
+    for( let staffNumber = 0; staffNumber < measure.length; staffNumber++ ) {
+      let staffEntries = measure[staffNumber].staffEntries;
         // @ts-ignore
-      annotations[`measure-${measure}`][`staff-${staff}`] = {};
-      let notesInStaff = measureList[measure][staff].staffEntries.length  // number of notes in staff
+      annotations[`measure-${measureNumber}`][`staff-${staffNumber}`] = {};
+      let notesInStaff = staffEntries.length  // number of notes in staff
 
       for (let note = 0; note < notesInStaff; note++){
         // @ts-ignore
-        annotations[`measure-${measure}`][`staff-${staff}`][`note-${note}`] = "None";
+        annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${note}`] = "None";
       }
     }
     }
@@ -90,14 +92,22 @@ export function areAllNotesAnnotatedWithSameDifficulty(measure: any, scoreName: 
     let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
     let measureNumber = measure[0].measureNumber;
     let firstNoteAnnotations = annotations[`measure-${measureNumber}`][`staff-${0}`][`note-${0}`];
-
-    for (let staff = 0; staff < measure.length; staff++ ) {
-        // @ts-ignore
-      let notesInStaff = measure[staff].staffEntries.length
+    for( let staffNumber = 0; staffNumber < measure.length; staffNumber++ ) {
+      let staffEntries = measure[staffNumber].staffEntries;
+      let notesInStaff = staffEntries.length  // number of notes in staff
       for (let note = 0; note < notesInStaff; note++){
-        if (annotations[`measure-${measureNumber}`][`staff-${staff}`][`note-${note}`] !== firstNoteAnnotations){
-          return false
-        }
+        let noteAnnotations = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${note}`]
+        if (noteAnnotations !== firstNoteAnnotations){
+          if (noteAnnotations === undefined) {
+            console.log("--------------------------------")
+            console.log("NOTE: ", note)
+            console.log("FIRST NOTE ANNOTATIONS: ", firstNoteAnnotations)
+            console.log("NOTES IN STAFF", notesInStaff)
+            console.log("UNDEFINED: ", measureNumber, staffNumber)
+            console.log("--------------------------------")
+          } else {
+            return false
+          }}
       }
     }
     return true
@@ -111,14 +121,10 @@ export function initIrregularBoxes(scoreName: string) {
 
 export function addIrregularBox(x: any, y: any, height: any, width: any, yMiddle: any, heightMiddle: any, color: string, measureNumber: number, scoreName: string){
   let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(scoreName)) as string);
-  console.log("IRREGULAR BOXES MEASURE NUMBER BEFORE", irregularBoxes[measureNumber]);
 
   irregularBoxes[measureNumber] = irregularBoxes[measureNumber] ? irregularBoxes[measureNumber] : []
-  console.log("IRREGULAR BOXES MEASURE NUMBER AFTER", irregularBoxes[measureNumber])
-  console.log("IRREGULAR BOXES IN MEASURE BEFORE", irregularBoxes[measureNumber].length)
 
   let irregularBoxesinMeasure = irregularBoxes[measureNumber].length
-  console.log("IRREGULAR BOXES IN MEASURE", irregularBoxesinMeasure)
   irregularBoxes[measureNumber][irregularBoxesinMeasure] = {}
   irregularBoxes[measureNumber][irregularBoxesinMeasure]["x"] = x
   irregularBoxes[measureNumber][irregularBoxesinMeasure]["y"] = y

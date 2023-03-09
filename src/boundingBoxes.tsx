@@ -25,19 +25,19 @@ const createBoundingBox = (x: any, y: any, height: any, width: any, yMiddle: any
     // Staff's bounding box
    boundingBox.setAttribute("fill", color);
    boundingBox.setAttribute("fill-opacity", "0.25");
-   boundingBox.setAttribute("x", x.toString());
-   boundingBox.setAttribute("y", y.toString());
-   boundingBox.setAttribute("height", height.toString());
-   boundingBox.setAttribute("width", width.toString());
+   boundingBox.setAttribute("x", convertUnitsToPixels(x).toString());
+   boundingBox.setAttribute("y", convertUnitsToPixels(y).toString());
+   boundingBox.setAttribute("height", convertUnitsToPixels(height).toString());
+   boundingBox.setAttribute("width", convertUnitsToPixels(width).toString());
    boundingBox.classList.add("boundingBox");
 
    // Bounding box between staffs
    boundingBoxMiddle.setAttribute("fill", color);
    boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
-   boundingBoxMiddle.setAttribute("x", x.toString());
-   boundingBoxMiddle.setAttribute("y", yMiddle.toString());
-   boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
-   boundingBoxMiddle.setAttribute("width", width.toString());
+   boundingBoxMiddle.setAttribute("x", convertUnitsToPixels(x).toString());
+   boundingBoxMiddle.setAttribute("y", convertUnitsToPixels(yMiddle).toString());
+   boundingBoxMiddle.setAttribute("height", convertUnitsToPixels(heightMiddle).toString());
+   boundingBoxMiddle.setAttribute("width", convertUnitsToPixels(width).toString());
    boundingBoxMiddle.classList.add("boundingBox");
 
    if (wholeMeasure) {
@@ -79,30 +79,32 @@ export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | numb
       for (let staff = 0; staff < measure.length; staff++) {
         const positionAndShape = measure[staff].PositionAndShape;
         const positionAndShape1 = measure[1].PositionAndShape;
-        const height = convertUnitsToPixels(4);
-        const width = convertUnitsToPixels(positionAndShape.BoundingRectangle.width);
-        const x = convertUnitsToPixels(positionAndShape.AbsolutePosition.x);
-        const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
+        const height = 4;
+        const width = positionAndShape.BoundingRectangle.width;
+        const x = positionAndShape.AbsolutePosition.x
+        const yNew = positionAndShape.AbsolutePosition.y;
         const yMiddle = yNew + height;
-        const heightMiddle = max(convertUnitsToPixels(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4), 0);
+        const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
         createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber)
       }
     }
   }
 };
 
-
 export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: MouseData,  color: string, measureList: any, scoreName: string) {
   // initData = [initPos, initNearestNote, initMeasure]
   // finalData = [finalPos, finalNearestNote, finalMeasure]
   let measureNumbers: Array<number>
+  let firstMeasureNumber = measureList[0][0].measureNumber
   // @ts-ignore
   measureNumbers = range(initData.measure, finalData.measure)
-  const height = convertUnitsToPixels(4);
+  console.log("MEASURE NUMBERS: ", measureNumbers)
+  const height = 4;
 
   for (let measureNumber of measureNumbers) {
     console.log("--------------------------------------------------------")
-    let measure = measureList[measureNumber]
+    console.log("COORDS MEASURE NUMBER:", measureNumber)
+    let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
       if (color !== selectColor) {
         // @ts-ignore
         cleanBox(measureNumber, scoreName);  // clean previous boxes to avoid infiniteBoxes
@@ -116,14 +118,14 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
         for (let staff = 0; staff < measure.length; staff++) {
           const positionAndShape = measure[staff].PositionAndShape;
           const positionAndShape1 = measure[1].PositionAndShape;
-          let x = measureNumber === initData.measure ? convertUnitsToPixels(initData.pos.x) : convertUnitsToPixels(positionAndShape.AbsolutePosition.x);
-          const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
+          let x = measureNumber === initData.measure ? initData.pos.x : positionAndShape.AbsolutePosition.x;
+          const yNew = positionAndShape.AbsolutePosition.y;
 
           let width;
            // annotation within the same measure
           if (measureNumber === initData.measure && measureNumber === finalData.measure) {
             console.log("measure number within same measure", measureNumber)
-            width = convertUnitsToPixels(finalData.pos.x - initData.pos.x);
+            width = finalData.pos.x - initData.pos.x;
             annotateWithinCoordinates(x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
           }
           // rendering an irregular box on the first measure
@@ -132,23 +134,26 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
             // x coordinate of the end of the measure
             const measureFinalX = positionAndShape.AbsolutePosition.x + positionAndShape.BoundingRectangle.width;
             // width of the box: from the initial mouse position until the end of the measure
-            width = convertUnitsToPixels(measureFinalX - initData.pos.x)
+            width = measureFinalX - initData.pos.x
             annotateWithinCoordinates(initData.pos.x, measureFinalX, measureNumber, staff, measureList, color, scoreName)
           }
           // rendering an irregular box on the last measure
           else if (measureNumber === finalData.measure) {
             console.log("measure: ", measureNumber, "MEASURE IS FINAL DATA MEASURE")
             // width is from the start position of the measure to the final x from the mouse coordinates
-            width = convertUnitsToPixels( finalData.pos.x - positionAndShape.AbsolutePosition.x)
+            width = finalData.pos.x - positionAndShape.AbsolutePosition.x;
+            console.log(finalData.pos.x, positionAndShape.AbsolutePosition.x )
+            console.log(width)
             annotateWithinCoordinates(positionAndShape.AbsolutePosition.x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
           }
           const yMiddle = yNew + height;
-          const heightMiddle = max(convertUnitsToPixels(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4), 0);
+          const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
           createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, false)
           addIrregularBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, scoreName)
         }
       }
       }
+    recordAnnotationTime(scoreName);
 }
 
 export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
@@ -180,6 +185,20 @@ export const cleanSelectBoxes = () => {
 
 };
 
+function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, scoreName: string) {
+  let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
+  let measure = measureList[measureNumber]
+  for (let staffNumber = 0; staffNumber < measure.length; staffNumber++ ) {
+    let staffEntries = measure[staffNumber].staffEntries;
+        // @ts-ignore
+      let notesInStaff = staffEntries.length
+      for (let noteNumber = 0; noteNumber < notesInStaff; noteNumber++){
+        let note = staffEntries[noteNumber]
+        console.log(note)
+        }
+      }
+}
+
 export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string, renderSelect = true) => {
   /**
    * Renders boxes as stored in localStorage
@@ -190,35 +209,27 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
    */
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(scoreName)) as string);
-
+  let firstMeasureNumber = measureList[0][0].MeasureNumber;
+  console.log(firstMeasureNumber)
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
   let coloredBoxes = [];
 
-  for (let measure = 0; measure <= lastMeasureNumber; measure++) {
-    if (areAllNotesAnnotatedWithSameDifficulty(measureList[measure], scoreName)) {
-      let measureDifficulty = annotations[`measure-${measure}`][`staff-${0}`][`note-${0}`];
+
+  for (let measureNumber = firstMeasureNumber; measureNumber <= lastMeasureNumber; measureNumber++) {
+    let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
+    if (areAllNotesAnnotatedWithSameDifficulty(measure, scoreName)) {
+      console.log("MEASURE ANNOTATED WITH SAME DIFFICULTY: ", measureNumber)
+      let measureDifficulty = annotations[`measure-${measureNumber}`][`staff-${0}`][`note-${0}`];
 
       if (measureDifficulty && measureDifficulty !== "None") {
         // @ts-ignore
         let measureColor = difficultyToColor[measureDifficulty];
-        renderBoundingBoxesMeasures([measure], measureColor, measureList, scoreName);
-        coloredBoxes.push(measure);
+        renderBoundingBoxesMeasures([measureNumber], measureColor, measureList, scoreName);
+        coloredBoxes.push(measureNumber);
       }
     } else {
-      let measureIrregularBoxes = irregularBoxes[measure]
-      console.log("-----------------------------")
-      console.log("Measure:", measure)
-      console.log("MEASURE IRREGULAR BOX: ", measureIrregularBoxes)
-
-      if (measureIrregularBoxes !== undefined) {
-        for (let irregularBoxIdx = 0; irregularBoxIdx < measureIrregularBoxes.length; irregularBoxIdx++) {
-          let irregularBox = measureIrregularBoxes[irregularBoxIdx];
-          console.log("IRREGULAR BOX", irregularBox)
-          createBoundingBox(irregularBox["x"], irregularBox["y"],
-              irregularBox["height"], irregularBox["width"], irregularBox["yMiddle"], irregularBox["heightMiddle"],
-              irregularBox["color"], measure, false)
-        }
-      }
+      console.log("MEASURE NOT ANNOTATED WITH SAME DIFFICULTY: ", measureNumber)
+      renderIrregularBoxFromNotes(measureNumber, measureList, scoreName)
     }
   }
   let firstAvailableBox = measureList[0][0].MeasureNumber;
