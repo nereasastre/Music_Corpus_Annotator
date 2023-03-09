@@ -264,7 +264,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
           startX = measureStartPosition;
           endX = currentX;
         } else if (currentX > endX) {
-          endX = currentX + 1
+          endX = currentX + 1  // adding 1 to add some extra space
         }
       } if (currentAnnotation !== difficulty || noteNumber === notesInStaff - 1) {
         if (staffNumber === 1 && noteNumber === notesInStaff - 1) {
@@ -286,7 +286,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
             console.log("Pushing box...")
             staffBoxes.push(box)
           }
-          startX = endX;
+          startX = noteNumber === notesInStaff - 1 ? startX : endX;
         }
       difficulty = currentAnnotation
       }
@@ -308,13 +308,14 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
   }
   for (let boxNumber = 0; boxNumber < staff0Boxes.length; boxNumber++){
     let staff0Box = staff0Boxes[boxNumber];
-    let staff1Box = staff1Boxes[boxNumber];
+    let staff1Box = staff1Boxes[0];
+
     console.log("STAFF 1 BOX: ", staff1Box)
 
-    //let startX = max(staff0Box.x, staff1Box.x) // rightmost box
-    //let width = max(staff0Box.width, staff1Box.width)  //widest
+    let startX = max(staff0Box.x, staff1Box.x) // rightmost box
+    let width = max(staff0Box.width, staff1Box.width)  //widest
     createBoundingBox(staff0Box.x, staff0Box.y, staff0Box.height, staff0Box.width, staff0Box.yMiddle, staff0Box.heightMiddle, staff0Box.color, measureNumber, false )
-    // createBoundingBox(startX, staff1Box.y, staff1Box.height, width, staff1Box.yMiddle, staff1Box.heightMiddle, staff1Box.color, measureNumber, false )
+    createBoundingBox(startX, staff1Box.y, staff1Box.height, width, staff1Box.yMiddle, staff1Box.heightMiddle, staff1Box.color, measureNumber, false )
   }
 }
 
