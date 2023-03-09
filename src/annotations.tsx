@@ -1,4 +1,4 @@
-import {colorToDifficulty, convertUnitsToPixels, selectColor} from "./utils";
+import {colorToDifficulty, selectColor} from "./utils";
 import {renderBoundingBoxesMeasures} from "./boundingBoxes";
 
 export function annotate(measureNumbers: number | Array<number>, color: string, measureList: any,  scoreName: string){
@@ -56,7 +56,7 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   let annotations = {};
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
-  console.log(measureList)
+
   for (let measureNumber = firstMeasureNumber; measureNumber < lastMeasureNumber + 1; measureNumber++) {
     // some measureNumbers start at 1 and some at 0 but measureList always starts at 0
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
@@ -97,17 +97,9 @@ export function areAllNotesAnnotatedWithSameDifficulty(measure: any, scoreName: 
       let notesInStaff = staffEntries.length  // number of notes in staff
       for (let note = 0; note < notesInStaff; note++){
         let noteAnnotations = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${note}`]
-        if (noteAnnotations !== firstNoteAnnotations){
-          if (noteAnnotations === undefined) {
-            console.log("--------------------------------")
-            console.log("NOTE: ", note)
-            console.log("FIRST NOTE ANNOTATIONS: ", firstNoteAnnotations)
-            console.log("NOTES IN STAFF", notesInStaff)
-            console.log("UNDEFINED: ", measureNumber, staffNumber)
-            console.log("--------------------------------")
-          } else {
+        if (noteAnnotations !== firstNoteAnnotations && noteAnnotations !== undefined){
             return false
-          }}
+          }
       }
     }
     return true

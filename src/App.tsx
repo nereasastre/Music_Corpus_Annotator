@@ -5,7 +5,7 @@ import {
   cleanAllBoxes,
   cleanSelectBoxes,
   deleteBoxAndGoBack,
-  renderBoundingBoxesMeasures, renderBoundingBoxesAndAnnotate, renderBoundingBoxesFromCoords,
+  renderBoundingBoxesMeasures, renderBoundingBoxesAndAnnotateWholeMeasure, renderBoundingBoxesFromCoords,
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
@@ -179,7 +179,7 @@ export class App extends Component<{}, {
         initMeasure = previousFinalMeasure;
       }
       if (eventUp.shiftKey) {
-        renderBoundingBoxesAndAnnotate(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
+        renderBoundingBoxesAndAnnotateWholeMeasure(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
         this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
         renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
       } else if (eventUp.altKey){
