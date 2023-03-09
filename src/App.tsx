@@ -5,7 +5,7 @@ import {
   cleanAllBoxes,
   cleanSelectBoxes,
   deleteBoxAndGoBack,
-  renderBoundingBoxes, renderBoundingBoxesAndAnnotate, renderBoundingBoxesFromCoords,
+  renderBoundingBoxesMeasures, renderBoundingBoxesAndAnnotate, renderBoundingBoxesFromCoords,
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
@@ -24,8 +24,8 @@ import {
   selectColor
 } from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
-import {Cursor, Fraction, MusicPartManagerIterator, OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
-import {initLocalStorageToNone} from "./annotations";
+import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
+import {initIrregularBoxes, initLocalStorageToNone} from "./annotations";
 
 
 // Point Eel web socket to the instance
@@ -90,11 +90,16 @@ export class App extends Component<{}, {
     await this.osmd.load(this.state.file);
     await this.osmd.render();
 
-
     this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
+    let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(this.state.file)) as string);
+
+    if (!irregularBoxes) {
+      initIrregularBoxes(this.state.file)
+    }
+
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
     if (!annotations) {
@@ -177,7 +182,7 @@ export class App extends Component<{}, {
       if (eventUp.shiftKey) {
         renderBoundingBoxesAndAnnotate(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
         this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
-        renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+        renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
       } else if (eventUp.altKey){
         const initData: MouseData = {
           pos: initPos,
@@ -200,14 +205,14 @@ export class App extends Component<{}, {
     this.hideBoundingBoxes = false;
     this.currentBox = max(this.firstMeasureNumber, this.currentBox - 1)
 
-    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
   };
 
   selectNextBox() {
     cleanSelectBoxes();
     this.hideBoundingBoxes = false;
     this.currentBox = min(this.currentBox + 1, this.lastMeasureNumber);
-    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
   };
 
   hideBoxes() {
@@ -215,7 +220,7 @@ export class App extends Component<{}, {
     if (this.hideBoundingBoxes) {
       cleanSelectBoxes();
     } else {
-      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file)
+      renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file)
     }
   }
 

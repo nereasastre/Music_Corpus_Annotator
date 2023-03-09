@@ -1,5 +1,5 @@
 import {colorToDifficulty, selectColor} from "./utils";
-import {renderBoundingBoxes} from "./boundingBoxes";
+import {renderBoundingBoxesMeasures} from "./boundingBoxes";
 
 export function annotate(measureNumbers: number | Array<number>, color: string, measureList: any,  scoreName: string){
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
@@ -80,7 +80,7 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 
   if (renderSelect){
-    renderBoundingBoxes([firstMeasureNumber], selectColor, measureList, scoreName);
+    renderBoundingBoxesMeasures([firstMeasureNumber], selectColor, measureList, scoreName);
   }
 
   return annotations;
@@ -101,4 +101,31 @@ export function areAllNotesAnnotatedWithSameDifficulty(measure: any, scoreName: 
       }
     }
     return true
+}
+
+export function initIrregularBoxes(scoreName: string) {
+  let irregularBoxes = {}
+  // @ts-ignore
+  window.localStorage.setItem("irregularBoxes_".concat(scoreName), JSON.stringify(irregularBoxes));
+}
+
+export function addIrregularBox(x: any, y: any, height: any, width: any, yMiddle: any, heightMiddle: any, color: string, measureNumber: number, scoreName: string){
+  let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(scoreName)) as string);
+  console.log("IRREGULAR BOXES MEASURE NUMBER BEFORE", irregularBoxes[measureNumber]);
+
+  irregularBoxes[measureNumber] = irregularBoxes[measureNumber] ? irregularBoxes[measureNumber] : []
+  console.log("IRREGULAR BOXES MEASURE NUMBER AFTER", irregularBoxes[measureNumber])
+  console.log("IRREGULAR BOXES IN MEASURE BEFORE", irregularBoxes[measureNumber].length)
+
+  let irregularBoxesinMeasure = irregularBoxes[measureNumber].length
+  console.log("IRREGULAR BOXES IN MEASURE", irregularBoxesinMeasure)
+  irregularBoxes[measureNumber][irregularBoxesinMeasure] = {}
+  irregularBoxes[measureNumber][irregularBoxesinMeasure]["x"] = x
+  irregularBoxes[measureNumber][irregularBoxesinMeasure]["y"] = y
+  irregularBoxes[measureNumber][irregularBoxesinMeasure]["height"] = height
+  irregularBoxes[measureNumber][irregularBoxesinMeasure]["width"] = width
+  irregularBoxes[measureNumber][irregularBoxesinMeasure]["yMiddle"] = yMiddle
+  irregularBoxes[measureNumber][irregularBoxesinMeasure]["heightMiddle"] = heightMiddle
+  irregularBoxes[measureNumber][irregularBoxesinMeasure]["color"] = color
+  window.localStorage.setItem("irregularBoxes_".concat(scoreName), JSON.stringify(irregularBoxes));
 }

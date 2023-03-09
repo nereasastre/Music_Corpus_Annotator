@@ -11,56 +11,55 @@ import {
   selectColor
 } from "./utils";
 import {
+  addIrregularBox,
   annotate,
   annotateWholeMeasures,
   annotateWithinCoordinates,
   areAllNotesAnnotatedWithSameDifficulty
 } from "./annotations";
-import {render} from "react-dom";
-import {measure_font} from "../../../../../../anaconda3/Lib/site-packages/bokeh/server/static/js/types/core/util/text";
 
 const createBoundingBox = (x: any, y: any, height: any, width: any, yMiddle: any, heightMiddle: any, color: string, measureNumber: number, wholeMeasure = true) => {
-   const boundingBox = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    );
-    const boundingBoxMiddle = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    );
+   const boundingBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+   const boundingBoxMiddle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
     // Staff's bounding box
-        boundingBox.setAttribute("fill", color);
-        boundingBox.setAttribute("fill-opacity", "0.25");
-        boundingBox.setAttribute("x", x.toString());
-        boundingBox.setAttribute("y", y.toString());
-        boundingBox.setAttribute("height", height.toString());
-        boundingBox.setAttribute("width", width.toString());
-        boundingBox.classList.add("boundingBox");
+   boundingBox.setAttribute("fill", color);
+   boundingBox.setAttribute("fill-opacity", "0.25");
+   boundingBox.setAttribute("x", x.toString());
+   boundingBox.setAttribute("y", y.toString());
+   boundingBox.setAttribute("height", height.toString());
+   boundingBox.setAttribute("width", width.toString());
+   boundingBox.classList.add("boundingBox");
 
-        // Bounding box between staffs
-        boundingBoxMiddle.setAttribute("fill", color);
-        boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
-        boundingBoxMiddle.setAttribute("x", x.toString());
-        boundingBoxMiddle.setAttribute("y", yMiddle.toString());
-        boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
-        boundingBoxMiddle.setAttribute("width", width.toString());
-        boundingBoxMiddle.classList.add("boundingBox");
-        if (wholeMeasure) {
-          boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
-          boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
-        }
-        document.querySelector("svg")!.append(boundingBox);
-        document.querySelector("svg")!.append(boundingBoxMiddle);
+   // Bounding box between staffs
+   boundingBoxMiddle.setAttribute("fill", color);
+   boundingBoxMiddle.setAttribute("fill-opacity", "0.25");
+   boundingBoxMiddle.setAttribute("x", x.toString());
+   boundingBoxMiddle.setAttribute("y", yMiddle.toString());
+   boundingBoxMiddle.setAttribute("height", heightMiddle.toString());
+   boundingBoxMiddle.setAttribute("width", width.toString());
+   boundingBoxMiddle.classList.add("boundingBox");
+
+   if (wholeMeasure) {
+      boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
+      boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
+   } else {
+     boundingBox.classList.add("irregularBox_".concat(measureNumber.toString()))
+     boundingBoxMiddle.classList.add("irregularBox_".concat(measureNumber.toString()))
+   }
+
+   document.querySelector("svg")!.append(boundingBox);
+   document.querySelector("svg")!.append(boundingBoxMiddle);
 
         // if the color is the select color, identify it as erasable
-        if (color === selectColor) {
-          boundingBox.classList.add("erasableBoundingBox");
-          boundingBoxMiddle.classList.add("erasableBoundingBox");
-        }
+   if (color === selectColor) {
+     boundingBox.classList.add("erasableBoundingBox");
+     boundingBoxMiddle.classList.add("erasableBoundingBox");
+   }
+
 
 }
-export const renderBoundingBoxes = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
+export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
   /**
    * Renders a box on the score
    * @param  {Array<number> | number} measureNumbers:  A list of measure numbers or a measure number to render boxes in
@@ -74,24 +73,18 @@ export const renderBoundingBoxes = (measureNumbers: Array<number> | number, colo
   for (const measure of measureList) {
     let measureNumber = measure[0].MeasureNumber;
     if (checkAvailability(measureNumbers, measureNumber)) {
-      if (color !== selectColor) {
-        cleanBox(measureNumber, scoreName);  // clean previous boxes to avolid infiniteBoxes
+      if (color !== selectColor && areAllNotesAnnotatedWithSameDifficulty(measure, scoreName)) {
+        cleanBox(measureNumber, scoreName);  // clean previous boxes to avoid infiniteBoxes
       }
       for (let staff = 0; staff < measure.length; staff++) {
         const positionAndShape = measure[staff].PositionAndShape;
         const positionAndShape1 = measure[1].PositionAndShape;
         const height = convertUnitsToPixels(4);
-        const width = convertUnitsToPixels(
-          positionAndShape.BoundingRectangle.width
-        );
+        const width = convertUnitsToPixels(positionAndShape.BoundingRectangle.width);
         const x = convertUnitsToPixels(positionAndShape.AbsolutePosition.x);
         const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
         const yMiddle = yNew + height;
-        const heightMiddle = max(convertUnitsToPixels(
-          positionAndShape1.AbsolutePosition.y -
-          positionAndShape.AbsolutePosition.y -
-          4
-        ), 0);
+        const heightMiddle = max(convertUnitsToPixels(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4), 0);
         createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber)
       }
     }
@@ -116,6 +109,7 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
       }
       if (measureNumber !== initData.measure && measureNumber !== finalData.measure){
         console.log("calling renderBoundingBoxesAndAnnotate with measure: ", measureNumber)
+        // @ts-ignore
         renderBoundingBoxesAndAnnotate([measureNumber], color, measureList, scoreName)
       }
       else {
@@ -126,23 +120,32 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
           const yNew = convertUnitsToPixels(positionAndShape.AbsolutePosition.y);
 
           let width;
-          if (measureNumber === initData.measure && measureNumber === finalData.measure) { // annotation within the same measure
+           // annotation within the same measure
+          if (measureNumber === initData.measure && measureNumber === finalData.measure) {
             console.log("measure number within same measure", measureNumber)
             width = convertUnitsToPixels(finalData.pos.x - initData.pos.x);
             annotateWithinCoordinates(x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
-          } else if (measureNumber === initData.measure) {
+          }
+          // rendering an irregular box on the first measure
+          else if (measureNumber === initData.measure) {
             console.log("measure: ", measureNumber, "MEASURE IS INIT DATA MEASURE")
-            const finalX = positionAndShape.AbsolutePosition.x + positionAndShape.BoundingRectangle.width;
-            width = convertUnitsToPixels(positionAndShape.BoundingRectangle.width - (initData.pos.x - positionAndShape.AbsolutePosition.x))
-            annotateWithinCoordinates(initData.pos.x, finalX, measureNumber, staff, measureList, color, scoreName)
-          } else if (measureNumber === finalData.measure) {
+            // x coordinate of the end of the measure
+            const measureFinalX = positionAndShape.AbsolutePosition.x + positionAndShape.BoundingRectangle.width;
+            // width of the box: from the initial mouse position until the end of the measure
+            width = convertUnitsToPixels(measureFinalX - initData.pos.x)
+            annotateWithinCoordinates(initData.pos.x, measureFinalX, measureNumber, staff, measureList, color, scoreName)
+          }
+          // rendering an irregular box on the last measure
+          else if (measureNumber === finalData.measure) {
             console.log("measure: ", measureNumber, "MEASURE IS FINAL DATA MEASURE")
+            // width is from the start position of the measure to the final x from the mouse coordinates
             width = convertUnitsToPixels( finalData.pos.x - positionAndShape.AbsolutePosition.x)
             annotateWithinCoordinates(positionAndShape.AbsolutePosition.x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
           }
           const yMiddle = yNew + height;
           const heightMiddle = max(convertUnitsToPixels(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4), 0);
           createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, false)
+          addIrregularBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, scoreName)
         }
       }
       }
@@ -150,7 +153,7 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
 
 export const renderBoundingBoxesAndAnnotate = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
-  renderBoundingBoxes(measureNumbers, color, measureList, scoreName)
+  renderBoundingBoxesMeasures(measureNumbers, color, measureList, scoreName)
   annotateWholeMeasures(measureNumbers, color, measureList, scoreName);
 
   // check if whole score is annotated
@@ -186,6 +189,8 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
    * @return The first available box.
    */
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
+  let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(scoreName)) as string);
+
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
   let coloredBoxes = [];
 
@@ -196,8 +201,23 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
       if (measureDifficulty && measureDifficulty !== "None") {
         // @ts-ignore
         let measureColor = difficultyToColor[measureDifficulty];
-        renderBoundingBoxes([measure], measureColor, measureList, scoreName);
+        renderBoundingBoxesMeasures([measure], measureColor, measureList, scoreName);
         coloredBoxes.push(measure);
+      }
+    } else {
+      let measureIrregularBoxes = irregularBoxes[measure]
+      console.log("-----------------------------")
+      console.log("Measure:", measure)
+      console.log("MEASURE IRREGULAR BOX: ", measureIrregularBoxes)
+
+      if (measureIrregularBoxes !== undefined) {
+        for (let irregularBoxIdx = 0; irregularBoxIdx < measureIrregularBoxes.length; irregularBoxIdx++) {
+          let irregularBox = measureIrregularBoxes[irregularBoxIdx];
+          console.log("IRREGULAR BOX", irregularBox)
+          createBoundingBox(irregularBox["x"], irregularBox["y"],
+              irregularBox["height"], irregularBox["width"], irregularBox["yMiddle"], irregularBox["heightMiddle"],
+              irregularBox["color"], measure, false)
+        }
       }
     }
   }
@@ -206,11 +226,10 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
     firstAvailableBox = min(coloredBoxes[coloredBoxes.length - 1] + 1, lastMeasureNumber);
   }
   if (renderSelect){
-    renderBoundingBoxes([firstAvailableBox], selectColor, measureList, scoreName);
+    renderBoundingBoxesMeasures([firstAvailableBox], selectColor, measureList, scoreName);
   }
   return firstAvailableBox;
 }
-
 
 export const cleanAllBoxes = () => {
   /**
@@ -223,7 +242,7 @@ export const cleanAllBoxes = () => {
   });
 };
 
-export const cleanBox = (boxNumber: number, scoreName: string) => {
+export function cleanBox(boxNumber: number, scoreName: string) {
   /**
  * Cleans a bounding box
  * @param  {number} boxNumber:  The box number to erase.
@@ -271,7 +290,7 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
   }
 
   boxNumber = min(boxNumber + 1, lastMeasureNumber);
-  renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName)
+  renderBoundingBoxesMeasures([boxNumber], selectColor, measureList, scoreName)
 
   return boxNumber;
 }
@@ -288,6 +307,6 @@ export function deleteBoxAndGoBack(boxNumber: number, measureList: any, scoreNam
   cleanBoxAndAnnotate(boxNumber, measureList, scoreName)
   cleanSelectBoxes();
   boxNumber = max(boxNumber - 1, firstMeasureNumber);
-  renderBoundingBoxes([boxNumber], selectColor, measureList, scoreName); // render select box
+  renderBoundingBoxesMeasures([boxNumber], selectColor, measureList, scoreName); // render select box
   return boxNumber;
 }
