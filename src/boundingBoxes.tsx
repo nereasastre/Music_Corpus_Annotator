@@ -224,12 +224,21 @@ export const cleanSelectBoxes = () => {
 
 function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: any, measureList: any, scoreName: string){
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
+  console.log("--------------------------------------")
+  console.log("getConsecutiveNotesWithSameAnnotation with staff: ", staffNumber)
+  console.log("ANNOTATIONS:", annotations)
   let firstMeasureNumber = measureList[0][0].measureNumber;
+  console.log("FIRST MEASURE NUMBER:", firstMeasureNumber)
+
   let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
+  console.log("MEASURE:", measure)
 
   // Staff and measure
   let staffEntries = measure[staffNumber].staffEntries
+  console.log("STAFF ENTRIES: ", staffEntries)
   let notesInStaff = staffEntries.length
+  console.log("NOTES IN STAFF: ", notesInStaff)
+
 
   // Position data
   const positionAndShape = measure[staffNumber].PositionAndShape;
@@ -244,34 +253,51 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
   let endX = 0;
 
   // To store boxes
-  let staffBoxes = []
+  let staffBoxes: Box[] = []
+  console.log("STAFF BOXES", staffBoxes)
 
   // @ts-ignore
-  let difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${0}`];
-   for (let noteNumber = 0; noteNumber < notesInStaff; noteNumber++){
-      // @ts-ignore
-      let color = difficultyToColor[difficulty]
-     // @ts-ignore
-      const currentAnnotation = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteNumber}`];
+  let firstNotNoneBox = 0
+  let difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
+  console.log("INITIAL DIFFICULTY: ", difficulty)
+  while (difficulty === "None" && firstNotNoneBox < notesInStaff){
+    firstNotNoneBox += 1
+    difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
+  }
 
+   for (let noteNumber = firstNotNoneBox; noteNumber < notesInStaff; noteNumber++){
+     console.log("--------------------------------------------------------------")
+     console.log("NOTE NUMBER", noteNumber)
+     console.log("DIFFICULTY: ", difficulty)
+     const currentAnnotation = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteNumber}`];
+           // @ts-ignore
+     let color = difficultyToColor[difficulty]
+
+     console.log("CURRENT ANNOTATION: ", currentAnnotation)
       if (currentAnnotation === difficulty) {
-        if (staffNumber === 1 && noteNumber === notesInStaff - 1) {
-          console.log("HIIII")
-        }
+        console.log("currentAnnotation === difficulty")
         const currentX = staffEntries[noteNumber].boundingBox.AbsolutePosition.x;
+        console.log("CURRENT X:", currentX)
 
         if (startX === 0) {  // first iteration of staff
-          startX = measureStartPosition;
+          console.log("startX === 0")
+          startX = firstNotNoneBox === 0 ? measureStartPosition : currentX - 1.5;  // if first note is note 0, start is start of measure
+          console.log("START X: ", startX)
           endX = currentX;
+          console.log("end X: ", endX)
+
         } else if (currentX > endX) {
+          console.log("currentX > endX")
           endX = currentX + 1  // adding 1 to add some extra space
+          console.log("END X", endX)
         }
-      } if (currentAnnotation !== difficulty || noteNumber === notesInStaff - 1) {
-        if (staffNumber === 1 && noteNumber === notesInStaff - 1) {
-          console.log("BYEEE")
-        }
-        endX = noteNumber === notesInStaff - 1 ? measureStartPosition + measureWidth : endX;
+      } else if (currentAnnotation !== difficulty && noteNumber !== notesInStaff) {
+        console.log("currentAnnotation !== difficulty: ", currentAnnotation !== difficulty)
+       console.log("noteNumber === notesInStaff - 1:  ", noteNumber === notesInStaff - 1)
+
+        console.log("ENDX: ", endX)
         let width = endX - startX;
+        console.log("WIDTH", width)
         const box: Box = {
             x: startX,
             y: y,
@@ -282,13 +308,41 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
             color: color,
             measureNumber: measureNumber
           }
+          console.log("BOX", box)
           if (difficulty !== "None") {
             console.log("Pushing box...")
             staffBoxes.push(box)
+            console.log("STAFF BOXES", staffBoxes)
           }
-          startX = noteNumber === notesInStaff - 1 ? startX : endX;
+          startX = endX;
+          console.log("STARTX: ", startX)
+          difficulty = currentAnnotation
         }
-      difficulty = currentAnnotation
+     if ( noteNumber === notesInStaff - 1){
+       // @ts-ignore
+       color = difficultyToColor[currentAnnotation]
+
+       endX = measureStartPosition + measureWidth ;
+       let width = endX - startX;
+       const box: Box = {
+                // @ts-ignore
+            x: startX,
+            y: y,
+            height: height,
+            width: width,
+            yMiddle: yMiddle,
+            heightMiddle: heightMiddle,
+            color: color,
+            measureNumber: measureNumber
+          }
+          console.log("BOX", box)
+          if (difficulty !== "None") {
+            console.log("Pushing box...")
+            staffBoxes.push(box)
+            console.log("STAFF BOXES", staffBoxes)
+          }
+     }
+     console.log("DIFFICULTY: ", difficulty)
       }
    return staffBoxes
 }
@@ -308,13 +362,18 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
   }
   for (let boxNumber = 0; boxNumber < staff0Boxes.length; boxNumber++){
     let staff0Box = staff0Boxes[boxNumber];
-    let staff1Box = staff1Boxes[0];
-
-    console.log("STAFF 1 BOX: ", staff1Box)
+    // let staff1Box = staff1Boxes[boxNumber] !== undefined ? staff1Boxes[boxNumber] : staff1Boxes[0];
+    let staff1Box = staff1Boxes[boxNumber]
+    console.log("STAFF 1 BOX: ", staff1Boxes)
 
     let startX = max(staff0Box.x, staff1Box.x) // rightmost box
     let width = max(staff0Box.width, staff1Box.width)  //widest
-    createBoundingBox(staff0Box.x, staff0Box.y, staff0Box.height, staff0Box.width, staff0Box.yMiddle, staff0Box.heightMiddle, staff0Box.color, measureNumber, false )
+    const positionAndShape1 = measure[1].PositionAndShape;
+    const measureWidth = positionAndShape1.BoundingRectangle.width;
+    const measureStartPosition = positionAndShape1.AbsolutePosition.x;
+    let measureEndPosition = measureStartPosition + measureWidth;
+    width = startX + width < measureEndPosition ? width : measureEndPosition - startX
+    createBoundingBox(startX, staff0Box.y, staff0Box.height, width, staff0Box.yMiddle, staff0Box.heightMiddle, staff0Box.color, measureNumber, false )
     createBoundingBox(startX, staff1Box.y, staff1Box.height, width, staff1Box.yMiddle, staff1Box.heightMiddle, staff1Box.color, measureNumber, false )
   }
 }
