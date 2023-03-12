@@ -7,7 +7,7 @@ import {
   deleteBoxAndGoBack,
   renderBoundingBoxesMeasures, renderBoundingBoxesAndAnnotateWholeMeasure, renderBoundingBoxesFromCoords,
   renderBoxAndContinue,
-  renderBoxesFromLocalStorage
+  renderBoxesFromLocalStorage, cleanBox
 } from "./boundingBoxes";
 import {
   contains,
@@ -25,7 +25,7 @@ import {
 } from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
-import {initIrregularBoxes, initLocalStorageToNone} from "./annotations";
+import {initLocalStorageToNone} from "./annotations";
 
 
 // Point Eel web socket to the instance
@@ -93,11 +93,6 @@ export class App extends Component<{}, {
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
-    let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(this.state.file)) as string);
-
-    if (!irregularBoxes) {
-      initIrregularBoxes(this.state.file)
-    }
 
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
@@ -194,7 +189,8 @@ export class App extends Component<{}, {
           nearestNote: finalNearestNote,
           measure: finalMeasure
           }
-          renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
+          // todo maybe annotate -> renderIrregularBoxFromNotes()
+        renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
       }
     };
   }

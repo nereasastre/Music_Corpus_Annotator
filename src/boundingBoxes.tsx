@@ -11,8 +11,6 @@ import {
   selectColor
 } from "./utils";
 import {
-  addIrregularBox,
-  annotate,
   annotateWholeMeasures,
   annotateWithinCoordinates,
   areAllNotesAnnotatedWithSameDifficulty
@@ -69,6 +67,7 @@ const createBoundingBox = (x: number, y: number, height: number, width: number, 
       boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
       boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
    } else {
+     console.log("irregularBox_".concat(measureNumber.toString()))
      boundingBox.classList.add("irregularBox_".concat(measureNumber.toString()))
      boundingBoxMiddle.classList.add("irregularBox_".concat(measureNumber.toString()))
    }
@@ -99,7 +98,7 @@ export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | numb
     let measureNumber = measure[0].MeasureNumber;
     if (checkAvailability(measureNumbers, measureNumber)) {
       if (color !== selectColor && areAllNotesAnnotatedWithSameDifficulty(measure, scoreName)) {
-        cleanBox(measureNumber, scoreName);  // clean previous boxes to avoid infiniteBoxes
+        cleanBox(measureNumber);  // clean previous boxes to avoid infiniteBoxes
       }
       for (let staff = 0; staff < measure.length; staff++) {
         const positionAndShape = measure[staff].PositionAndShape;
@@ -138,8 +137,7 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
     // Some scores have firstMeasureNumber = 0 or 1, but measureList always starts at 0
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
       if (color !== selectColor) {
-        // @ts-ignore
-        cleanBox(measureNumber, scoreName);  // clean previous boxes to avoid infiniteBoxes
+        cleanBox(measureNumber, false);  // clean previous boxes to avoid infiniteBoxes
       }
       // if the measureNumber is not the first or last one, the bounding box will cover all of the measure
       if (measureNumber !== initData.measure && measureNumber !== finalData.measure){
@@ -178,7 +176,6 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
           const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
           // @ts-ignore
           createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, false)  // render bounding box
-          addIrregularBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, scoreName)
         }
       }
       }
@@ -239,6 +236,16 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
           }
   }
 
+  function getNotNoneDifficulty(firstNotNoneBox: number, staffNumber: number, measureNumber: number){
+    let difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
+    while (difficulty === "None" && firstNotNoneBox < notesInStaff){
+    firstNotNoneBox += 1
+    difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
+    }
+
+    return {difficulty: difficulty, startNote: firstNotNoneBox}
+  }
+
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let firstMeasureNumber = measureList[0][0].measureNumber;
   let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
@@ -263,7 +270,9 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
   let staffBoxes: Box[] = []
   // @ts-ignore
   let firstNotNoneBox = 0
-  let difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
+  let startData = getNotNoneDifficulty(firstNotNoneBox, staffNumber, measureNumber)
+  let difficulty = startData.difficulty
+  firstNotNoneBox = startData.startNote
   while (difficulty === "None" && firstNotNoneBox < notesInStaff){
     firstNotNoneBox += 1
     difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
@@ -288,7 +297,10 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
         let width = endX - startX;
         createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
         startX = endX;
-        difficulty = currentAnnotation
+        // difficulty = currentAnnotation
+        let nextNotNone = getNotNoneDifficulty(noteNumber, staffNumber, measureNumber)
+        difficulty = nextNotNone.difficulty  // todo fix
+        // noteNumber = nextNotNone.startNote
       }
      if ( noteNumber === notesInStaff - 1){
        // @ts-ignore
@@ -305,7 +317,6 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
   let firstMeasureNumber = measureList[0][0].measureNumber;
   let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
   let staff0Boxes: any[] | never[] | Box[] = [];
-  // @ts-ignore
   let staff1Boxes: any[] | never[] | Box[] = [];
   for (let staffNumber = 0; staffNumber < measure.length; staffNumber++ ) {
     if (staffNumber === 0){
@@ -314,15 +325,21 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
       staff1Boxes = getConsecutiveNotesWithSameAnnotation(measureNumber, staffNumber, measureList, scoreName)
     }
   }
-  // let mostBoxes = max(staff1Boxes.length, staff0Boxes.length)
-  let maxBoxes = max(staff0Boxes.length, staff1Boxes.length)
+  let startX = min(staff0Boxes[0].x, staff1Boxes[0].x )
+
+  let maxBoxes = max(staff0Boxes.length, staff1Boxes.length)  // todo fix somehow
+  console.log(staff0Boxes, staff1Boxes)
   for (let boxNumber = 0; boxNumber < maxBoxes; boxNumber++){
     let staff0Box = staff0Boxes[boxNumber];
     let staff1Box = staff1Boxes[boxNumber]
-
-
-    let startX = max(staff0Box.x, staff1Box.x) // rightmost box
-    let width = max(staff0Box.width, staff1Box.width)  //widest
+    if (staff0Box === undefined) {
+      staff0Box = staff0Boxes[0]
+    }
+    if (staff1Box === undefined) {
+      staff1Box  =staff1Boxes[0]
+    }
+    let endX = max(staff0Box.x + staff0Box.width, staff1Box.x + staff1Box.width) // rightmost x
+    let width = endX - startX
     const positionAndShape1 = measure[1].PositionAndShape;
     const measureWidth = positionAndShape1.BoundingRectangle.width;
     const measureStartPosition = positionAndShape1.AbsolutePosition.x;
@@ -330,6 +347,7 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
     width = startX + width < measureEndPosition ? width : measureEndPosition - startX
     createBoundingBox(startX, staff0Box.y, staff0Box.height, width, staff0Box.yMiddle, staff0Box.heightMiddle, staff0Box.color, measureNumber, false )
     createBoundingBox(startX, staff1Box.y, staff1Box.height, width, staff1Box.yMiddle, staff1Box.heightMiddle, staff1Box.color, measureNumber, false )
+    startX = endX
   }
 }
 
@@ -342,7 +360,6 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
    * @return The first available box.
    */
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
-  let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(scoreName)) as string);
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   console.log(firstMeasureNumber)
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
@@ -386,28 +403,33 @@ export const cleanAllBoxes = () => {
   });
 };
 
-export function cleanBox(boxNumber: number, scoreName: string) {
+export function cleanBox(measureNumber: number, irregularBoxes = true) {
   /**
  * Cleans a bounding box
  * @param  {number} boxNumber:  The box number to erase.
  * @param  {String} scoreName:  The score name.
  * @return None.
  */
-  const boxes = document.querySelectorAll(".box".concat(boxNumber.toString()));
+  const boxes = document.querySelectorAll(".box".concat(measureNumber.toString()));
   if (boxes.length > 0) {
     boxes.forEach((box) => {
       box.remove();
     });
   }
-};
-
-function cleanBoxAndAnnotate(boxNumber: number, measureList: any, scoreName: string, measure=true){
-  cleanBox(boxNumber, scoreName);
-  if (measure){
-    annotateWholeMeasures(boxNumber, selectColor, measureList, scoreName)
-  } else {
-    annotate(boxNumber, selectColor, measureList, scoreName) // todo use with note
+  if (irregularBoxes) {
+    const irregularBoxes = document.querySelectorAll(".irregularBox_".concat(measureNumber.toString()))
+    if (irregularBoxes.length > 0) {
+      irregularBoxes.forEach((irregularBox) => {
+        irregularBox.remove();
+      });
+    }
   }
+}
+
+function cleanBoxAndAnnotate(boxNumber: number, measureList: any, scoreName: string){
+  cleanBox(boxNumber);
+  annotateWholeMeasures(boxNumber, selectColor, measureList, scoreName)
+
 }
 
 export function renderBoxAndContinue(boxNumber: number, color: string, measureList: any, scoreName: string) {
@@ -429,7 +451,7 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
   let no_annotations = annotations[boxNumber] === "None";
   // @ts-ignore
   if (annotations[boxNumber] !== colorToDifficulty[color] || no_annotations) {
-    cleanBox(boxNumber, scoreName);
+    cleanBox(boxNumber);
     renderBoundingBoxesAndAnnotateWholeMeasure([boxNumber], color, measureList, scoreName);
   }
 

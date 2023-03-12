@@ -104,26 +104,3 @@ export function areAllNotesAnnotatedWithSameDifficulty(measure: any, scoreName: 
     }
     return true
 }
-
-export function initIrregularBoxes(scoreName: string) {
-  let irregularBoxes = {}
-  // @ts-ignore
-  window.localStorage.setItem("irregularBoxes_".concat(scoreName), JSON.stringify(irregularBoxes));
-}
-
-export function addIrregularBox(x: any, y: any, height: any, width: any, yMiddle: any, heightMiddle: any, color: string, measureNumber: number, scoreName: string){
-  let irregularBoxes = JSON.parse(window.localStorage.getItem("irregularBoxes_".concat(scoreName)) as string);
-
-  irregularBoxes[measureNumber] = irregularBoxes[measureNumber] ? irregularBoxes[measureNumber] : []
-
-  let irregularBoxesinMeasure = irregularBoxes[measureNumber].length
-  irregularBoxes[measureNumber][irregularBoxesinMeasure] = {}
-  irregularBoxes[measureNumber][irregularBoxesinMeasure]["x"] = x
-  irregularBoxes[measureNumber][irregularBoxesinMeasure]["y"] = y
-  irregularBoxes[measureNumber][irregularBoxesinMeasure]["height"] = height
-  irregularBoxes[measureNumber][irregularBoxesinMeasure]["width"] = width
-  irregularBoxes[measureNumber][irregularBoxesinMeasure]["yMiddle"] = yMiddle
-  irregularBoxes[measureNumber][irregularBoxesinMeasure]["heightMiddle"] = heightMiddle
-  irregularBoxes[measureNumber][irregularBoxesinMeasure]["color"] = color
-  window.localStorage.setItem("irregularBoxes_".concat(scoreName), JSON.stringify(irregularBoxes));
-}
