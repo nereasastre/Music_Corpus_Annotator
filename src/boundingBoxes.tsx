@@ -67,7 +67,6 @@ const createBoundingBox = (x: number, y: number, height: number, width: number, 
       boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
       boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
    } else {
-     console.log("irregularBox_".concat(measureNumber.toString()))
      boundingBox.classList.add("irregularBox_".concat(measureNumber.toString()))
      boundingBoxMiddle.classList.add("irregularBox_".concat(measureNumber.toString()))
    }
@@ -380,6 +379,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
     } else {
       console.log("Rendering irregular boxes with measure: ", measureNumber)
       renderIrregularBoxFromNotes(measureNumber, measureList, scoreName)
+      coloredBoxes.push(measureNumber);
     }
   }
   let firstAvailableBox = measureList[0][0].MeasureNumber;
