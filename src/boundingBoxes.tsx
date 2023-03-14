@@ -233,20 +233,10 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
           staffBoxes.push(box)
   }
 
-  function getNotNoneDifficulty(firstNotNoneBox: number, staffNumber: number, measureNumber: number){
-    let difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
-    while (difficulty === "None" && firstNotNoneBox < notesInStaff){
-    firstNotNoneBox += 1
-    difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
-    }
-
-    return {difficulty: difficulty, startNote: firstNotNoneBox}
-  }
-
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let firstMeasureNumber = measureList[0][0].measureNumber;
   let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
-
+  console.log("MEASURE", measure)
   // Staff and measure
   let staffEntries = measure[staffNumber].staffEntries
   let notesInStaff = staffEntries.length
@@ -261,7 +251,6 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
   const height = 4
   const yMiddle = y + height;
   const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
-
 
   // To store boxes
   let staffBoxes: Box[] = []
@@ -288,14 +277,11 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
           endX = currentX + 1  // adding 1 to add some extra space
         }
 
-      } else if (currentAnnotation !== difficulty && noteNumber !== notesInStaff) {
+      } else if (currentAnnotation !== difficulty) {
         let width = endX - startX;
         createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
         startX = endX;
         difficulty = currentAnnotation
-        // let nextNotNone = getNotNoneDifficulty(noteNumber, staffNumber, measureNumber)
-        // difficulty = nextNotNone.difficulty  // todo fix
-        // noteNumber = nextNotNone.startNote
       }
      if ( noteNumber === notesInStaff - 1){
        // @ts-ignore
@@ -320,32 +306,46 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
       staff1Boxes = getConsecutiveNotesWithSameAnnotation(measureNumber, staffNumber, measureList, scoreName)
     }
   }
-  let startX = min(staff0Boxes[0].x, staff1Boxes[0].x )
+  let longestBoxes = staff0Boxes.length > staff1Boxes.length ? staff0Boxes : staff1Boxes
+  let startX = staff0Boxes[0] && staff1Boxes[0] ? min(staff0Boxes[0].x, staff1Boxes[0].x) : longestBoxes[0].x
+  let staff0Y = measure[0].PositionAndShape.AbsolutePosition.y
+  let staff1Y = measure[1].PositionAndShape.AbsolutePosition.y
+  const positionAndShape1 = measure[1].PositionAndShape;
+  const measureWidth = positionAndShape1.BoundingRectangle.width;
+  const measureStartPosition = positionAndShape1.AbsolutePosition.x;
+  let measureEndPosition = measureStartPosition + measureWidth;
+  let height = 4
+  let staff0YMiddle = staff0Y + height;
+  let staff1YMiddle = staff1Y + height;
+  const staff0HeightMiddle = max(staff1Y - staff0Y - 4, 0);
+  const staff1HeightMiddle = 0
+
 
   let maxBoxes = max(staff0Boxes.length, staff1Boxes.length)  // todo fix somehow
   console.log(staff0Boxes, staff1Boxes)
+  let endX: number
+  let color: string
   for (let boxNumber = 0; boxNumber < maxBoxes; boxNumber++){
     let staff0Box = staff0Boxes[boxNumber];
     let staff1Box = staff1Boxes[boxNumber]
-    if (staff0Box === undefined) {
-      staff0Box = staff0Boxes[0]
+
+    if (staff0Boxes.length === staff1Boxes.length) {
+      endX = max(staff0Box.x + staff0Box.width, staff1Box.x + staff1Box.width) // rightmost x
+      color = staff0Box.color === staff1Box.color ? staff0Box.color : staff1Box.color // todo fix
+      } else {
+      let longestBox = longestBoxes[boxNumber]
+      endX = longestBox.x + longestBox.width
+      color = longestBox.color
     }
-    if (staff1Box === undefined) {
-      staff1Box  = staff1Boxes[0]
-    }
-    let endX = max(staff0Box.x + staff0Box.width, staff1Box.x + staff1Box.width) // rightmost x
+
     let width = endX - startX
-    const positionAndShape1 = measure[1].PositionAndShape;
-    const measureWidth = positionAndShape1.BoundingRectangle.width;
-    const measureStartPosition = positionAndShape1.AbsolutePosition.x;
-    let measureEndPosition = measureStartPosition + measureWidth;
     width = startX + width < measureEndPosition ? width : measureEndPosition - startX
 
-    if (staff0Box && staff0Box.color !== selectColor) {
-      createBoundingBox(startX, staff0Box.y, staff0Box.height, width, staff0Box.yMiddle, staff0Box.heightMiddle, staff0Box.color, measureNumber, false)
+    if (color !== selectColor) {
+      createBoundingBox(startX, staff0Y, height, width, staff0YMiddle, staff0HeightMiddle, color, measureNumber, false)
     }
-    if (staff0Box && staff0Box.color !== selectColor) {
-    createBoundingBox(startX, staff1Box.y, staff1Box.height, width, staff1Box.yMiddle, staff1Box.heightMiddle, staff1Box.color, measureNumber, false )
+    if (color !== selectColor) {
+    createBoundingBox(startX, staff1Y, height, width, staff1YMiddle, staff1HeightMiddle, color, measureNumber, false )
     }
     startX = endX
   }
