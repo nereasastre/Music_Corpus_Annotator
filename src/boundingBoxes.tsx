@@ -230,9 +230,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
             color: color,
             measureNumber: measureNumber
           }
-          if (difficulty !== "None") {
-            staffBoxes.push(box)
-          }
+          staffBoxes.push(box)
   }
 
   function getNotNoneDifficulty(firstNotNoneBox: number, staffNumber: number, measureNumber: number){
@@ -269,9 +267,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
   let staffBoxes: Box[] = []
   // @ts-ignore
   let firstNotNoneBox = 0
-  let startData = getNotNoneDifficulty(firstNotNoneBox, staffNumber, measureNumber)
-  let difficulty = startData.difficulty
-  firstNotNoneBox = startData.startNote
+  let difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
   while (difficulty === "None" && firstNotNoneBox < notesInStaff){
     firstNotNoneBox += 1
     difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
@@ -296,9 +292,9 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
         let width = endX - startX;
         createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
         startX = endX;
-        // difficulty = currentAnnotation
-        let nextNotNone = getNotNoneDifficulty(noteNumber, staffNumber, measureNumber)
-        difficulty = nextNotNone.difficulty  // todo fix
+        difficulty = currentAnnotation
+        // let nextNotNone = getNotNoneDifficulty(noteNumber, staffNumber, measureNumber)
+        // difficulty = nextNotNone.difficulty  // todo fix
         // noteNumber = nextNotNone.startNote
       }
      if ( noteNumber === notesInStaff - 1){
@@ -335,7 +331,7 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
       staff0Box = staff0Boxes[0]
     }
     if (staff1Box === undefined) {
-      staff1Box  =staff1Boxes[0]
+      staff1Box  = staff1Boxes[0]
     }
     let endX = max(staff0Box.x + staff0Box.width, staff1Box.x + staff1Box.width) // rightmost x
     let width = endX - startX
@@ -344,8 +340,13 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
     const measureStartPosition = positionAndShape1.AbsolutePosition.x;
     let measureEndPosition = measureStartPosition + measureWidth;
     width = startX + width < measureEndPosition ? width : measureEndPosition - startX
-    createBoundingBox(startX, staff0Box.y, staff0Box.height, width, staff0Box.yMiddle, staff0Box.heightMiddle, staff0Box.color, measureNumber, false )
+
+    if (staff0Box && staff0Box.color !== selectColor) {
+      createBoundingBox(startX, staff0Box.y, staff0Box.height, width, staff0Box.yMiddle, staff0Box.heightMiddle, staff0Box.color, measureNumber, false)
+    }
+    if (staff0Box && staff0Box.color !== selectColor) {
     createBoundingBox(startX, staff1Box.y, staff1Box.height, width, staff1Box.yMiddle, staff1Box.heightMiddle, staff1Box.color, measureNumber, false )
+    }
     startX = endX
   }
 }
