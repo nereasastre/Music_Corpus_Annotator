@@ -20,17 +20,22 @@ export function annotateWholeMeasures(measureNumbers: number | Array<number>, co
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
   let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  for (let measure of measureNumbers) {
-    if (measure >= firstMeasureNumber && measure <= lastMeasureNumber) {
-      for (let staff = 0; staff < measureList[measure].length; staff++) {
-        let notesInStaff = measureList[measure][staff].staffEntries.length  // number of notes in staff
+  for (let measureNumber of measureNumbers) {
+    let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
+    if (measureNumber >= firstMeasureNumber && measureNumber <= lastMeasureNumber) {
+      for (let staff = 0; staff < measure.length; staff++) {
+        console.log("STAFF", staff)
+        let notesInStaff = measure[staff].staffEntries.length  // number of notes in staff
         for (let note = 0; note < notesInStaff; note++) {
+          console.log("NOTE", note)
+          console.log(colorToDifficulty[selectColor])
           // @ts-ignore
-          annotations[`measure-${measure}`][`staff-${staff}`][`note-${note}`] = colorToDifficulty[color];
+          annotations[`measure-${measureNumber}`][`staff-${staff}`][`note-${note}`] = colorToDifficulty[color];
         }
       }
     }
   }
+  console.log("Annotations: ", annotations)
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
 

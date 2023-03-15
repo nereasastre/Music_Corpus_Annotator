@@ -66,7 +66,7 @@ const createBoundingBox = (x: number, y: number, height: number, width: number, 
    if (wholeMeasure) {
       boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
       boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
-   } else {
+   } else { // todo this could maybe be removed
      boundingBox.classList.add("irregularBox_".concat(measureNumber.toString()))
      boundingBoxMiddle.classList.add("irregularBox_".concat(measureNumber.toString()))
    }
@@ -92,6 +92,7 @@ export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | numb
    * @return None
    */
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
+  const height = 4;
 
   for (const measure of measureList) {
     let measureNumber = measure[0].MeasureNumber;
@@ -102,13 +103,12 @@ export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | numb
       for (let staff = 0; staff < measure.length; staff++) {
         const positionAndShape = measure[staff].PositionAndShape;
         const positionAndShape1 = measure[1].PositionAndShape;
-        const height = 4;
         const width = positionAndShape.BoundingRectangle.width;
-        const x = positionAndShape.AbsolutePosition.x
-        const yNew = positionAndShape.AbsolutePosition.y;
-        const yMiddle = yNew + height;
+        const x = positionAndShape.AbsolutePosition.x;
+        const y = positionAndShape.AbsolutePosition.y;
+        const yMiddle = y + height;
         const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
-        createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber)
+        createBoundingBox(x, y, height, width, yMiddle, heightMiddle, color, measureNumber)
       }
     }
   }
@@ -118,7 +118,7 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
   /**
    * Renders bounding boxes from a mouse position in initData to a mouse position in finalData and annotates them.
    * @param  {MouseData} initData:  An instance of MouseData (utils.tsx) with the initial mouse coordinates,
-   * initial closest note and measure
+   *                                initial closest note and measure
    * @param  {MouseData} finalData:  An instance of MouseData (utils.tsx) with the final mouse coordinates,
    * initial closest note and measure
    * @param  {String} color:  The HEX code of the color
@@ -128,56 +128,52 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
    */
   let measureNumbers: Array<number>
   let firstMeasureNumber = measureList[0][0].measureNumber
-  // @ts-ignore
   measureNumbers = range(initData.measure, finalData.measure)
   const height = 4;
 
   for (let measureNumber of measureNumbers) {
     // Some scores have firstMeasureNumber = 0 or 1, but measureList always starts at 0
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
-      if (color !== selectColor) {
-        cleanBox(measureNumber, false);  // clean previous boxes to avoid infiniteBoxes
-      }
-      // if the measureNumber is not the first or last one, the bounding box will cover all of the measure
-      if (measureNumber !== initData.measure && measureNumber !== finalData.measure){
-        // @ts-ignore
-        renderBoundingBoxesAndAnnotateWholeMeasure([measureNumber], color, measureList, scoreName)
-      } else {  // if the box is the first or last one, we render only until a certain position
-        for (let staff = 0; staff < measure.length; staff++) {
-          const positionAndShape = measure[staff].PositionAndShape;
-          const positionAndShape1 = measure[1].PositionAndShape;
-          let x = measureNumber === initData.measure ? initData.pos.x : positionAndShape.AbsolutePosition.x;
-          const yNew = positionAndShape.AbsolutePosition.y;
+    if (color !== selectColor) {
+      cleanBox(measureNumber, false);  // clean previous boxes to avoid infiniteBoxes
+    }
+    // if the measureNumber is not the first or last one, the bounding box will cover all of the measure
+    if (measureNumber !== initData.measure && measureNumber !== finalData.measure){
+      renderBoundingBoxesAndAnnotateWholeMeasure([measureNumber], color, measureList, scoreName)
+    } else {  // if the box is the first or last one, we render only a certain area
+      for (let staff = 0; staff < measure.length; staff++) {
+        const positionAndShape = measure[staff].PositionAndShape;
+        const positionAndShape1 = measure[1].PositionAndShape;
+        let x = measureNumber === initData.measure ? initData.pos.x : positionAndShape.AbsolutePosition.x;
+        const y = positionAndShape.AbsolutePosition.y;
 
-          let width;
-           // annotation within the same measure
-          if (measureNumber === initData.measure && measureNumber === finalData.measure) {
-            width = finalData.pos.x - initData.pos.x;
-            annotateWithinCoordinates(x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
-          }
-          // rendering an irregular box on the first measure
-          else if (measureNumber === initData.measure) {
-            // x coordinate of the end of the measure
-            const measureFinalX = positionAndShape.AbsolutePosition.x + positionAndShape.BoundingRectangle.width;
-            // width of the box: from the initial mouse position until the end of the measure
-            width = measureFinalX - initData.pos.x
-            annotateWithinCoordinates(initData.pos.x, measureFinalX, measureNumber, staff, measureList, color, scoreName)
-          }
-          // rendering an irregular box on the last measure
-          else if (measureNumber === finalData.measure) {
-            console.log("measure: ", measureNumber, "MEASURE IS FINAL DATA MEASURE")
-            // width is from the start position of the measure to the final x from the mouse coordinates
-            width = finalData.pos.x - positionAndShape.AbsolutePosition.x;
-            // annotate only the notes in between the coordinates
-            annotateWithinCoordinates(positionAndShape.AbsolutePosition.x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
-          }
-          const yMiddle = yNew + height;
-          const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
-          // @ts-ignore
-          createBoundingBox(x, yNew, height, width, yMiddle, heightMiddle, color, measureNumber, false)  // render bounding box
+        let width;
+        // annotation within the same measure
+        if (measureNumber === initData.measure && measureNumber === finalData.measure) {
+          width = finalData.pos.x - initData.pos.x;
+          annotateWithinCoordinates(x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
         }
-      }
-      }
+        // rendering an irregular box on the first measure
+        else if (measureNumber === initData.measure) {
+          // x coordinate of the end of the measure
+          const measureFinalX = positionAndShape.AbsolutePosition.x + positionAndShape.BoundingRectangle.width;
+          // width of the box: from the initial mouse position until the end of the measure
+          width = measureFinalX - initData.pos.x
+          // annotate only the notes in between the coordinates
+          annotateWithinCoordinates(initData.pos.x, measureFinalX, measureNumber, staff, measureList, color, scoreName)
+        } // rendering an irregular box on the last measure
+        else if (measureNumber === finalData.measure) {
+          // width is from the start position of the measure to the final x from the mouse coordinates
+          width = finalData.pos.x - positionAndShape.AbsolutePosition.x;
+          annotateWithinCoordinates(positionAndShape.AbsolutePosition.x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
+        }
+        const yMiddle = y + height;
+        const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
+        // @ts-ignore
+        createBoundingBox(x, y, height, width, yMiddle, heightMiddle, color, measureNumber, false)  // render bounding box
+        }
+    }
+  }
     recordAnnotationTime(scoreName);
 }
 
@@ -236,11 +232,10 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let firstMeasureNumber = measureList[0][0].measureNumber;
   let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
-  console.log("MEASURE", measure)
+
   // Staff and measure
   let staffEntries = measure[staffNumber].staffEntries
   let notesInStaff = staffEntries.length
-
 
   // Position data
   const positionAndShape = measure[staffNumber].PositionAndShape;
@@ -250,11 +245,10 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
   const y = positionAndShape.AbsolutePosition.y;
   const height = 4
   const yMiddle = y + height;
-  const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
+  const heightMiddle = max(positionAndShape1.AbsolutePosition.y - y - height, 0);
 
   // To store boxes
   let staffBoxes: Box[] = []
-  // @ts-ignore
   let firstNotNoneBox = 0
   let difficulty = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${firstNotNoneBox}`];
   while (difficulty === "None" && firstNotNoneBox < notesInStaff){
@@ -268,27 +262,27 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
      // @ts-ignore
      let color = difficultyToColor[difficulty]
 
-      if (currentAnnotation === difficulty) {
-        const currentX = staffEntries[noteNumber].boundingBox.AbsolutePosition.x;
-        if (startX === 0) {  // first iteration of staff
-          startX = firstNotNoneBox === 0 ? measureStartPosition : currentX - 1.5;  // if first note is note 0, start is start of measure
-          endX = currentX;
-        } else if (currentX > endX) {
-          endX = currentX + 1  // adding 1 to add some extra space
-        }
-
-      } else if (currentAnnotation !== difficulty) {
-        let width = endX - startX;
-        createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
-        startX = endX;
-        difficulty = currentAnnotation
+    if (currentAnnotation === difficulty) {  // if same difficulty, update the box coordinates
+      const currentX = staffEntries[noteNumber].boundingBox.AbsolutePosition.x;
+      if (startX === 0) {  // first iteration of staff
+        startX = firstNotNoneBox === 0 ? measureStartPosition : currentX - 1.5;  // if first note is note 0, start is start of measure
+        endX = currentX;
+      } else if (currentX > endX) {
+        endX = currentX + 1  // adding 1 to add some extra space
       }
-     if ( noteNumber === notesInStaff - 1){
-       // @ts-ignore
-       color = difficultyToColor[currentAnnotation]
-       endX = measureStartPosition + measureWidth ;
-       let width = endX - startX;
-       createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
+
+    } else if (currentAnnotation !== difficulty) {  // if different difficulty, push the previous box
+      let width = endX - startX;
+      createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
+      startX = endX;  // start next box
+      difficulty = currentAnnotation  // update difficulty
+    }
+    if ( noteNumber === notesInStaff - 1){
+      // @ts-ignore
+      color = difficultyToColor[currentAnnotation]
+      endX = measureStartPosition + measureWidth ;
+      let width = endX - startX;
+      createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
      }
       }
    return staffBoxes
@@ -321,7 +315,7 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
   const staff1HeightMiddle = 0
 
 
-  let maxBoxes = max(staff0Boxes.length, staff1Boxes.length)  // todo fix somehow
+  let maxBoxes = max(staff0Boxes.length, staff1Boxes.length)
   console.log(staff0Boxes, staff1Boxes)
   let endX: number
   let color: string
@@ -334,7 +328,7 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
       color = staff0Box.color === staff1Box.color ? staff0Box.color : staff1Box.color // todo fix
       } else {
       let longestBox = longestBoxes[boxNumber]
-      endX = longestBox.x + longestBox.width
+      endX = longestBox.x + longestBox.width + 1
       color = longestBox.color
     }
 
@@ -369,6 +363,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
   for (let measureNumber = firstMeasureNumber; measureNumber <= lastMeasureNumber; measureNumber++) {
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
     if (areAllNotesAnnotatedWithSameDifficulty(measure, scoreName)) {
+      console.log("ALL NOTES ANNOTATED THE SAME", measureNumber)
       let measureDifficulty = annotations[`measure-${measureNumber}`][`staff-${0}`][`note-${0}`];
 
       if (measureDifficulty && measureDifficulty !== "None") {
