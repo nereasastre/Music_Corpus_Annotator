@@ -260,21 +260,23 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
   for (let noteNumber = firstNotNoneBox; noteNumber < notesInStaff; noteNumber++){
      const currentAnnotation = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteNumber}`];
      // @ts-ignore
-     let color = difficultyToColor[difficulty]
+    let color = difficultyToColor[difficulty]
+    console.log("COLOR", color)
+    let currentX = staffEntries[noteNumber].boundingBox.AbsolutePosition.x;
 
     if (currentAnnotation === difficulty) {  // if same difficulty, update the box coordinates
-      const currentX = staffEntries[noteNumber].boundingBox.AbsolutePosition.x;
       if (startX === 0) {  // first iteration of staff
         startX = firstNotNoneBox === 0 ? measureStartPosition : currentX - 1.5;  // if first note is note 0, start is start of measure
         endX = currentX;
       } else if (currentX > endX) {
-        endX = currentX + 1  // adding 1 to add some extra space
+        endX = currentX + 1.5  // adding 1 to add some extra space
       }
 
     } else if (currentAnnotation !== difficulty) {  // if different difficulty, push the previous box
       let width = endX - startX;
       createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
       startX = endX;  // start next box
+      endX = currentX  // adding 1 to add some extra space
       difficulty = currentAnnotation  // update difficulty
     }
     if ( noteNumber === notesInStaff - 1){
@@ -284,6 +286,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
       let width = endX - startX;
       createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
      }
+    console.log("END X", endX)
       }
    return staffBoxes
 }
@@ -322,6 +325,7 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
   for (let boxNumber = 0; boxNumber < maxBoxes; boxNumber++){
     let staff0Box = staff0Boxes[boxNumber];
     let staff1Box = staff1Boxes[boxNumber]
+
 
     if (staff0Boxes.length === staff1Boxes.length) {
       endX = max(staff0Box.x + staff0Box.width, staff1Box.x + staff1Box.width) // rightmost x
