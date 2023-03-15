@@ -170,7 +170,10 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
         const yMiddle = y + height;
         const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
         // @ts-ignore
-        createBoundingBox(x, y, height, width, yMiddle, heightMiddle, color, measureNumber, false)  // render bounding box
+        // createBoundingBox(x, y, height, width, yMiddle, heightMiddle, color, measureNumber, false)  // render bounding box
+        cleanBox(measureNumber)
+        renderIrregularBoxFromNotes(measureNumber, measureList, scoreName)
+
         }
     }
   }
@@ -266,17 +269,17 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
 
     if (currentAnnotation === difficulty) {  // if same difficulty, update the box coordinates
       if (startX === 0) {  // first iteration of staff
-        startX = firstNotNoneBox === 0 ? measureStartPosition : currentX - 1.5;  // if first note is note 0, start is start of measure
-        endX = currentX;
+        startX = firstNotNoneBox === 0 ? measureStartPosition : currentX;  // if first note is note 0, start is start of measure
+        endX = currentX + 1.25;
       } else if (currentX > endX) {
-        endX = currentX + 1.5  // adding 1 to add some extra space
+        endX = currentX + 1.25  // adding 1 to add some extra space
       }
 
     } else if (currentAnnotation !== difficulty) {  // if different difficulty, push the previous box
       let width = endX - startX;
       createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
       startX = endX;  // start next box
-      endX = currentX  // adding 1 to add some extra space
+      endX = currentX + 1.25  // adding 1 to add some extra space
       difficulty = currentAnnotation  // update difficulty
     }
     if ( noteNumber === notesInStaff - 1){
@@ -329,10 +332,10 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
 
     if (staff0Boxes.length === staff1Boxes.length) {
       endX = max(staff0Box.x + staff0Box.width, staff1Box.x + staff1Box.width) // rightmost x
-      color = staff0Box.color === staff1Box.color ? staff0Box.color : staff1Box.color // todo fix
+      color = staff0Box.color === staff1Box.color ? staff0Box.color : staff1Box.color
       } else {
       let longestBox = longestBoxes[boxNumber]
-      endX = longestBox.x + longestBox.width + 1
+      endX = longestBox.x + longestBox.width
       color = longestBox.color
     }
 
