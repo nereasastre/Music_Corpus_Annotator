@@ -5,10 +5,9 @@ import {
   cleanAllBoxes,
   cleanSelectBoxes,
   deleteBoxAndGoBack,
-  initLocalStorageToNone,
-  renderBoundingBoxes, renderBoundingBoxesAndAnnotate,
+  renderBoundingBoxesMeasures, renderBoundingBoxesAndAnnotateWholeMeasure, renderBoundingBoxesFromCoords,
   renderBoxAndContinue,
-  renderBoxesFromLocalStorage
+  renderBoxesFromLocalStorage, cleanBox
 } from "./boundingBoxes";
 import {
   contains,
@@ -18,7 +17,7 @@ import {
   lastFile,
   markCorrupted,
   max,
-  min,
+  min, MouseData,
   mousePosition,
   range,
   recordAnnotationTime,
@@ -26,6 +25,7 @@ import {
 } from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
 import {OpenSheetMusicDisplay, PointF2D} from "opensheetmusicdisplay";
+import {initLocalStorageToNone} from "./annotations";
 
 
 // Point Eel web socket to the instance
@@ -61,9 +61,11 @@ export class App extends Component<{}, {
   lastMeasureNumber: any;
   firstMeasureNumber: any;
   currentBox: any;
+  cursor: any
 
 
   // @ts-ignore
+  private currentNote: number;
   public constructor(props: any) {
     super(props);
     console.log("Constructor called");
@@ -76,19 +78,22 @@ export class App extends Component<{}, {
   }
 
   async getLastAnnotated() {
-    await eel.pick_last_annotated()((file: string) => this.setState({file}))  // todo is this allowed?
+    await eel.pick_last_annotated()((file: string) => this.setState({file}))
     console.log("Getting last annotated file: ", this.state.file)
   }
 
 
   async initOSMD() {
     console.log("initOSMD with state file:", this.state.file)
+    this.currentNote = 0
     await this.osmd.load(this.state.file);
     await this.osmd.render();
 
+    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
     this.measureList = this.osmd.GraphicSheet.measureList;
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
+
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
     if (!annotations) {
@@ -100,8 +105,6 @@ export class App extends Component<{}, {
       window.localStorage.setItem(this.state.file, JSON.stringify(annotations));
       this.currentBox = renderBoxesFromLocalStorage(this.measureList, this.state.file);
     }
-
-
 
     // re-render in case of resize
     let measureList = this.measureList;
@@ -135,24 +138,33 @@ export class App extends Component<{}, {
 
   handleMouseDown(eventDown: MouseEvent) {
     // If not pressing shift key, do not do anything
-    if (!eventDown.shiftKey || this.color === "#b7bbbd") {
+    if ((!eventDown.shiftKey && !eventDown.altKey) || this.color === "#b7bbbd") {
       return
     }
     cleanSelectBoxes();
 
     let initPos = mousePosition(eventDown);  // find initial position
+    console.log("INITI POSTIION: ", initPos)
     const maxDist = new PointF2D(5, 5);
 
-    let initNearestNote = this.osmd.GraphicSheet.GetNearestNote(initPos, maxDist);
+    let initNearestNote = this.osmd.GraphicSheet.GetNearestNote(initPos, maxDist);  // nearest note at start
+    if (initNearestNote === undefined){
+      return
+    }
     let initMeasure = initNearestNote.sourceNote.SourceMeasure.MeasureNumber;  // measure where closest note is
 
     onmouseup = (eventUp) => {
-      if (this.color === "#b7bbbd" || !eventUp.shiftKey) {  // if not pressing shift key, return
-        return
-      }
+    if ((!eventDown.shiftKey && !eventDown.altKey) || this.color === "#b7bbbd") {
+      return
+    }
 
       let finalPos = mousePosition(eventUp);
+      console.log("FINAL POSTIION: ", finalPos)
+
       let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
+      if (finalNearestNote === undefined){
+      return
+      }
       let finalMeasure = finalNearestNote.sourceNote.SourceMeasure.MeasureNumber;
 
       // if selection is from right to left, swap initial and final
@@ -161,9 +173,25 @@ export class App extends Component<{}, {
         finalMeasure = initMeasure;
         initMeasure = previousFinalMeasure;
       }
-      renderBoundingBoxesAndAnnotate(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
-      this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
-      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+      if (eventUp.shiftKey) {
+        renderBoundingBoxesAndAnnotateWholeMeasure(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
+        this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
+        renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
+      } else if (eventUp.altKey){
+        const initData: MouseData = {
+          pos: initPos,
+          nearestNote: initNearestNote,
+          measure: initMeasure
+          }
+
+        const finalData: MouseData = {
+          pos: finalPos,
+          nearestNote: finalNearestNote,
+          measure: finalMeasure
+          }
+          // todo maybe annotate -> renderIrregularBoxFromNotes()
+        renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
+      }
     };
   }
 
@@ -172,14 +200,14 @@ export class App extends Component<{}, {
     this.hideBoundingBoxes = false;
     this.currentBox = max(this.firstMeasureNumber, this.currentBox - 1)
 
-    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
   };
 
   selectNextBox() {
     cleanSelectBoxes();
     this.hideBoundingBoxes = false;
     this.currentBox = min(this.currentBox + 1, this.lastMeasureNumber);
-    renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file);
+    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
   };
 
   hideBoxes() {
@@ -187,7 +215,7 @@ export class App extends Component<{}, {
     if (this.hideBoundingBoxes) {
       cleanSelectBoxes();
     } else {
-      renderBoundingBoxes([this.currentBox], selectColor, this.measureList, this.state.file)
+      renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file)
     }
   }
 
@@ -197,14 +225,29 @@ export class App extends Component<{}, {
     initLocalStorageToNone(this.measureList, this.state.file);
   }
 
-  annotate = async (event: KeyboardEvent) => {
+  annotateMeasure = async (event: KeyboardEvent) => {
     let difficulty = event.code[event.code.length -1]; // last char is difficulty
     // @ts-ignore
     this.color = keyToColor[difficulty];
-    if (!event.shiftKey) {
+    if (!event.shiftKey && !event.altKey) {
       this.currentBox = renderBoxAndContinue(this.currentBox, this.color, this.measureList, this.state.file);
-
     }
+  }
+
+  annotateSingleNote() {
+    console.log("CURRENT COLOR", this.color)
+    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
+    this.osmd.cursor.show()
+    this.osmd.cursor.cursorOptions.color = "#FF4633";
+    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
+    // this.osmd.cursor.show()
+
+    // renderBoxNote(this.currentBox, "#FF4633", this.osmd, this.state.file, this.currentNote)
+    this.currentNote = min(this.measureList[this.currentBox][0].staffEntries.length - 1 , this.currentNote + 1)
+    this.osmd.cursor.next();
+    console.log(this.osmd.cursor)
+
+
   }
 
   public saveToJson = () => {
@@ -266,10 +309,14 @@ export class App extends Component<{}, {
 
       }
       else if (contains(annotation_keycodes, keyCode)) {  // if event.code is in annotations_folder
-        this.annotate(event);
+        this.annotateMeasure(event);
       }
       else if (keyCode === "KeyH") {
         this.hideBoxes();
+      }
+      else if (keyCode === "KeyN") {
+        console.log("CURSOR", this.osmd.cursor)
+        this.annotateSingleNote();
       }
       else if (keyCode ==="Delete" && event.ctrlKey){
         markCorrupted(this.state.file);

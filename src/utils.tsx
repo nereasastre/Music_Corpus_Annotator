@@ -44,6 +44,11 @@ export interface IAppState {
   file: string;
 }
 
+export interface MouseData {
+  pos: any;
+  nearestNote: any;
+  measure: number;
+}
 export const contains = (array: Array<any>, element: any ) =>
     array.indexOf(element) > -1;
 
@@ -80,8 +85,8 @@ export function recordAnnotationTime(scoreName: string) {
 }
 
 export const selectColor = "#b7bbbd";
-export const firstFile = "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml";
-export const lastFile = "xmander_files/5028687.musicxml";
+export const firstFile = "clementi/no_1_1.musicxml";
+export const lastFile = "clementi/no_6_2.musicxml";
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633" };
 export const colorToDifficulty = { "#33FF42": "easy", "#FFBE33": "medium", "#FF4633": "hard", "#b7bbbd": "None" };
 export const difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard": "#FF4633", "None": "#b7bbbd" };
