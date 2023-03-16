@@ -10,7 +10,7 @@ import {
   renderBoxesFromLocalStorage, cleanBox
 } from "./boundingBoxes";
 import {
-  contains,
+  contains, difficultyKeycodes,
   firstFile,
   IAppState,
   keyToColor,
@@ -20,7 +20,7 @@ import {
   min, MouseData,
   mousePosition,
   range,
-  recordAnnotationTime,
+  recordAnnotationTime, sectionKeycodes,
   selectColor
 } from "./utils";
 // import OpenSheetMusicDisplay from "./lib/OpenSheetMusicDisplay";
@@ -181,7 +181,6 @@ export class App extends Component<{}, {
           nearestNote: finalNearestNote,
           measure: finalMeasure
           }
-          // todo maybe annotate -> renderIrregularBoxFromNotes()
         renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
       }
     };
@@ -218,7 +217,7 @@ export class App extends Component<{}, {
   }
 
   annotateMeasure = async (event: KeyboardEvent) => {
-    let difficulty = event.code[event.code.length -1]; // last char is difficulty
+    let difficulty = contains(difficultyKeycodes, event.code) ?  event.code[event.code.length -1] : event.code; // last char is difficulty
     // @ts-ignore
     this.color = keyToColor[difficulty];
     if (!event.shiftKey && !event.altKey) {
@@ -268,7 +267,6 @@ export class App extends Component<{}, {
 
     handleKeyDown(event: KeyboardEvent) {
       this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
-      let annotation_keycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Numpad2", "Numpad3"];
       let keyCode = event.code;
 
       if (keyCode === "ArrowLeft") {
@@ -284,7 +282,7 @@ export class App extends Component<{}, {
         this.currentBox = deleteBoxAndGoBack(this.currentBox, this.measureList, this.state.file);
 
       }
-      else if (contains(annotation_keycodes, keyCode)) {  // if event.code is in annotations_folder
+      else if (contains(difficultyKeycodes, keyCode) || contains(sectionKeycodes, keyCode)) {  // if event.code is in annotations_folder
         this.annotateMeasure(event);
       }
       else if (keyCode === "KeyH") {
