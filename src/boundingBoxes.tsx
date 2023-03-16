@@ -264,7 +264,6 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
      const currentAnnotation = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteNumber}`];
      // @ts-ignore
     let color = difficultyToColor[difficulty]
-    console.log("COLOR", color)
     let currentX = staffEntries[noteNumber].boundingBox.AbsolutePosition.x;
 
     if (currentAnnotation === difficulty) {  // if same difficulty, update the box coordinates
@@ -289,7 +288,6 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: any, staffNumber: 
       let width = endX - startX;
       createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
      }
-    console.log("END X", endX)
       }
    return staffBoxes
 }
@@ -322,7 +320,6 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
 
 
   let maxBoxes = max(staff0Boxes.length, staff1Boxes.length)
-  console.log(staff0Boxes, staff1Boxes)
   let endX: number
   let color: string
   for (let boxNumber = 0; boxNumber < maxBoxes; boxNumber++){
@@ -362,7 +359,6 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
    */
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
-  console.log(firstMeasureNumber)
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
   let coloredBoxes = [];
 
@@ -370,7 +366,6 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
   for (let measureNumber = firstMeasureNumber; measureNumber <= lastMeasureNumber; measureNumber++) {
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
     if (areAllNotesAnnotatedWithSameDifficulty(measure, scoreName)) {
-      console.log("ALL NOTES ANNOTATED THE SAME", measureNumber)
       let measureDifficulty = annotations[`measure-${measureNumber}`][`staff-${0}`][`note-${0}`];
 
       if (measureDifficulty && measureDifficulty !== "None") {
@@ -380,7 +375,6 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
         coloredBoxes.push(measureNumber);
       }
     } else {
-      console.log("Rendering irregular boxes with measure: ", measureNumber)
       renderIrregularBoxFromNotes(measureNumber, measureList, scoreName)
       coloredBoxes.push(measureNumber);
     }

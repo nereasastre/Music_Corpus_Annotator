@@ -177,8 +177,6 @@ def start_eel(develop):
     # Call a JavaScript function (must be after `eel.init()`)
     eel.say_hello_js('Python World!')
 
-    eel.show_log('https://github.com/samuelhwilliams/Eel/issues/363 (show_log)')
-
     eel_kwargs = dict(
         host='localhost',
         port=8080,

@@ -39,12 +39,6 @@ function sayHelloJS(x: any) {
 // WARN: must use window.eel to keep parse-able eel.expose{...}
 window.eel.expose(sayHelloJS, 'say_hello_js')
 
-// Test anonymous function when minimized. See https://github.com/samuelhwilliams/Eel/issues/363
-function show_log(msg: string) {
-  console.log(msg)
-}
-window.eel.expose(show_log, 'show_log')
-
 // Test calling sayHelloJS, then call the corresponding Python function
 sayHelloJS('Javascript World!')
 eel.say_hello_py('Javascript World!')
@@ -144,7 +138,6 @@ export class App extends Component<{}, {
     cleanSelectBoxes();
 
     let initPos = mousePosition(eventDown);  // find initial position
-    console.log("INITI POSTIION: ", initPos)
     const maxDist = new PointF2D(5, 5);
 
     let initNearestNote = this.osmd.GraphicSheet.GetNearestNote(initPos, maxDist);  // nearest note at start
@@ -159,7 +152,6 @@ export class App extends Component<{}, {
     }
 
       let finalPos = mousePosition(eventUp);
-      console.log("FINAL POSTIION: ", finalPos)
 
       let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
       if (finalNearestNote === undefined){
@@ -234,21 +226,6 @@ export class App extends Component<{}, {
     }
   }
 
-  annotateSingleNote() {
-    console.log("CURRENT COLOR", this.color)
-    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
-    this.osmd.cursor.show()
-    this.osmd.cursor.cursorOptions.color = "#FF4633";
-    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
-    // this.osmd.cursor.show()
-
-    // renderBoxNote(this.currentBox, "#FF4633", this.osmd, this.state.file, this.currentNote)
-    this.currentNote = min(this.measureList[this.currentBox][0].staffEntries.length - 1 , this.currentNote + 1)
-    this.osmd.cursor.next();
-    console.log(this.osmd.cursor)
-
-
-  }
 
   public saveToJson = () => {
     recordAnnotationTime(this.state.file);
@@ -260,7 +237,6 @@ export class App extends Component<{}, {
     delete annotationsToSave["startTime"]
     delete annotationsToSave["isCorrupted"]
 
-    console.log("Saving annotations to json...")
     if (!annotations["isCorrupted"]) {
       eel.save_to_json(this.state.file, annotationsToSave);
     } else {
@@ -313,10 +289,6 @@ export class App extends Component<{}, {
       }
       else if (keyCode === "KeyH") {
         this.hideBoxes();
-      }
-      else if (keyCode === "KeyN") {
-        console.log("CURSOR", this.osmd.cursor)
-        this.annotateSingleNote();
       }
       else if (keyCode ==="Delete" && event.ctrlKey){
         markCorrupted(this.state.file);
