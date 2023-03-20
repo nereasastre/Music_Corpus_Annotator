@@ -78,8 +78,7 @@ export function recordAnnotationTime(scoreName: string) {
 }
 
 export const selectColor = "#b7bbbd";
-export const firstFile = "clementi/no_1_1.musicxml";
-export const lastFile = "clementi/no_6_2.musicxml";
+
 export const difficultyKeycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Numpad2", "Numpad3"];
 export const sectionKeycodes = ["KeyQ", "KeyW","KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL"];
 

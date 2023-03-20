@@ -26,7 +26,7 @@ interface Box {
   measureNumber: number
 }
 
-const createBoundingBox = (x: number, y: number, height: number, width: number, yMiddle: number, heightMiddle: number, color: string, measureNumber: number, wholeMeasure = true) => {
+const createBoundingBox = (x: number, y: number, height: number, width: number, yMiddle: number, heightMiddle: number, color: string, measureNumber: number) => {
   /**
    * Renders a box on the score
    * @param  {number} x:  The x coordinate of the box
@@ -62,13 +62,9 @@ const createBoundingBox = (x: number, y: number, height: number, width: number, 
    boundingBoxMiddle.setAttribute("width", max(convertUnitsToPixels(width), 0).toString());
    boundingBoxMiddle.classList.add("boundingBox");
 
-   if (wholeMeasure) {
-      boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
-      boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
-   } else { // todo this could maybe be removed
-     boundingBox.classList.add("irregularBox_".concat(measureNumber.toString()))
-     boundingBoxMiddle.classList.add("irregularBox_".concat(measureNumber.toString()))
-   }
+   boundingBoxMiddle.classList.add("box".concat(measureNumber.toString()));
+   boundingBox.classList.add("box".concat(measureNumber.toString()));  // unique box id
+
 
    document.querySelector("svg")!.append(boundingBox);
    document.querySelector("svg")!.append(boundingBoxMiddle);
@@ -81,7 +77,7 @@ const createBoundingBox = (x: number, y: number, height: number, width: number, 
 
 
 }
-export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
+export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | number, color: string, measureList: any) => {
   /**
    * Sets the coordinates of a box that will cover whole measures for the measures in measureList and calls function to render the boxes
    * @param  {Array<number> | number} measureNumbers:  A list of measure numbers or a measure number to render boxes in
@@ -96,7 +92,7 @@ export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | numb
   for (const measure of measureList) {
     let measureNumber = measure[0].MeasureNumber;
     if (checkAvailability(measureNumbers, measureNumber)) {
-      if (color !== selectColor && areAllNotesAnnotatedWithSameDifficulty(measure, scoreName)) {
+      if (color !== selectColor) {
         cleanBox(measureNumber);  // clean previous boxes to avoid infiniteBoxes
       }
       for (let staff = 0; staff < measure.length; staff++) {
@@ -173,7 +169,7 @@ export const renderBoundingBoxesAndAnnotateWholeMeasure = (measureNumbers: Array
    * @return None
    */
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
-  renderBoundingBoxesMeasures(measureNumbers, color, measureList, scoreName)
+  renderBoundingBoxesMeasures(measureNumbers, color, measureList)
   annotateWholeMeasures(measureNumbers, color, measureList, scoreName);
 }
 
@@ -312,10 +308,10 @@ function renderIrregularBoxFromNotes(measureNumber: number, measureList: any, sc
     width = startX + width < measureEndPosition ? width : measureEndPosition - startX
 
     if (color !== selectColor) {
-      createBoundingBox(startX, staff0Y, height, width, staff0YMiddle, staff0HeightMiddle, color, measureNumber, false)
+      createBoundingBox(startX, staff0Y, height, width, staff0YMiddle, staff0HeightMiddle, color, measureNumber)
     }
     if (color !== selectColor) {
-    createBoundingBox(startX, staff1Y, height, width, staff1YMiddle, staff1HeightMiddle, color, measureNumber, false )
+    createBoundingBox(startX, staff1Y, height, width, staff1YMiddle, staff1HeightMiddle, color, measureNumber )
     }
     startX = endX
   }
@@ -343,7 +339,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
       if (measureDifficulty && measureDifficulty !== "None") {
         // @ts-ignore
         let measureColor = difficultyToColor[measureDifficulty];
-        renderBoundingBoxesMeasures([measureNumber], measureColor, measureList, scoreName);
+        renderBoundingBoxesMeasures([measureNumber], measureColor, measureList);
         coloredBoxes.push(measureNumber);
       }
     } else {
@@ -356,7 +352,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
     firstAvailableBox = min(coloredBoxes[coloredBoxes.length - 1] + 1, lastMeasureNumber);
   }
   if (renderSelect){
-    renderBoundingBoxesMeasures([firstAvailableBox], selectColor, measureList, scoreName);
+    renderBoundingBoxesMeasures([firstAvailableBox], selectColor, measureList);
   }
   return firstAvailableBox;
 }
@@ -425,7 +421,7 @@ export function renderBoxAndContinue(boxNumber: number, color: string, measureLi
   }
 
   boxNumber = min(boxNumber + 1, lastMeasureNumber);
-  renderBoundingBoxesMeasures([boxNumber], selectColor, measureList, scoreName)
+  renderBoundingBoxesMeasures([boxNumber], selectColor, measureList)
 
   return boxNumber;
 }
@@ -442,6 +438,6 @@ export function deleteBoxAndGoBack(boxNumber: number, measureList: any, scoreNam
   cleanBoxAndAnnotate(boxNumber, measureList, scoreName)
   cleanSelectBoxes();
   boxNumber = max(boxNumber - 1, firstMeasureNumber);
-  renderBoundingBoxesMeasures([boxNumber], selectColor, measureList, scoreName); // render select box
+  renderBoundingBoxesMeasures([boxNumber], selectColor, measureList); // render select box
   return boxNumber;
 }

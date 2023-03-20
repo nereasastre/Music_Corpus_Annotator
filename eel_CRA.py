@@ -43,6 +43,28 @@ def say_hello_py(x):
 
 
 @eel.expose
+def get_first_file():
+    """ Returns the first file in index.json"""
+    data = load_json(index_path)
+    first_entry = dict(list(data.values())[0])
+
+    # supports 0 and 1 indexed index.json
+    first_path_idx = list(first_entry["path"])[0]
+    return first_entry["path"][str(first_path_idx)]
+
+
+@eel.expose
+def get_last_file():
+    """ Returns the first file in index.json"""
+    data = load_json(index_path)
+    last_entry = dict(list(data.values())[-1])
+
+    # supports 0 and 1 indexed index.json
+    last_path_idx = list(last_entry["path"])[-1]
+    return last_entry["path"][str(last_path_idx)]
+
+
+@eel.expose
 def pick_last_annotated():
     """Finds the last annotated score in index.json and returns the file """
     data = load_json(index_path)
@@ -65,9 +87,12 @@ def pick_last_annotated():
 
 @eel.expose
 def update_annotations(file, annotations):
-    del annotations['startTime']
-    del annotations['isCorrupted']
-    del annotations['annotationTime']
+    if annotations['startTime']:
+        del annotations['startTime']
+    if annotations['isCorrupted']:
+        del annotations['isCorrupted']
+    if annotations['annotationTime']:
+        del annotations['annotationTime']
 
     notes = [note for measure in annotations.values() for staff in
              measure.values() for note in staff.values()]

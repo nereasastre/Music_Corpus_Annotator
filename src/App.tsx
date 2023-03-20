@@ -7,14 +7,12 @@ import {
   deleteBoxAndGoBack,
   renderBoundingBoxesMeasures, renderBoundingBoxesAndAnnotateWholeMeasure, renderBoundingBoxesFromCoords,
   renderBoxAndContinue,
-  renderBoxesFromLocalStorage, cleanBox
+  renderBoxesFromLocalStorage
 } from "./boundingBoxes";
 import {
   contains, difficultyKeycodes,
-  firstFile,
   IAppState,
   keyToColor,
-  lastFile,
   markCorrupted,
   max,
   min, MouseData,
@@ -55,11 +53,11 @@ export class App extends Component<{}, {
   lastMeasureNumber: any;
   firstMeasureNumber: any;
   currentBox: any;
-  cursor: any
+  cursor: any;
+  private firstFile: string | undefined;
+  private lastFile: string | undefined;
 
 
-  // @ts-ignore
-  private currentNote: number;
   public constructor(props: any) {
     super(props);
     console.log("Constructor called");
@@ -72,14 +70,14 @@ export class App extends Component<{}, {
   }
 
   async getLastAnnotated() {
+    this.firstFile = await eel.get_first_file()();
+    this.lastFile = await eel.get_last_file()();
     await eel.pick_last_annotated()((file: string) => this.setState({file}))
-    console.log("Getting last annotated file: ", this.state.file)
   }
 
 
   async initOSMD() {
     console.log("initOSMD with state file:", this.state.file)
-    this.currentNote = 0
     await this.osmd.load(this.state.file);
     await this.osmd.render();
 
@@ -167,7 +165,6 @@ export class App extends Component<{}, {
       }
       if (eventUp.altKey) {
         renderBoundingBoxesAndAnnotateWholeMeasure(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
-        this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
         this.hideBoundingBoxes = true
       } else if (eventUp.shiftKey){
         const initData: MouseData = {
@@ -182,6 +179,8 @@ export class App extends Component<{}, {
 
         renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
       }
+      this.currentBox = min(finalMeasure, this.lastMeasureNumber);
+
     };
   }
 
@@ -190,14 +189,14 @@ export class App extends Component<{}, {
     this.hideBoundingBoxes = false;
     this.currentBox = max(this.firstMeasureNumber, this.currentBox - 1)
 
-    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
+    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList);
   };
 
   selectNextBox() {
     cleanSelectBoxes();
     this.hideBoundingBoxes = false;
     this.currentBox = min(this.currentBox + 1, this.lastMeasureNumber);
-    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
+    renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList);
   };
 
   hideBoxes() {
@@ -205,7 +204,7 @@ export class App extends Component<{}, {
     if (this.hideBoundingBoxes) {
       cleanSelectBoxes();
     } else {
-      renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file)
+      renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList)
     }
   }
 
@@ -285,6 +284,7 @@ export class App extends Component<{}, {
   }
 
   render() {
+    // @ts-ignore
     return (
       <div className="App">
         <header className="header">
@@ -294,8 +294,8 @@ export class App extends Component<{}, {
         </header>
         <p>You are annotating: {this.state.file}</p>
         <button className='App-button' onClick={this.saveToJson}>Save</button>
-        <button className='App-button' disabled={this.state.file === firstFile} onClick={this.selectPreviousFile}>Previous</button>
-        <button className='App-button' disabled={this.state.file === lastFile} onClick={this.selectNextFile}>Next</button>
+        <button className='App-button' disabled={(this.state.file === this.firstFile) || (this.state.file === "")} onClick={this.selectPreviousFile}>Previous</button>
+        <button className='App-button' disabled={this.state.file === this.lastFile || (this.state.file === "")} onClick={this.selectNextFile}>Next</button>
         <div id="score"/>
       </div>
     );

@@ -78,10 +78,12 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   annotations["isCorrupted"] = false;
   // @ts-ignore
   annotations["startTime"] = Date.now();
+  // @ts-ignore
+  annotations["annotationTime"] = 0
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 
   if (renderSelect){
-    renderBoundingBoxesMeasures([firstMeasureNumber], selectColor, measureList, scoreName);
+    renderBoundingBoxesMeasures([firstMeasureNumber], selectColor, measureList);
   }
   eel.update_annotations(scoreName, annotations)
   recordAnnotationTime(scoreName);
