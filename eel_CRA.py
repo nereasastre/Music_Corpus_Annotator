@@ -87,12 +87,9 @@ def pick_last_annotated():
 
 @eel.expose
 def update_annotations(file, annotations):
-    if annotations['startTime']:
-        del annotations['startTime']
-    if annotations['isCorrupted']:
-        del annotations['isCorrupted']
-    if annotations['annotationTime']:
-        del annotations['annotationTime']
+    del annotations['startTime']
+    del annotations['isCorrupted']
+    del annotations['annotationTime']
 
     notes = [note for measure in annotations.values() for staff in
              measure.values() for note in staff.values()]

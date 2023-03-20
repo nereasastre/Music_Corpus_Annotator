@@ -168,12 +168,12 @@ export class App extends Component<{}, {
         this.hideBoundingBoxes = true
       } else if (eventUp.shiftKey){
         const initData: MouseData = {
-          pos: initPos,
+          pos: initPos.x < finalPos.x ? initPos : finalPos,
           measure: initMeasure
           }
 
         const finalData: MouseData = {
-          pos: finalPos,
+          pos: finalPos.x > initPos.x ? finalPos : initPos,
           measure: finalMeasure
           }
 
