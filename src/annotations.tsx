@@ -1,19 +1,7 @@
-import {colorToDifficulty, selectColor} from "./utils";
+import {colorToDifficulty, recordAnnotationTime, selectColor} from "./utils";
 import {renderBoundingBoxesMeasures} from "./boundingBoxes";
+import {eel} from "./App";
 
-export function annotate(measureNumbers: number | Array<number>, color: string, measureList: any,  scoreName: string){
-  measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
-  let firstMeasureNumber = measureList[0][0].MeasureNumber;
-  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
-  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  for (let measure of measureNumbers){
-    if (measure >= firstMeasureNumber && measure <= lastMeasureNumber) {
-          // @ts-ignore
-      annotations[measure] = colorToDifficulty[color];
-    }
-  }
-  window.localStorage.setItem(scoreName, JSON.stringify(annotations));
-}
 
 export function annotateWholeMeasures(measureNumbers: number | Array<number>, color: string, measureList: any,  scoreName: string){
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
@@ -37,6 +25,9 @@ export function annotateWholeMeasures(measureNumbers: number | Array<number>, co
   }
   console.log("Annotations: ", annotations)
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
+  eel.update_annotations(scoreName, annotations)
+  recordAnnotationTime(scoreName);
+
 }
 
 export function annotateWithinCoordinates(initX: any, finalX: any, measureNumber: number, staffNumber: number, measureList: any, color: string, scoreName: string){
@@ -54,6 +45,9 @@ export function annotateWithinCoordinates(initX: any, finalX: any, measureNumber
     }
   }
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
+  eel.update_annotations(scoreName, annotations)
+  recordAnnotationTime(scoreName);
+
 }
 
 
@@ -89,6 +83,8 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   if (renderSelect){
     renderBoundingBoxesMeasures([firstMeasureNumber], selectColor, measureList, scoreName);
   }
+  eel.update_annotations(scoreName, annotations)
+  recordAnnotationTime(scoreName);
 
   return annotations;
 }

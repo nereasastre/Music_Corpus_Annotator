@@ -4,7 +4,6 @@ import {
   convertUnitsToPixels,
   difficultyToColor,
   isFullyAnnotated,
-  markAnnotated,
   max,
   min, MouseData, range,
   recordAnnotationTime,
@@ -43,7 +42,7 @@ const createBoundingBox = (x: number, y: number, height: number, width: number, 
    * @return None
    */
   const boundingBox = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-   const boundingBoxMiddle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  const boundingBoxMiddle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
     // Staff's bounding box
    boundingBox.setAttribute("fill", color);
@@ -129,7 +128,6 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
   let measureNumbers: Array<number>
   let firstMeasureNumber = measureList[0][0].measureNumber
   measureNumbers = range(initData.measure, finalData.measure)
-  const height = 4;
 
   for (let measureNumber of measureNumbers) {
     // Some scores have firstMeasureNumber = 0 or 1, but measureList always starts at 0
@@ -143,41 +141,26 @@ export function renderBoundingBoxesFromCoords(initData: MouseData, finalData: Mo
     } else {  // if the box is the first or last one, we render only a certain area
       for (let staff = 0; staff < measure.length; staff++) {
         const positionAndShape = measure[staff].PositionAndShape;
-        const positionAndShape1 = measure[1].PositionAndShape;
         let x = measureNumber === initData.measure ? initData.pos.x : positionAndShape.AbsolutePosition.x;
-        const y = positionAndShape.AbsolutePosition.y;
 
-        let width;
         // annotation within the same measure
         if (measureNumber === initData.measure && measureNumber === finalData.measure) {
-          width = finalData.pos.x - initData.pos.x;
           annotateWithinCoordinates(x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
         }
         // rendering an irregular box on the first measure
         else if (measureNumber === initData.measure) {
-          // x coordinate of the end of the measure
+          // final X is the x coordinate of the end of the measure
           const measureFinalX = positionAndShape.AbsolutePosition.x + positionAndShape.BoundingRectangle.width;
-          // width of the box: from the initial mouse position until the end of the measure
-          width = measureFinalX - initData.pos.x
-          // annotate only the notes in between the coordinates
-          annotateWithinCoordinates(initData.pos.x, measureFinalX, measureNumber, staff, measureList, color, scoreName)
+          annotateWithinCoordinates(x, measureFinalX, measureNumber, staff, measureList, color, scoreName)
         } // rendering an irregular box on the last measure
         else if (measureNumber === finalData.measure) {
-          // width is from the start position of the measure to the final x from the mouse coordinates
-          width = finalData.pos.x - positionAndShape.AbsolutePosition.x;
-          annotateWithinCoordinates(positionAndShape.AbsolutePosition.x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
+          annotateWithinCoordinates(x, finalData.pos.x, measureNumber, staff, measureList, color, scoreName)
         }
-        const yMiddle = y + height;
-        const heightMiddle = max(positionAndShape1.AbsolutePosition.y - positionAndShape.AbsolutePosition.y - 4, 0);
-        // @ts-ignore
-        // createBoundingBox(x, y, height, width, yMiddle, heightMiddle, color, measureNumber, false)  // render bounding box
         cleanBox(measureNumber)
         renderIrregularBoxFromNotes(measureNumber, measureList, scoreName)
-
         }
     }
   }
-    recordAnnotationTime(scoreName);
 }
 
 export const renderBoundingBoxesAndAnnotateWholeMeasure = (measureNumbers: Array<number> | number, color: string, measureList: any, scoreName: string) => {
@@ -192,17 +175,6 @@ export const renderBoundingBoxesAndAnnotateWholeMeasure = (measureNumbers: Array
   measureNumbers = Array.isArray(measureNumbers) ? measureNumbers : [measureNumbers]
   renderBoundingBoxesMeasures(measureNumbers, color, measureList, scoreName)
   annotateWholeMeasures(measureNumbers, color, measureList, scoreName);
-
-  // check if whole score is annotated
-  let isAnnotated = isFullyAnnotated(measureList, scoreName);
-
-  if (isAnnotated){
-          console.log("Score is annotated!")
-          markAnnotated(scoreName)
-        } else {
-          markAnnotated(scoreName, false)
-        }
-  recordAnnotationTime(scoreName);
 }
 
 export const cleanSelectBoxes = () => {

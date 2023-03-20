@@ -165,22 +165,21 @@ export class App extends Component<{}, {
         finalMeasure = initMeasure;
         initMeasure = previousFinalMeasure;
       }
-      if (eventUp.shiftKey) {
+      if (eventUp.altKey) {
         renderBoundingBoxesAndAnnotateWholeMeasure(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
         this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
-        renderBoundingBoxesMeasures([this.currentBox], selectColor, this.measureList, this.state.file);
-      } else if (eventUp.altKey){
+        this.hideBoundingBoxes = true
+      } else if (eventUp.shiftKey){
         const initData: MouseData = {
           pos: initPos,
-          nearestNote: initNearestNote,
           measure: initMeasure
           }
 
         const finalData: MouseData = {
           pos: finalPos,
-          nearestNote: finalNearestNote,
           measure: finalMeasure
           }
+
         renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
       }
     };
@@ -247,50 +246,42 @@ export class App extends Component<{}, {
      console.log("Rendering next file...")
      this.saveToJson();
      eel.pick_next_file(this.state.file)((file: string) => this.setState({file}))
-
      await this.initOSMD();
-
    }
 
   public selectPreviousFile = async () => {
     console.log("Rendering previous file...")
     this.saveToJson();
     eel.pick_previous_file(this.state.file)((file: string) => this.setState({ file }))
-
     await this.initOSMD();
-
-
-  }
-  public markAnnotated = async () => {
-
   }
 
-    handleKeyDown(event: KeyboardEvent) {
-      this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
-      let keyCode = event.code;
+  handleKeyDown(event: KeyboardEvent) {
+    this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
+    let keyCode = event.code;
 
-      if (keyCode === "ArrowLeft") {
-        this.selectPreviousBox();
-      }
-      else if (keyCode === "ArrowRight") {
-          this.selectNextBox();
-      }
-      else if (keyCode === "Escape") {
-        this.clear();
-      }
-      else if (keyCode === "Backspace") {
-        this.currentBox = deleteBoxAndGoBack(this.currentBox, this.measureList, this.state.file);
+    if (keyCode === "ArrowLeft") {
+      this.selectPreviousBox();
+    }
+    else if (keyCode === "ArrowRight") {
+        this.selectNextBox();
+    }
+    else if (keyCode === "Escape") {
+      this.clear();
+    }
+    else if (keyCode === "Backspace") {
+      this.currentBox = deleteBoxAndGoBack(this.currentBox, this.measureList, this.state.file);
 
-      }
-      else if (contains(difficultyKeycodes, keyCode) || contains(sectionKeycodes, keyCode)) {  // if event.code is in annotations_folder
-        this.annotateMeasure(event);
-      }
-      else if (keyCode === "KeyH") {
-        this.hideBoxes();
-      }
-      else if (keyCode ==="Delete" && event.ctrlKey){
-        markCorrupted(this.state.file);
-      }
+    }
+    else if (contains(difficultyKeycodes, keyCode) || contains(sectionKeycodes, keyCode)) {  // if event.code is in annotations_folder
+      this.annotateMeasure(event);
+    }
+    else if (keyCode === "Period") {
+      this.hideBoxes();
+    }
+    else if (keyCode ==="Delete" && event.ctrlKey){
+      markCorrupted(this.state.file);
+    }
   }
 
   render() {

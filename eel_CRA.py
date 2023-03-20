@@ -6,7 +6,6 @@ import pathlib
 import platform
 import sys
 from time import sleep
-
 import eel
 
 global index_path
@@ -49,7 +48,8 @@ def pick_last_annotated():
     data = load_json(index_path)
     # order all paths
     all_paths = dict([(p, a) for v in data.values()
-                      for p, a in zip(v['path'].values(), v['annotated'].values())])
+                      for p, a in
+                      zip(v['path'].values(), v['annotated'].values())])
 
     # List of annotated files
     annotated_scores = [t for t in all_paths if all_paths[t]]
@@ -64,24 +64,32 @@ def pick_last_annotated():
 
 
 @eel.expose
-def mark_annotated(file, annotated=True):
+def update_annotations(file, annotations):
+    del annotations['startTime']
+    del annotations['isCorrupted']
+    del annotations['annotationTime']
+
+    notes = [note for measure in annotations.values() for staff in
+             measure.values() for note in staff.values()]
+
+    is_annotated = "None" not in notes
     # Open the file and save annotations
-    data = load_json(index_path)
+    index_data = load_json(index_path)
 
     # Return a dict with {path: title}
-    paths_titles = dict([(p, t) for t in data.keys()
-                         for p in data[t]["path"].values()])
+    paths_titles = dict([(p, t) for t in index_data.keys()
+                         for p in index_data[t]["path"].values()])
 
     title = paths_titles[file]  # title in index
     # Get path index
-    path_index = str(list(data[title]["path"].values()).index(file) + 1)
+    path_index = str(list(index_data[title]["path"].values()).index(file) + 1)
 
-    previous_value = data[title]["annotated"][path_index]
+    previous_value = index_data[title]["annotated"][path_index]
 
-    if previous_value == annotated:
+    if previous_value == is_annotated:
         return
 
-    data[title]["annotated"][path_index] = annotated
+    index_data[title]["annotated"][path_index] = is_annotated
 
     # To avoid the window from reloading, delete file if it exists
     if os.path.isfile(index_path):
@@ -91,8 +99,9 @@ def mark_annotated(file, annotated=True):
 
     # Open the file and save annotations
     with open(index_path, 'w') as index:
-        json.dump(data, index, indent=4)
+        json.dump(index_data, index, indent=4)
         index.close()
+
 
 @eel.expose
 def pick_next_file(file):

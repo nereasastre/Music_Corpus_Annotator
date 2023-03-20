@@ -46,7 +46,6 @@ export interface IAppState {
 
 export interface MouseData {
   pos: any;
-  nearestNote: any;
   measure: number;
 }
 export const contains = (array: Array<any>, element: any ) =>
@@ -70,12 +69,6 @@ export function markCorrupted(scoreName: string){
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
 
-export function markAnnotated(scoreName: string, annotated = true){
-  console.log("markAnnotated has been called")
-  console.log("markAnnotated state.file before calling eel", scoreName)
-  eel.mark_annotated(scoreName, annotated)
-}
-
 export function recordAnnotationTime(scoreName: string) {
     let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
     annotations["annotationTime"] += (Date.now() - annotations["startTime"])
@@ -91,7 +84,7 @@ export const difficultyKeycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Num
 export const sectionKeycodes = ["KeyQ", "KeyW","KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL"];
 
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633",
-    "KeyQ": "#f08080",
+  "KeyQ": "#f08080",
   "KeyW": "#808000",
   "KeyE": "#FFFF00",
   "KeyR": "#ff00ff",
