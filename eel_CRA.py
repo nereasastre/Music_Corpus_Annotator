@@ -11,6 +11,17 @@ import eel
 global index_path
 global app_path
 
+if platform.system() == "Darwin":
+    script_path = sys.argv[
+        0]  # Path to script that was used to launch the executable file
+    app_path = os.path.dirname(
+        os.path.dirname(os.path.abspath(script_path)))
+    index_path = os.path.join(app_path, "public", "index.json")
+
+else:
+    app_path = pathlib.Path(os.getcwd()).parent
+    index_path = os.path.join(app_path, 'public', 'index.json')
+
 # Use latest version of Eel from parent directory
 sys.path.insert(1, '../../')
 
@@ -50,6 +61,7 @@ def get_first_file():
 
     # supports 0 and 1 indexed index.json
     first_path_idx = list(first_entry["path"])[0]
+    print(first_entry["path"][str(first_path_idx)])
     return first_entry["path"][str(first_path_idx)]
 
 
@@ -184,8 +196,8 @@ def save_to_json(score_name, annotations):
 
 def start_eel(develop):
     """Start Eel with either production or development configuration."""
-    global index_path
     global app_path
+    global index_path
     if develop:
         directory = 'src'
         app = None
@@ -197,8 +209,6 @@ def start_eel(develop):
         directory = 'build'
         app = 'chrome-app'
         page = 'index.html'
-        app_path = pathlib.Path(os.getcwd()).parent
-        index_path = os.path.join(app_path, 'public', 'index.json')
 
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
 
@@ -224,7 +234,5 @@ def start_eel(develop):
 
 
 if __name__ == '__main__':
-    import sys
-
     # Pass any second argument to enable debugging
     start_eel(develop=len(sys.argv) == 2)
