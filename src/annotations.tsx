@@ -12,22 +12,17 @@ export function annotateWholeMeasures(measureNumbers: number | Array<number>, co
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
     if (measureNumber >= firstMeasureNumber && measureNumber <= lastMeasureNumber) {
       for (let staff = 0; staff < measure.length; staff++) {
-        console.log("STAFF", staff)
         let notesInStaff = measure[staff].staffEntries.length  // number of notes in staff
         for (let note = 0; note < notesInStaff; note++) {
-          console.log("NOTE", note)
-          console.log(colorToDifficulty[selectColor])
           // @ts-ignore
           annotations[`measure-${measureNumber}`][`staff-${staff}`][`note-${note}`] = colorToDifficulty[color];
         }
       }
     }
   }
-  console.log("Annotations: ", annotations)
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
   eel.update_annotations(scoreName, annotations)
   recordAnnotationTime(scoreName);
-
 }
 
 export function annotateWithinCoordinates(initX: any, finalX: any, measureNumber: number, staffNumber: number, measureList: any, color: string, scoreName: string){
@@ -80,7 +75,6 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   // @ts-ignore
   annotations["isCorrupted"] = false;
   if (resetAnnotationTime) {
-    console.log("RESET ANNOTATION TIME")
     // @ts-ignore
     annotations["startTime"] = Date.now();
     // @ts-ignore

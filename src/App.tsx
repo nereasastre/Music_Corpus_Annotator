@@ -117,7 +117,6 @@ export class App extends Component<{}, {
 
 
   async componentDidMount() {
-    console.log("componentDidMount called")
     var container = document.getElementById("score");
     // @ts-ignore
     this.osmd = new OpenSheetMusicDisplay(container);
@@ -125,7 +124,6 @@ export class App extends Component<{}, {
   }
 
   async componentDidUpdate() {
-    console.log("componentDidUpdate called");
     await this.initOSMD();
   }
 
@@ -292,7 +290,7 @@ export class App extends Component<{}, {
           <img src={logo} className="App-logo" alt="logo" />
           <h1>Music Corpus Annotator</h1>
         </header>
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
               <Legend />
             </div>
 

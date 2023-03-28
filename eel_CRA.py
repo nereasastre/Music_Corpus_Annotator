@@ -1,19 +1,18 @@
 """Main Python application file to interact with local files"""
 
+import eel
 import json
 import os
 import pathlib
 import platform
-import sys
 from time import sleep
-import eel
+import sys
 
-global index_path
 global app_path
+global index_path
 
-if platform.system() == "Darwin":
-    script_path = sys.argv[
-        0]  # Path to script that was used to launch the executable file
+if platform.system() == "Darwin":  # in macOS
+    script_path = sys.argv[0]  # Path to script that launches the exec file
     app_path = os.path.dirname(
         os.path.dirname(os.path.abspath(script_path)))
     index_path = os.path.join(app_path, "public", "index.json")
@@ -29,15 +28,20 @@ sys.path.insert(1, '../../')
 def load_json(name_file):
     """
     Loads data from a .json file
+
     @param str name_file: Path to the .json file
-    @returns dict: The .json data
+    @return dict: The .json data
     """
     with open(name_file, 'r') as fp:
         return json.load(fp)
 
 
 def get_all_paths_from_index():
-    """Returns all paths from index.json"""
+    """
+    Gets all paths from index.json
+
+    @return list all_paths: A list of all the paths in index.json
+    """
     data = load_json(index_path)
     # order all paths
     all_paths = [p for v in data.values() for p in v['path'].values()]
@@ -47,15 +51,21 @@ def get_all_paths_from_index():
 
 @eel.expose  # Expose function to JavaScript
 def say_hello_py(x):
-    """Print message from JavaScript on app initialization, then call a JS
-    function."""
+    """
+    Print message from JavaScript on app initialization, then call a JS
+    function.
+    """
     print('Hello from %s' % x)  # noqa T001
     eel.say_hello_js('Python {from within say_hello_py()}!')
 
 
 @eel.expose
 def get_first_file():
-    """ Returns the first file in index.json"""
+    """
+    Returns the first file in index.json
+
+    @return str last file
+    """
     data = load_json(index_path)
     first_entry = dict(list(data.values())[0])
 
@@ -66,7 +76,11 @@ def get_first_file():
 
 @eel.expose
 def get_last_file():
-    """ Returns the first file in index.json"""
+    """
+    Returns the last file in index.json
+
+    @return str last file
+    """
     data = load_json(index_path)
     last_entry = dict(list(data.values())[-1])
 
@@ -77,7 +91,11 @@ def get_last_file():
 
 @eel.expose
 def pick_last_annotated():
-    """Finds the last annotated score in index.json and returns the file """
+    """
+    Finds the last annotated score in index.json and returns the file
+
+    @return str last_annotated_file: The last annotated file
+    """
     data = load_json(index_path)
     # order all paths
     all_paths = dict([(p, a) for v in data.values()
@@ -98,6 +116,13 @@ def pick_last_annotated():
 
 @eel.expose
 def update_annotations(file, annotations):
+    """
+    Checks the current annotations and updates the "annotated" field in
+    index.json with True of False if the score is fully annotated.
+
+    @param str file: The name of the file
+    @param dict annotations: A dictionary of annotations for the current score
+    """
     if 'startTime' in annotations:
         del annotations['startTime']
     if 'isCorrupted' in annotations:
@@ -141,7 +166,11 @@ def update_annotations(file, annotations):
 
 @eel.expose
 def pick_next_file(file):
-    """Finds the current file in index.json and returns the next file """
+    """
+    Finds the current file in index.json and returns the next file
+
+    @param str file: The path to the current file
+    """
     all_paths = get_all_paths_from_index()
     current_index = all_paths.index(file)
 
@@ -155,7 +184,8 @@ def pick_next_file(file):
 def pick_previous_file(file):
     """
     Finds the current file in index.json and returns the previous file
-     @param str file: The path of the current file
+
+    @param str file: The path to the current file
     """
     all_paths = get_all_paths_from_index()
     current_index = all_paths.index(file)
@@ -188,7 +218,8 @@ def save_to_json(score_name, annotations):
     if os.path.isfile(score_annotations):
         os.remove(score_annotations)
 
-    sleep(0.5)  # wait 0.5 seconds between deleting and writing to avoid reload
+    # wait 0.5 seconds between deleting and writing to avoid reload in dev mode
+    sleep(0.5)
 
     # Open the file and save annotations
     with open(score_annotations, 'w') as annotated_score:
@@ -197,7 +228,11 @@ def save_to_json(score_name, annotations):
 
 
 def start_eel(develop):
-    """Start Eel with either production or development configuration."""
+    """
+    Start Eel with either production or development configuration.
+
+    @param bool develop: If True, start eel with develop mode.
+    """
     global app_path
     global index_path
     if develop:

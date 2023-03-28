@@ -73,7 +73,6 @@ export function recordAnnotationTime(scoreName: string) {
     let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
     annotations["annotationTime"] += (Date.now() - annotations["startTime"])
     annotations["startTime"] = Date.now()
-    console.log("Annotation time:", annotations["annotationTime"]);
     window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
 
