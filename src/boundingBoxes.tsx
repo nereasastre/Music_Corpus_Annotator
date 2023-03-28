@@ -207,6 +207,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: number, staffNumbe
 
   let annotations = JSON.parse(window!.localStorage.getItem(scoreName) as string);
   let firstMeasureNumber = measureList[0][0].measureNumber;
+  // Some scores have firstMeasureNumber = 0 or 1, but osmd measureList always starts at 0
   let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
 
   // Staff and measure
@@ -274,6 +275,7 @@ function renderBoxesFromAnnotations(measureNumber: number, measureList: any, sco
      * @return None
      */
   let firstMeasureNumber = measureList[0][0].measureNumber;
+  // Some scores have firstMeasureNumber = 0 or 1, but osmd measureList always starts at 0
   let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
   let staff0Boxes: any[] | never[] | Box[] = [];
   let staff1Boxes: any[] | never[] | Box[] = [];
@@ -344,6 +346,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
   let coloredBoxes = [];
 
   for (let measureNumber = firstMeasureNumber; measureNumber <= lastMeasureNumber; measureNumber++) {
+    // Some scores have firstMeasureNumber = 0 or 1, but osmd measureList always starts at 0
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
     if (areAllNotesAnnotatedWithSameDifficulty(measure, scoreName)) {  // if all notes are the same, render whole measure
       let measureDifficulty = annotations[`measure-${measureNumber}`][`staff-${0}`][`note-${0}`];
