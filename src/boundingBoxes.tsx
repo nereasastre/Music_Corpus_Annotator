@@ -1,6 +1,5 @@
 import {
-  checkAvailability,
-  colorToDifficulty,
+  contains,
   convertUnitsToPixels,
   difficultyToColor,
   max,
@@ -86,7 +85,7 @@ export const renderBoundingBoxesMeasures = (measureNumbers: Array<number> | numb
 
   for (const measure of measureList) {
     let measureNumber = measure[0].MeasureNumber;
-    if (checkAvailability(measureNumbers, measureNumber)) {
+    if (contains(measureNumbers, measureNumber)) {
       if (color !== selectColor) {
         cleanBox(measureNumber);  // clean previous boxes to avoid infiniteBoxes
       }

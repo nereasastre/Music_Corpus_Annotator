@@ -4,35 +4,30 @@
 import {PointF2D} from "opensheetmusicdisplay";
 import React from "react";
 
-export const convertUnitsToPixels = (units: number) => units * 10;
-export function checkAvailability(arr: Array<number>, val: number) {
-  return arr.some(function (arrVal) {
-    return val === arrVal;
-  });
-}
+export const convertUnitsToPixels = (units: number) => units * 10;  // converts osmd units to pixels
 
 export function mousePosition(event: MouseEvent) {
+  /**
+   * Converts the mouseEvent coordinates to OSMD coordinates
+   * @param {MouseEvent} event: The mouse event containing the coordinates
+   * @returns An osmd PointF2D with the converted mouse coordinates
+   */
   const units = 10;
   const xpos = event.pageX / units;
   const ypos = (event.pageY - 200) / units;  // Subtract the pixels corresponding to the page header 
   return new PointF2D(xpos, ypos);
 }
 
-export function max(a: number, b: number) {
-  if (a > b) {
-    return a;
-  }
-  return b;
-}
-
-export function min(a: number, b: number) {
-  if (a < b) {
-    return a;
-  }
-  return b;
-}
+export const max = (a: number, b: number) => { return a > b ? a : b}  // return max between a and b
+export const min = (a: number, b: number) => { return a < b ? a : b}  // return min between a and b
 
 export function range(start: number, end: number){
+  /**
+   * Create a list of numbers from start to end (included)
+   * @param {number} start: The first number to append to the list
+   * @param {number} end: The last number to append to the list
+   * @returns {Array<number>} list: The array form start to end
+   */
   let list = []
   for (let i = start; i <= end; i++){
     list.push(i)
@@ -40,21 +35,23 @@ export function range(start: number, end: number){
   return list
 }
 
-export interface IAppState {
+export interface IAppState {  // interface to save the file in the app state
   file: string;
 }
 
-export interface MouseData {
+export interface MouseData {  // interface to save the position of a mouse click and it's closest measure
   pos: any;
   measure: number;
 }
 
-
-export const contains = (array: Array<any>, element: any ) =>
-    array.indexOf(element) > -1;
-
+// returns true if array contains element, false otherwise
+export const contains = (array: Array<any>, element: any ) => array.indexOf(element) > -1;
 
 export function markCorrupted(scoreName: string){
+  /**
+   * Flags file as corrupted
+   * @param {String} scoreName: The score name
+   */
   let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
   annotations["isCorrupted"] = true;
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
@@ -62,16 +59,23 @@ export function markCorrupted(scoreName: string){
 
 
 export function recordAnnotationTime(scoreName: string) {
+  /**
+   * Computes the annotation time in milliseconds and saves it to localStorage
+   * @param {string} scoreName: The score name
+   */
     let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+    // The added annotation time is the past annotation time + now - the last startTime
     annotations["annotationTime"] += (Date.now() - annotations["startTime"])
     annotations["startTime"] = Date.now()
     window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
 
-export const selectColor = "#b7bbbd";
-export const difficultyKeycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Numpad2", "Numpad3"];
+export const selectColor = "#b7bbbd";  // color for box selection (no annotation)
+export const difficultyKeycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Numpad2", "Numpad3"];  // keycodes to flag difficulty
+// keycodes to flag sections (Q-L)
 export const sectionKeycodes = ["KeyQ", "KeyW","KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL"];
 
+// dictionary that maps keys to their HEX color
 export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633",
   "KeyQ": "#f08080",
   "KeyW": "#808000",
@@ -93,6 +97,7 @@ export const keyToColor = { "1": "#33FF42", "2": "#FFBE33", "3": "#FF4633",
   "KeyK": "#2C2D72",
   "KeyL": "#B4C5E4"};
 
+// dictionary that maps HEX colors to their key
 export const colorToDifficulty = { "#33FF42": "easy", "#FFBE33": "medium", "#FF4633": "hard", "#b7bbbd": "None", "#f08080": "KeyQ",
   "#808000": "KeyW",
   "#FFFF00": "KeyE",
@@ -112,6 +117,8 @@ export const colorToDifficulty = { "#33FF42": "easy", "#FFBE33": "medium", "#FF4
   "#800080": "KeyJ",
   "#2C2D72": "KeyK",
   "#B4C5E4": "KeyL" };
+
+// dictionary that maps what is stored in localstorage to its HEX color
 export const difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard": "#FF4633", "None": "#b7bbbd", "KeyQ": "#f08080",
   "KeyW": "#808000",
   "KeyE": "#FFFF00",
@@ -132,7 +139,11 @@ export const difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard
   "KeyK": "#2C2D72",
   "KeyL": "#B4C5E4"};
 
+
 export function Legend() {
+  /**
+   * Legend of the colors and keys to be displayed in the application
+   */
   const colorEntries = Object.entries(keyToColor);
 
   return (
