@@ -48,26 +48,18 @@ export interface MouseData {
   pos: any;
   measure: number;
 }
+
+
 export const contains = (array: Array<any>, element: any ) =>
     array.indexOf(element) > -1;
 
-export function isFullyAnnotated(measureList: any, scoreName: string) {
-  let firstMeasureNumber = measureList[0][0].MeasureNumber;
-  let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
-  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
-  for (let measure = firstMeasureNumber; measure <= lastMeasureNumber; measure++) {
-    if (annotations[measure] === "None") {
-      return false  // some measure has not been annotated
-    }
-  }
-  return true
-}
 
 export function markCorrupted(scoreName: string){
   let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
   annotations["isCorrupted"] = true;
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
 }
+
 
 export function recordAnnotationTime(scoreName: string) {
     let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
@@ -77,7 +69,6 @@ export function recordAnnotationTime(scoreName: string) {
 }
 
 export const selectColor = "#b7bbbd";
-
 export const difficultyKeycodes = ["Digit1", "Digit2", "Digit3", "Numpad1", "Numpad2", "Numpad3"];
 export const sectionKeycodes = ["KeyQ", "KeyW","KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL"];
 
