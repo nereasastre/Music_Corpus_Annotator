@@ -61,7 +61,6 @@ def get_first_file():
 
     # supports 0 and 1 indexed index.json
     first_path_idx = list(first_entry["path"])[0]
-    print(first_entry["path"][str(first_path_idx)])
     return first_entry["path"][str(first_path_idx)]
 
 
@@ -99,9 +98,12 @@ def pick_last_annotated():
 
 @eel.expose
 def update_annotations(file, annotations):
-    del annotations['startTime']
-    del annotations['isCorrupted']
-    del annotations['annotationTime']
+    if 'startTime' in annotations:
+        del annotations['startTime']
+    if 'isCorrupted' in annotations:
+        del annotations['isCorrupted']
+    if 'annotationTime' in annotations:
+        del annotations['annotationTime']
 
     notes = [note for measure in annotations.values() for staff in
              measure.values() for note in staff.values()]

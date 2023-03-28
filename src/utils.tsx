@@ -2,7 +2,7 @@
 // import { PointF2D } from "opensheetmusicdisplay";
 
 import {PointF2D} from "opensheetmusicdisplay";
-import {eel} from "./App";
+import React from "react";
 
 export const convertUnitsToPixels = (units: number) => units * 10;
 export function checkAvailability(arr: Array<number>, val: number) {
@@ -142,4 +142,25 @@ export const difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard
   "KeyK": "#2C2D72",
   "KeyL": "#B4C5E4"};
 
+export function Legend() {
+  const colorEntries = Object.entries(keyToColor);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "row" }}>
+      {colorEntries.map(([key, color]) => (
+        <div key={key} style={{ display: "flex", alignItems: "center", marginRight: 10 }}>
+          <div
+            style={{
+              backgroundColor: color,
+              width: 20,
+              height: 20,
+              marginRight: 5,
+            }}
+          />
+          <div>{key[key.length - 1]}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
 

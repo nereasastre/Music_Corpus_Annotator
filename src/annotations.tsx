@@ -51,8 +51,11 @@ export function annotateWithinCoordinates(initX: any, finalX: any, measureNumber
 }
 
 
-export function initLocalStorageToNone(measureList: any, scoreName: string, renderSelect = true) {
-  let annotations = {};
+export function initLocalStorageToNone(measureList: any, scoreName: string, renderSelect = true, resetAnnotationTime = true) {
+  let annotations = JSON.parse(window.localStorage.getItem(scoreName) as string);
+  if (!annotations) {
+    annotations = {};
+  }
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
 
@@ -76,11 +79,15 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
 
   // @ts-ignore
   annotations["isCorrupted"] = false;
-  // @ts-ignore
-  annotations["startTime"] = Date.now();
-  // @ts-ignore
-  annotations["annotationTime"] = 0
+  if (resetAnnotationTime) {
+    console.log("RESET ANNOTATION TIME")
+    // @ts-ignore
+    annotations["startTime"] = Date.now();
+    // @ts-ignore
+    annotations["annotationTime"] = 0
+  }
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));
+
 
   if (renderSelect){
     renderBoundingBoxesMeasures([firstMeasureNumber], selectColor, measureList);

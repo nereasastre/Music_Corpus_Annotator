@@ -10,6 +10,7 @@ import {
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
 import {
+  Legend,
   contains, difficultyKeycodes,
   IAppState,
   keyToColor,
@@ -211,7 +212,7 @@ export class App extends Component<{}, {
   clear() {
     this.currentBox = this.firstMeasureNumber;
     cleanAllBoxes();
-    initLocalStorageToNone(this.measureList, this.state.file);
+    initLocalStorageToNone(this.measureList, this.state.file, true, false);
   }
 
   annotateMeasure = async (event: KeyboardEvent) => {
@@ -290,8 +291,11 @@ export class App extends Component<{}, {
         <header className="header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1>Music Corpus Annotator</h1>
-
         </header>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Legend />
+            </div>
+
         <p>You are annotating: {this.state.file}</p>
         <button className='App-button' onClick={this.saveToJson}>Save</button>
         <button className='App-button' disabled={(this.state.file === this.firstFile) || (this.state.file === "")} onClick={this.selectPreviousFile}>Previous</button>
