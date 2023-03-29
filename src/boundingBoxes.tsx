@@ -285,6 +285,8 @@ function renderBoxesFromAnnotations(measureNumber: number, measureList: any, sco
       staff1Boxes = getConsecutiveNotesWithSameAnnotation(measureNumber, staffNumber, measureList, scoreName)
     }
   }
+  console.log("STAFF 1 BOXES", staff1Boxes)
+  console.log("STAFF 0 BOXES", staff0Boxes)
   // if a staff has more annotations than another one, keep the longest one
   let longestBoxes = staff0Boxes.length > staff1Boxes.length ? staff0Boxes : staff1Boxes
   // startX is either leftmost box, or longestBoxes.x if any of the staffBoxes array is undefined
@@ -321,10 +323,10 @@ function renderBoxesFromAnnotations(measureNumber: number, measureList: any, sco
     // make sure to not go beyond the end of measure
     width = startX + width < measureEndPosition ? width : measureEndPosition - startX
 
-    if (color !== selectColor) {  // skip "None" boxes
+    if (color !== selectColor && color) {  // skip "None" boxes
       createBoundingBox(startX, staff0Y, height, width, staff0YMiddle, staff0HeightMiddle, color, measureNumber)
     }
-    if (color !== selectColor) {  // skip "None" boxes
+    if (color !== selectColor && color) {  // skip "None" boxes
     createBoundingBox(startX, staff1Y, height, width, staff1YMiddle, staff1HeightMiddle, color, measureNumber )
     }
     startX = endX  // update startX

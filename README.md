@@ -61,9 +61,8 @@ Other ways to run the app:
 Critical files for this app:
 
 - `public/index.json:` File with all the scores that will be rendered. To use this app with a different 
-  collection of scores than the ones provided, update `index.json` to have a score identifier, which contains 
-  information about the piece. The score needs to have a "path" entry with the path to the scores, 
-  and an "annotated_<path_number>" entry for every path in the score. An example `index.json` to make the app work 
+  collection of scores than the ones provided, update `index.json` to have a score identifier (e.g. "n-1" in the example below). Inside the identifier, the score needs to have a "path" entry with the path to the scores, 
+  and an "annotated_<path_number>" entry for every path in the score. Note that this file needs to be inside the public folder, just like the example index.json that is already provided. An example `index.json` to make the app work 
   with 2 pieces, 3 files per each piece is the following:
   ```
   {

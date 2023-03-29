@@ -57,6 +57,7 @@ export class App extends Component<{}, {
   cursor: any;
   private firstFile: string | undefined;
   private lastFile: string | undefined;
+  private previousFile: string | undefined;
 
 
   public constructor(props: any) {
@@ -74,18 +75,15 @@ export class App extends Component<{}, {
     this.firstFile = await eel.get_first_file()();
     this.lastFile = await eel.get_last_file()();
     await eel.pick_last_annotated()((file: string) => this.setState({file}))
+    this.previousFile = this.state.file
   }
 
-
-  async initOSMD() {
-    console.log("initOSMD with state file:", this.state.file)
-    await this.osmd.load(this.state.file);
-    await this.osmd.render();
-
-    this.osmd.cursor.iterator.currentMeasureIndex = this.currentBox;
+  async setParametersOSMD(){
     this.measureList = this.osmd.GraphicSheet.measureList;
+    console.log("MEASURE LIST: ", this.measureList)
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
+    console.log("MEASURE NUMBER: ", this.firstMeasureNumber, this.lastMeasureNumber)
 
     let annotations = JSON.parse(window.localStorage.getItem(this.state.file) as string);
 
@@ -107,14 +105,21 @@ export class App extends Component<{}, {
       await new Promise(r => setTimeout(r, 1000)); // wait for osmd to load
       cleanAllBoxes();
       renderBoxesFromLocalStorage(measureList, scoreName)
-
     };
+  }
+  async initOSMD() {
+    console.log("initOSMD with state file:", this.state.file)
+    if (this.state.file === this.previousFile){
+      return
+    }
+    await this.osmd.load(this.state.file);
+    await this.osmd.render();
+    await this.setParametersOSMD()
   };
 
   public state: IAppState = {
     file: ""
   }
-
 
   async componentDidMount() {
     var container = document.getElementById("score");
@@ -147,9 +152,7 @@ export class App extends Component<{}, {
     if ((!eventDown.shiftKey && !eventDown.altKey) || this.color === "#b7bbbd") {
       return
     }
-
       let finalPos = mousePosition(eventUp);
-
       let finalNearestNote = this.osmd.GraphicSheet.GetNearestNote(finalPos, maxDist);
       if (finalNearestNote === undefined){
       return
@@ -165,21 +168,19 @@ export class App extends Component<{}, {
       if (eventUp.altKey) {
         renderBoundingBoxesAndAnnotateWholeMeasure(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
         this.hideBoundingBoxes = true
+        this.currentBox = min(finalMeasure, this.lastMeasureNumber);
       } else if (eventUp.shiftKey){
         const initData: MouseData = {
           pos: initPos.x < finalPos.x ? initPos : finalPos,
           measure: initMeasure
           }
-
         const finalData: MouseData = {
           pos: finalPos.x > initPos.x ? finalPos : initPos,
           measure: finalMeasure
           }
-
         renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
+        this.currentBox = min(finalMeasure, this.lastMeasureNumber);
       }
-      this.currentBox = min(finalMeasure, this.lastMeasureNumber);
-
     };
   }
 
@@ -243,6 +244,7 @@ export class App extends Component<{}, {
    selectNextFile = async () => {
      console.log("Rendering next file...")
      this.saveToJson();
+     this.previousFile = this.state.file
      eel.pick_next_file(this.state.file)((file: string) => this.setState({file}))
      await this.initOSMD();
    }
@@ -250,6 +252,7 @@ export class App extends Component<{}, {
   public selectPreviousFile = async () => {
     console.log("Rendering previous file...")
     this.saveToJson();
+    this.previousFile = this.state.file
     eel.pick_previous_file(this.state.file)((file: string) => this.setState({ file }))
     await this.initOSMD();
   }

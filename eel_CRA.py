@@ -18,6 +18,7 @@ if platform.system() == "Darwin":  # in macOS
     index_path = os.path.join(app_path, "public", "index.json")
 
 else:
+    print(sys.argv[0])  # Path to script that launches the exec file)
     app_path = pathlib.Path(os.getcwd()).parent
     index_path = os.path.join(app_path, 'public', 'index.json')
 
@@ -132,7 +133,6 @@ def update_annotations(file, annotations):
 
     notes = [note for measure in annotations.values() for staff in
              measure.values() for note in staff.values()]
-
     is_annotated = "None" not in notes
     # Open the file and save annotations
     index_data = load_json(index_path)
