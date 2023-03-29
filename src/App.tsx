@@ -114,7 +114,7 @@ export class App extends Component<{}, {
     }
     await this.osmd.load(this.state.file);
     await this.osmd.render();
-    await this.setParametersOSMD()
+    await this.setParametersOSMD();
   };
 
   public state: IAppState = {

@@ -86,6 +86,7 @@ export function initLocalStorageToNone(measureList: any, scoreName: string, rend
   }
   let firstMeasureNumber = measureList[0][0].MeasureNumber;
   let lastMeasureNumber = measureList[measureList.length - 1][0].MeasureNumber;
+  console.log("INIT LOCAL STORAGE TO NONE", firstMeasureNumber, lastMeasureNumber)
   for (let measureNumber = firstMeasureNumber; measureNumber < lastMeasureNumber + 1; measureNumber++) {
     // some measureNumbers start at 1 and some at 0 but measureList always starts at 0
     let measure = firstMeasureNumber === 0 ? measureList[measureNumber] : measureList[measureNumber - 1]
