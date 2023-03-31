@@ -251,9 +251,10 @@ def start_eel(develop):
 
     # These will be queued until the first connection is made,
     # but won't be repeated on a page reload
-    say_hello_py('Python World!')
-    # Call a JavaScript function (must be after `eel.init()`)
-    eel.say_hello_js('Python World!')
+    if develop:
+        say_hello_py('Python World!')
+        # Call a JavaScript function (must be after `eel.init()`)
+        eel.say_hello_js('Python World!')
 
     eel_kwargs = dict(
         host='localhost',
