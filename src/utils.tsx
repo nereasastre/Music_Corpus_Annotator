@@ -139,12 +139,22 @@ export const difficultyToColor = { "easy": "#33FF42", "medium": "#FFBE33", "hard
   "KeyK": "#2C2D72",
   "KeyL": "#B4C5E4"};
 
+function entries<T>(obj: Record<string, T>): [string, T][] {
+  let ownProps = Object.keys(obj),
+      i = ownProps.length,
+      resArray: [string, T][] = new Array(i);
+  while (i--)
+    resArray[i] = [ownProps[i], obj[ownProps[i]]];
+  return resArray;
+}
+
 
 export function Legend() {
   /**
    * Legend of the colors and keys to be displayed in the application
    */
-  const colorEntries = Object.entries(keyToColor);
+  // const colorEntries = Object.entries(keyToColor);
+  const colorEntries = entries(keyToColor)
 
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
