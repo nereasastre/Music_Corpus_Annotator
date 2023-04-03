@@ -171,9 +171,10 @@ export const cleanSelectBoxes = () => {
    * @return None
    */
   const boxes = document.querySelectorAll(".erasableBoundingBox");
-  boxes.forEach((box) => {
+    // @ts-ignore
+    for (const box of boxes) {
     box.remove();
-  });
+  }
 };
 
 
@@ -378,9 +379,10 @@ export const cleanAllBoxes = () => {
   * @return None.
   */
   const boxes = document.querySelectorAll(".boundingBox");
-  boxes.forEach((box) => {
+    // @ts-ignore
+    for (const box of boxes) {
     box.remove();
-  });
+  }
 };
 
 export function cleanBox(measureNumber: number) {
@@ -392,9 +394,10 @@ export function cleanBox(measureNumber: number) {
  */
   const boxes = document.querySelectorAll(".box".concat(measureNumber.toString()));
   if (boxes.length > 0) {
-    boxes.forEach((box) => {
+    // @ts-ignore
+      for (const box of boxes) {
       box.remove();
-    });
+    }
   }
 }
 
