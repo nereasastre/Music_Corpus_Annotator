@@ -47,14 +47,14 @@ Make sure to have npm, pip and python installed.
 **Configure:** In the app's directory, run `npm install` and `pip install bottle bottle-websocket future whichcraft pyinstaller eel`
 
 To use the app directly, go to the dist/ folder and open the executable file that works with your system 
-(music_corpus_annotator.exe on Windows, Music_Corpus_Annotator on macOS).
+(music_corpus_annotator_windows.exe on Windows, Music_Corpus_Annotator on macOS, music_corpus_annotator_linux on Linux/Ubuntu).
 
 Other ways to run the app:
-1. **Demo:** Build static files with `npm run build` then run the application with `python eel_CRA.py`. A Chrome-app window should open running the built code from `build/`
+1. **Demo:** Build static files with `npm run build` then run the application with `python eel_CRA.py`. A Chrome-app window should open running the built code from `build/`. In macOS and Linux, use python3 instead of python.
 2. **Distribute:** (Run `npm run build` first) Build a binary distribution with PyInstaller using `python -m eel eel_CRA.py build --onefile --name music_corpus_annotator` 
-   This generates an executable file compatible with your operating system. 
+   This generates an executable file compatible with your operating system. In macOS and Linux, use python3 instead of python.
 3. **Develop:** Open two prompts. In one, run  `python eel_CRA.py true` and the other, `npm start`. A browser window should open in your default web browser at: [http://localhost:3000/](http://localhost:3000/). As you make changes to the JavaScript in `src/` the browser will reload. Any changes to `eel_CRA.py` will require a restart to take effect. You may need to refresh the browser window if it gets out of sync with eel.
-
+In macOS and Linux, use python3 instead of python.
 
 ## Main Files
 
