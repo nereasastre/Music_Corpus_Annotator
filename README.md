@@ -92,7 +92,7 @@ Critical files for this app:
     }
   }
   ```
-  
+  ** Note: you might have to rebuild the app after changing the provided index.json to a new one. To do so, follow the steps in section Quick Start.
   
 
 - `src/App.tsx:` File with the structure of the application

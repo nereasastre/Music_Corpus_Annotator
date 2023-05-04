@@ -168,7 +168,7 @@ export class App extends Component<{}, {
       if (eventUp.altKey) {
         renderBoundingBoxesAndAnnotateWholeMeasure(range(initMeasure, finalMeasure), this.color, this.measureList, this.state.file);
         this.hideBoundingBoxes = true
-        this.currentBox = min(finalMeasure, this.lastMeasureNumber);
+        this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
       } else if (eventUp.shiftKey){
         const initData: MouseData = {
           pos: initPos.x < finalPos.x ? initPos : finalPos,
@@ -179,7 +179,7 @@ export class App extends Component<{}, {
           measure: finalMeasure
           }
         renderBoundingBoxesFromCoords(initData, finalData, this.color, this.measureList, this.state.file)
-        this.currentBox = min(finalMeasure, this.lastMeasureNumber);
+        this.currentBox = min(finalMeasure + 1, this.lastMeasureNumber);
       }
     };
   }
