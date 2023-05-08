@@ -18,8 +18,7 @@ If you run into any issues with the app, open a [new issue](https://github.com/n
 
 ## Usage
 Music Corpus Annotator allows the user to annotate the difficulty of music scores. Some functionalities and buttons that control them:
-- **Annotate**: On start, the current measure is highlighted in gray. To annotate that entire measure, just press 1 (easy), 2 (medium) or 3 (hard) 
-in your keyboard. If more labels are needed, the 19 keys in the keyboard from the letters Q to L can be used. 
+- **Annotate**: On start, the current measure is highlighted in gray. To annotate that entire measure, just press 1, 2, 3 or the 19 keys in the keyboard from the letters Q to L. 
   This will highlight the measure with the color of the key that has been pressed (see legend in the main page).
 - **Annotate with the mouse**: In order to annotate from a coordinate to another one with the mouse, press que shift button + the annotation (1, 2, 3 or Q-L). 
   Then, hold the shift key and click on the first note that you wish to annotate. Drag until the last note to annotate and release the mouse click. This will render a box from the 
@@ -27,7 +26,7 @@ in your keyboard. If more labels are needed, the 19 keys in the keyboard from th
   all the measures entirely from the first to the last position, you can use the "Alt" key instead of Shift, and proceed as with Shift.
 - **Select a box**: In order to move to another box without annotating, use the arrow keys (left to move backwards, right
   to move forward). This will update the select box. If you cannot see the select box, press the Period "." key, and it will appear again.
-- **Delete a measure**: To delete the last annotated measure, use the Backspace button. If you want to delete a measure 
+- **Delete a measure**: To delete the annotations from the last annotated measure, use the Backspace button. If you want to delete a measure 
   that is not the last one, go to the measure using the arrow keys. Once it is highlighted in gray, press the Backspace key.
 - **Go to the next/previous score**: In order to go to the next score in index.json, press the "Next" button. To render the previous score,
 press the "Previous" button.
