@@ -31,6 +31,7 @@ Music Corpus Annotator allows the user to annotate the difficulty of music score
 - **Go to the next/previous score**: In order to go to the next score in index.json, press the "Next" button. To render the previous score,
 press the "Previous" button.
 - **Clear all annotations**: If you wish to clear all your annotations, press the Esc key.  
+- **Show current measure**: The period (.) key toggles between showing or not showing the current measure highlighted in gray. If the current measure is selected in gray, the period button will hide the gray box. If the current box is not visible, it will appear by clicking the period key.
 - **Save annotations**: If you want to save your annotations to a .json file, press the "Save" button. This is not strictly necessary, since
 saving is automatically done.
 
