@@ -17,9 +17,9 @@ the eel example https://github.com/python-eel/Eel/tree/main/examples/07%20-%20Cr
 If you run into any issues with the app, open a [new issue](https://github.com/nereasastre/Music_Corpus_Annotator/issues) and tag @nereasastre
 
 ## Usage
-Music Corpus Annotator allows the user to annotate the difficulty of music scores. Some functionalities and buttons that control them:
-- **Annotate**: On start, the current measure is highlighted in gray. To annotate that entire measure, just press 1, 2, 3 or the 19 keys in the keyboard from the letters Q to L. 
-  This will highlight the measure with the color of the key that has been pressed (see legend in the main page).
+Music Corpus Annotator allows the user to annotate music scores locally.The annotation criteria is up to the user. Music Corpus Annotator can be used for structure analysis, difficulty analysis and even music impainting. For example, users may use the application to highlight and segment the different levels of difficulty within a music score, or to identify the key parts in terms of structure. 
+The main functionalities and buttons to use the application are:
+- **Annotate**: On start, the current measure is highlighted in gray. To annotate that entire measure, just press 1, 2, 3 or the 19 keys in the keyboard from the letters Q to L. This will highlight the measure with the color of the key that has been pressed (see legend in the main page). 
 - **Annotate with the mouse**: In order to annotate from a coordinate to another one with the mouse, press que shift button + the annotation (1, 2, 3 or Q-L). 
   Then, hold the shift key and click on the first note that you wish to annotate. Drag until the last note to annotate and release the mouse click. This will render a box from the 
   first note that has been clicked on to the note where the mouse button was released. If instead of highlighting from note to note you want to highlight
