@@ -19,26 +19,30 @@ If you run into any issues with the app, open a [new issue](https://github.com/n
 ## Usage
 Music Corpus Annotator allows the user to annotate music scores locally.The annotation criteria is up to the user. Music Corpus Annotator can be used for structure analysis, difficulty analysis and even music impainting. For example, users may use the application to highlight and segment the different levels of difficulty within a music score, or to identify the key parts in terms of structure. 
 The main functionalities and buttons to use the application are:
-- **Annotate**: On start, the current measure is highlighted in gray. To annotate that entire measure, just press 1, 2, 3 or the 19 keys in the keyboard from the letters Q to L. This will highlight the measure with the color of the key that has been pressed (see legend in the main page). 
-- **Annotate with the mouse**: In order to annotate from a coordinate to another one with the mouse, press the shift button + the annotation (1, 2, 3 or Q-L). 
-  Then, hold the shift key and click on the first note that you wish to annotate. Drag until the last note to annotate and release the mouse click. This will render a box from the 
-  first note that has been clicked on to the note where the mouse button was released. If instead of highlighting from note to note you want to highlight
-  all the measures entirely from the first to the last position, you can use the "Alt" key instead of Shift, and proceed as with Shift.
-- **Select a measure**: In order to move to another measure without annotating, use the arrow keys (left to move backwards, right
-  to move forward). This will update the select measure. If you cannot see the select measure, press the Period "." key, and it will appear again.
+- **Annotate**: On start, the current measure is highlighted in gray. To annotate that measure from start to end, just press 1, 2, 3 or the 19 keys in the keyboard from the letters Q to L. This will highlight the measure with the color of the key that has been pressed (see legend in the main page). 
+- **Annotate with the mouse**: In order to annotate from a coordinate of the score to another one with the mouse, do the following: 
+    1. **Press and hold** the **Shift key** and then **strike** the annotation key (1, 2, 3 or Q-L). 
+    2. While **still holding the shift key**, use the mouse to **click and hold** the first note that you wish to annotate. 
+    3. **While holding the mouse click**, drag the mouse until the last note to annotate and **release the mouse click**. 
+    
+    This will highlight all of the notes with the annotation color. The application will highlight from the first note that has been clicked       on to the note where the mouse button was released. 
+    You can also annotate full measures (from start to end) with the mouse. To do so, proceed as explained above but instead of using the     
+    Shift key use the **Alt key**. This will highlight the measures from start to end from the first clicked on measure to the last one.
 - **Delete a measure**: To delete the annotations from the last annotated measure, use the Backspace button. If you want to delete a measure 
   that is not the last one, go to the measure using the arrow keys. Once it is highlighted in gray, press the Backspace key.
+- **Move measures without annotating**: In order to move to another measure without annotating, use the arrow keys (left to move backwards, right
+  to move forward). This will update the select measure. If you cannot see the select measure, press the Period "." key, and it will appear again.
 - **Go to the next/previous score**: In order to go to the next score in index.json, press the "Next" button. To render the previous score,
 press the "Previous" button.
 - **Clear all annotations**: If you wish to clear all your annotations, press the Esc key.  
-- **Highlight current measure in gray**: The period (.) key toggles between showing or not showing the current measure highlighted in gray. If the current measure is selected in gray, the period button will hide the gray box. If the current box is not visible, it will appear by clicking the period key.
+- **Highlight current measure in gray**: The period (.) key toggles between showing or not showing the current measure highlighted in gray. If the current measure is highlighted in gray, the period button will hide the gray selection. If the current measure is not highlighted in gray, it will be highlighted by pressing the period key.
 - **Save annotations**: If you want to save your annotations to a .json file, press the "Save" button. This is not strictly necessary, since
 saving is automatically done.
 
 This is what the application will look like after some annotations:
 ![Demo.png](Demo.png)
 
-That is it! Please also bear in mind that the application is currently slow when rendering large music scores. I am actively trying to improve this inconvenience.
+That is it! You are now ready to use the application :)
 
 
 ## Quick Start
