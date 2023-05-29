@@ -19,7 +19,11 @@ If you run into any issues with the app, open a [new issue](https://github.com/n
 ## Usage
 Music Corpus Annotator allows the user to annotate music scores locally.The annotation criteria is up to the user. Music Corpus Annotator can be used for structure analysis, difficulty analysis and even music impainting. For example, users may use the application to highlight and segment the different levels of difficulty within a music score, or to identify the key parts in terms of structure. 
 The main functionalities and buttons to use the application are:
+- **Move measures without annotating**: In order to move to another measure without annotating, use the arrow keys (left to move backwards, right
+  to move forward). This will update the select measure. If you cannot see the select measure, press the Period "." key, and it will appear again.
+  
 - **Annotate**: On start, the current measure is highlighted in gray. To annotate that measure from start to end, just press 1, 2, 3 or the 19 keys in the keyboard from the letters Q to L. This will highlight the measure with the color of the key that has been pressed (see legend in the main page). 
+
 - **Annotate with the mouse**: In order to annotate from a coordinate of the score to another one with the mouse, do the following: 
     1. **Press and hold** the **Shift key** and then **strike** the annotation key (1, 2, 3 or Q-L). 
     2. While **still holding the shift key**, use the mouse to **click and hold** the first note that you wish to annotate. 
@@ -28,10 +32,8 @@ The main functionalities and buttons to use the application are:
     This will highlight all of the notes with the annotation color. The application will highlight from the first note that has been clicked       on to the note where the mouse button was released. 
     You can also annotate full measures (from start to end) with the mouse. To do so, proceed as explained above but instead of using the     
     Shift key use the **Alt key**. This will highlight the measures from start to end from the first clicked on measure to the last one.
-- **Delete a measure**: To delete the annotations from the last annotated measure, use the Backspace button. If you want to delete a measure 
+- **Delete a measure's annotations**: To delete the annotations from the last annotated measure, use the Backspace button. If you want to delete a measure 
   that is not the last one, go to the measure using the arrow keys. Once it is highlighted in gray, press the Backspace key.
-- **Move measures without annotating**: In order to move to another measure without annotating, use the arrow keys (left to move backwards, right
-  to move forward). This will update the select measure. If you cannot see the select measure, press the Period "." key, and it will appear again.
 - **Go to the next/previous score**: In order to go to the next score in index.json, press the "Next" button. To render the previous score,
 press the "Previous" button.
 - **Clear all annotations**: If you wish to clear all your annotations, press the Esc key.  
