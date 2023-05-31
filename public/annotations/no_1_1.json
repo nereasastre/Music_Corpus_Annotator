@@ -15,636 +15,601 @@
     },
     "measure-2": {
         "staff-0": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "easy",
-            "note-3": "easy",
-            "note-4": "easy",
-            "note-5": "easy",
-            "note-6": "easy",
-            "note-7": "easy"
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium"
         },
         "staff-1": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "easy",
-            "note-3": "easy"
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium"
         }
     },
     "measure-3": {
         "staff-0": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "easy",
-            "note-3": "easy",
-            "note-4": "medium",
-            "note-5": "medium",
-            "note-6": "medium",
-            "note-7": "medium"
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard",
+            "note-6": "hard",
+            "note-7": "hard"
         },
         "staff-1": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "medium",
-            "note-3": "medium",
-            "note-4": "None",
-            "note-5": "None"
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard"
         }
     },
     "measure-4": {
         "staff-0": {
-            "note-0": "medium",
-            "note-1": "medium",
-            "note-2": "medium",
-            "note-3": "medium",
-            "note-4": "medium",
-            "note-5": "hard"
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy"
         },
         "staff-1": {
-            "note-0": "medium",
-            "note-1": "medium",
-            "note-2": "medium",
-            "note-3": "hard",
-            "note-4": "hard",
-            "note-5": "hard"
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy"
         }
     },
     "measure-5": {
         "staff-0": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "hard",
-            "note-4": "easy",
-            "note-5": "None"
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium"
         },
         "staff-1": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "None"
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium"
         }
     },
     "measure-6": {
         "staff-0": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "easy",
-            "note-3": "easy",
-            "note-4": "easy",
-            "note-5": "easy",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard"
         },
         "staff-1": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "easy",
-            "note-3": "easy"
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard"
         }
     },
     "measure-7": {
         "staff-0": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "hard",
-            "note-4": "hard",
-            "note-5": "hard",
-            "note-6": "hard",
-            "note-7": "hard"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         },
         "staff-1": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "hard"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR"
         }
     },
     "measure-8": {
         "staff-0": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "medium",
-            "note-4": "medium",
-            "note-5": "medium",
-            "note-6": "medium",
-            "note-7": "medium"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "medium",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT"
         }
     },
     "measure-9": {
         "staff-0": {
-            "note-0": "medium",
-            "note-1": "medium",
-            "note-2": "medium",
-            "note-3": "easy",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR"
         },
         "staff-1": {
-            "note-0": "medium",
-            "note-1": "medium",
-            "note-2": "medium",
-            "note-3": "medium",
-            "note-4": "medium",
-            "note-5": "easy",
-            "note-6": "easy",
-            "note-7": "easy"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         }
     },
     "measure-10": {
         "staff-0": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "easy",
-            "note-3": "easy",
-            "note-4": "medium",
-            "note-5": "medium",
-            "note-6": "medium",
-            "note-7": "medium"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "easy",
-            "note-1": "easy",
-            "note-2": "medium",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT"
         }
     },
     "measure-11": {
         "staff-0": {
-            "note-0": "medium",
-            "note-1": "medium",
-            "note-2": "hard",
-            "note-3": "hard",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR"
         },
         "staff-1": {
-            "note-0": "medium",
-            "note-1": "medium",
-            "note-2": "medium",
-            "note-3": "hard",
-            "note-4": "hard",
-            "note-5": "hard",
-            "note-6": "hard",
-            "note-7": "hard"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         }
     },
     "measure-12": {
         "staff-0": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "hard",
-            "note-4": "hard",
-            "note-5": "hard",
-            "note-6": "hard",
-            "note-7": "hard"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "hard"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT"
         }
     },
     "measure-13": {
         "staff-0": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "hard",
-            "note-4": "hard",
-            "note-5": "hard",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         },
         "staff-1": {
-            "note-0": "hard",
-            "note-1": "hard",
-            "note-2": "hard",
-            "note-3": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR"
         }
     },
     "measure-14": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         }
     },
     "measure-15": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "hard",
-            "note-2": "medium",
-            "note-3": "medium",
-            "note-4": "medium",
-            "note-5": "medium"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR"
         }
     },
     "measure-16": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT"
         },
         "staff-1": {
-            "note-0": "None"
+            "note-0": "KeyT"
         }
     },
     "measure-17": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None"
+            "note-0": "KeyR"
         }
     },
     "measure-18": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT"
         }
     },
     "measure-19": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR"
         }
     },
     "measure-20": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         }
     },
     "measure-21": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR"
         }
     },
     "measure-22": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         }
     },
     "measure-23": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR"
         }
     },
     "measure-24": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT"
         }
     },
     "measure-25": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR"
         }
     },
     "measure-26": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         }
     },
     "measure-27": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR"
         }
     },
     "measure-28": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT"
         }
     },
     "measure-29": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR"
         }
     },
     "measure-30": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         }
     },
     "measure-31": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT"
         }
     },
     "measure-32": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         }
     },
     "measure-33": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR"
         }
     },
     "measure-34": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         }
     },
     "measure-35": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR"
         }
     },
     "measure-36": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT",
+            "note-4": "KeyT",
+            "note-5": "KeyT",
+            "note-6": "KeyT",
+            "note-7": "KeyT"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyT",
+            "note-1": "KeyT",
+            "note-2": "KeyT",
+            "note-3": "KeyT"
         }
     },
     "measure-37": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None",
-            "note-6": "None",
-            "note-7": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR",
+            "note-6": "KeyR",
+            "note-7": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR"
         }
     },
     "measure-38": {
         "staff-0": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR"
         },
         "staff-1": {
-            "note-0": "None",
-            "note-1": "None",
-            "note-2": "None",
-            "note-3": "None",
-            "note-4": "None",
-            "note-5": "None"
+            "note-0": "KeyR",
+            "note-1": "KeyR",
+            "note-2": "KeyR",
+            "note-3": "KeyR",
+            "note-4": "KeyR",
+            "note-5": "KeyR"
         }
     },
-    "annotationTime": 3496359
+    "annotationTime": 164695
 }

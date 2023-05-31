@@ -1,0 +1,458 @@
+{
+    "measure-1": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ",
+            "note-7": "KeyQ",
+            "note-8": "KeyQ"
+        }
+    },
+    "measure-2": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ",
+            "note-7": "KeyQ",
+            "note-8": "KeyQ"
+        }
+    },
+    "measure-3": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ",
+            "note-7": "KeyQ",
+            "note-8": "KeyQ"
+        }
+    },
+    "measure-4": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ"
+        }
+    },
+    "measure-5": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ"
+        }
+    },
+    "measure-6": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ",
+            "note-7": "KeyQ",
+            "note-8": "KeyQ"
+        }
+    },
+    "measure-7": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ",
+            "note-7": "KeyQ",
+            "note-8": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ"
+        }
+    },
+    "measure-8": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ",
+            "note-7": "KeyQ",
+            "note-8": "KeyQ"
+        }
+    },
+    "measure-9": {
+        "staff-0": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ",
+            "note-2": "KeyQ",
+            "note-3": "KeyQ",
+            "note-4": "KeyQ",
+            "note-5": "KeyQ",
+            "note-6": "KeyQ",
+            "note-7": "KeyQ",
+            "note-8": "KeyQ"
+        },
+        "staff-1": {
+            "note-0": "KeyQ",
+            "note-1": "KeyQ"
+        }
+    },
+    "measure-10": {
+        "staff-0": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy",
+            "note-6": "easy"
+        },
+        "staff-1": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy"
+        }
+    },
+    "measure-11": {
+        "staff-0": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium",
+            "note-5": "medium",
+            "note-6": "medium",
+            "note-7": "medium",
+            "note-8": "medium"
+        },
+        "staff-1": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium"
+        }
+    },
+    "measure-12": {
+        "staff-0": {
+            "note-0": "hard",
+            "note-1": "hard"
+        },
+        "staff-1": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard"
+        }
+    },
+    "measure-13": {
+        "staff-0": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy",
+            "note-6": "easy",
+            "note-7": "easy",
+            "note-8": "easy"
+        },
+        "staff-1": {
+            "note-0": "easy"
+        }
+    },
+    "measure-14": {
+        "staff-0": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium",
+            "note-5": "medium",
+            "note-6": "medium",
+            "note-7": "medium",
+            "note-8": "medium"
+        },
+        "staff-1": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium"
+        }
+    },
+    "measure-15": {
+        "staff-0": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard",
+            "note-6": "hard",
+            "note-7": "hard",
+            "note-8": "hard"
+        },
+        "staff-1": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard"
+        }
+    },
+    "measure-16": {
+        "staff-0": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy",
+            "note-6": "easy",
+            "note-7": "easy",
+            "note-8": "easy"
+        },
+        "staff-1": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy"
+        }
+    },
+    "measure-17": {
+        "staff-0": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium",
+            "note-5": "medium",
+            "note-6": "medium"
+        },
+        "staff-1": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium"
+        }
+    },
+    "measure-18": {
+        "staff-0": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard"
+        },
+        "staff-1": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard",
+            "note-6": "hard",
+            "note-7": "hard",
+            "note-8": "hard"
+        }
+    },
+    "measure-19": {
+        "staff-0": {
+            "note-0": "easy",
+            "note-1": "easy"
+        },
+        "staff-1": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy",
+            "note-6": "easy",
+            "note-7": "easy",
+            "note-8": "easy"
+        }
+    },
+    "measure-20": {
+        "staff-0": {
+            "note-0": "medium",
+            "note-1": "medium"
+        },
+        "staff-1": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium",
+            "note-5": "medium",
+            "note-6": "medium",
+            "note-7": "medium",
+            "note-8": "medium"
+        }
+    },
+    "measure-21": {
+        "staff-0": {
+            "note-0": "hard",
+            "note-1": "hard"
+        },
+        "staff-1": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard",
+            "note-6": "hard",
+            "note-7": "hard",
+            "note-8": "hard"
+        }
+    },
+    "measure-22": {
+        "staff-0": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy",
+            "note-6": "easy"
+        },
+        "staff-1": {
+            "note-0": "easy",
+            "note-1": "easy"
+        }
+    },
+    "measure-23": {
+        "staff-0": {
+            "note-0": "medium",
+            "note-1": "medium",
+            "note-2": "medium",
+            "note-3": "medium",
+            "note-4": "medium",
+            "note-5": "medium",
+            "note-6": "medium",
+            "note-7": "medium",
+            "note-8": "medium"
+        },
+        "staff-1": {
+            "note-0": "medium",
+            "note-1": "medium"
+        }
+    },
+    "measure-24": {
+        "staff-0": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard",
+            "note-6": "hard",
+            "note-7": "hard"
+        },
+        "staff-1": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard",
+            "note-6": "hard",
+            "note-7": "hard",
+            "note-8": "hard"
+        }
+    },
+    "measure-25": {
+        "staff-0": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy"
+        },
+        "staff-1": {
+            "note-0": "easy",
+            "note-1": "easy",
+            "note-2": "easy",
+            "note-3": "easy",
+            "note-4": "easy",
+            "note-5": "easy",
+            "note-6": "easy",
+            "note-7": "easy",
+            "note-8": "easy"
+        }
+    },
+    "measure-26": {
+        "staff-0": {
+            "note-0": "hard"
+        },
+        "staff-1": {
+            "note-0": "hard",
+            "note-1": "hard",
+            "note-2": "hard",
+            "note-3": "hard",
+            "note-4": "hard",
+            "note-5": "hard",
+            "note-6": "hard"
+        }
+    },
+    "annotationTime": 336914
+}

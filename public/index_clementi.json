@@ -1,0 +1,102 @@
+{
+    "n-1": {
+        "URI": "",
+        "book": "",
+        "composer": "Muzio Clementi",
+        "henle": 0,
+        "path": {
+            "1": "clementi/no_1_1.musicxml",
+            "2": "clementi/no_1_2.musicxml",
+            "3": "clementi/no_1_3.musicxml"
+        },
+        "work_name": "",
+        "annotated": {
+            "1": true,
+            "2": true,
+            "3": false
+        }
+    },
+    "n-2": {
+        "URI": "",
+        "book": "",
+        "composer": "Muzio Clementi",
+        "henle": 0,
+        "path": {
+            "1": "clementi/no_2_1.musicxml",
+            "2": "clementi/no_2_2.musicxml",
+            "3": "clementi/no_2_3.musicxml"
+        },
+        "work_name": "",
+        "annotated": {
+            "1": false,
+            "2": false,
+            "3": false
+        }
+    },
+    "n-3": {
+        "URI": "",
+        "book": "",
+        "composer": "Muzio Clementi",
+        "henle": 7,
+        "path": {
+            "1": "clementi/no_3_1.musicxml",
+            "2": "clementi/no_3_2.musicxml",
+            "3": "clementi/no_3_3.musicxml"
+        },
+        "work_name": "",
+        "annotated": {
+            "1": false,
+            "2": false,
+            "3": false
+        }
+    },
+    "n-4": {
+        "URI": "",
+        "book": "",
+        "composer": "Muzio Clementi",
+        "henle": 0,
+        "path": {
+            "1": "clementi/no_4_1.musicxml",
+            "2": "clementi/no_4_2.musicxml",
+            "3": "clementi/no_4_3.musicxml"
+        },
+        "work_name": "P",
+        "annotated": {
+            "1": false,
+            "2": false,
+            "3": false
+        }
+    },
+    "n-5": {
+        "URI": "",
+        "book": "",
+        "composer": "Muzio Clementi",
+        "henle": 0,
+        "path": {
+            "1": "clementi/no_5_1.musicxml",
+            "2": "clementi/no_5_2.musicxml",
+            "3": "clementi/no_5_3.musicxml"
+        },
+        "work_name": "P",
+        "annotated": {
+            "1": false,
+            "2": false,
+            "3": false
+        }
+    },
+    "n-6": {
+        "URI": "",
+        "book": "",
+        "composer": "Muzio Clementi",
+        "henle": 0,
+        "path": {
+            "1": "clementi/no_6_1.musicxml",
+            "2": "clementi/no_6_2.musicxml"
+        },
+        "work_name": "P",
+        "annotated": {
+            "1": false,
+            "2": false
+        }
+    }
+}
