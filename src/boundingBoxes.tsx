@@ -1,7 +1,7 @@
+import {annotationToColor} from "./annotationCustomization";
 import {
   contains,
   convertUnitsToPixels,
-  difficultyToColor,
   max,
   min, MouseData, range,
   selectColor
@@ -238,7 +238,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: number, staffNumbe
   for (let noteNumber = firstNotNoneBox; noteNumber < notesInStaff; noteNumber++){
      const currentAnnotation = annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteNumber}`];
      // @ts-ignore
-     let color = difficultyToColor[difficulty]
+     let color = annotationToColor[difficulty]
      let currentX = staffEntries[noteNumber].boundingBox.AbsolutePosition.x;
 
     if (currentAnnotation === difficulty) {  // if same difficulty, update the current box coordinates
@@ -257,7 +257,7 @@ function getConsecutiveNotesWithSameAnnotation(measureNumber: number, staffNumbe
     }
     if (noteNumber === notesInStaff - 1){  // last iteration, push the last box
       // @ts-ignore
-      color = difficultyToColor[currentAnnotation]
+      color = annotationToColor[currentAnnotation]
       endX = measureStartPosition + measureWidth;
       let width = endX - startX;
       createAndPushBox(startX, y, height, width, yMiddle, heightMiddle, color, measureNumber)
@@ -354,7 +354,7 @@ export const renderBoxesFromLocalStorage = (measureList: any, scoreName: string,
       let measureDifficulty = annotations[`measure-${measureNumber}`][`staff-${0}`][`note-${0}`];
       if (measureDifficulty && measureDifficulty !== "None") {
         // @ts-ignore
-        let measureColor = difficultyToColor[measureDifficulty];
+        let measureColor = annotationToColor[measureDifficulty];
         renderBoundingBoxesMeasures([measureNumber], measureColor, measureList);
         coloredBoxes.push(measureNumber);
       }
