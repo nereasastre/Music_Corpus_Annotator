@@ -106,6 +106,9 @@ Critical files for this app:
   - If run without arguments, the `eel` script will load `index.html` from the build/ directory (which is ideal for building with PyInstaller/distribution)
   - If any 2nd argument (i.e. `true`) is provided, the app enables a "development" mode and attempts to connect to the React server on port 3000
   - Used to edit and save local files and annotations
+- `public/annotationCustomization.tsx:` File to customize the different annotation labels and colors. To modify the annotation 
+  tags, just modify the colorToAnnotation variable to have the desired color and annotation. Make sure the updated colors are 
+  also updated in the keyToColor variable, where you can customize the key that sets each color.
 - `public/index.html:` Added location of `eel.js` file based on options set in eel_CRA.py  (from the eel example)
 - `src/react-app-env.d.ts:` This file declares window.eel as a valid type for tslint. Note: capitalization of `window`
   (from eel example)
