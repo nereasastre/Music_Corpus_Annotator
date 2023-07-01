@@ -44,7 +44,11 @@ saving is automatically done.
 This is what the application will look like after some annotations:
 ![Demo.png](Demo.png)
 
-And here is a demo tutorial on how to use the application:
+And here is a demo tutorial on how to use the application: https://youtu.be/1Ux0eWP4xK8
+
+
+https://github.com/nereasastre/Music_Corpus_Annotator/assets/60048277/a82bb66e-e942-47c4-bdba-0c621e86fe93
+
 
 That is it! You are now ready to use the application :)
 
