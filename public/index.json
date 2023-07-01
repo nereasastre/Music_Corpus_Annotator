@@ -6,16 +6,12 @@
         "henle": 6,
         "path": {
             "1": "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml",
-            "2": "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml",
-            "3": "craig_files/beethoven-piano-sonatas-master/kern/sonata01-3.musicxml",
-            "4": "craig_files/beethoven-piano-sonatas-master/kern/sonata01-4.musicxml"
+            "2": "craig_files/beethoven-piano-sonatas-master/kern/sonata01-2.musicxml"
         },
         "work_name": "Piano Sonata f minor op. 2,1",
         "annotated": {
-            "1": true,
-            "2": true,
-            "3": false,
-            "4": false
+            "1": false,
+            "2": false
         }
     },
     "c-10": {

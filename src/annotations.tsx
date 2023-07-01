@@ -1,4 +1,5 @@
-import {colorToDifficulty, recordAnnotationTime, selectColor} from "./utils";
+import {recordAnnotationTime, selectColor} from "./utils";
+import {colorToAnnotation} from './annotationCustomization'
 import {renderBoundingBoxesMeasures} from "./boundingBoxes";
 import {eel} from "./App";
 
@@ -26,7 +27,7 @@ export function annotateWholeMeasures(measureNumbers: number | Array<number>, co
         let notesInStaff = measure[staff].staffEntries.length  // number of notes in staff
         for (let note = 0; note < notesInStaff; note++) {
           // @ts-ignore
-          annotations[`measure-${measureNumber}`][`staff-${staff}`][`note-${note}`] = colorToDifficulty[color];
+          annotations[`measure-${measureNumber}`][`staff-${staff}`][`note-${note}`] = colorToAnnotation[color];
         }
       }
     }
@@ -60,7 +61,7 @@ export function annotateWithinCoordinates(initX: number, finalX: number, measure
     let notePosition = note.PositionAndShape.absolutePosition.x;
     if (initX <= notePosition && notePosition <= finalX ){
       // @ts-ignore
-      annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteIdx}`] = colorToDifficulty[color];
+      annotations[`measure-${measureNumber}`][`staff-${staffNumber}`][`note-${noteIdx}`] = colorToAnnotation[color];
     }
   }
   window.localStorage.setItem(scoreName, JSON.stringify(annotations));

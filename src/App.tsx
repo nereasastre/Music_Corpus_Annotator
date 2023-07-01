@@ -9,11 +9,10 @@ import {
   renderBoxAndContinue,
   renderBoxesFromLocalStorage
 } from "./boundingBoxes";
+import {Legend, keyToColor} from './annotationCustomization'
 import {
-  Legend,
   contains, difficultyKeycodes,
   IAppState,
-  keyToColor,
   markCorrupted,
   max,
   min, MouseData,
@@ -80,6 +79,7 @@ export class App extends Component<{}, {
 
   async setParametersOSMD(){
     this.measureList = this.osmd.GraphicSheet.measureList;
+    console.log(this.measureList)
     console.log("MEASURE LIST: ", this.measureList)
     this.lastMeasureNumber = this.measureList[this.measureList.length - 1][0].MeasureNumber;
     this.firstMeasureNumber = this.measureList[0][0].MeasureNumber;
