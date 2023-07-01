@@ -44,6 +44,8 @@ saving is automatically done.
 This is what the application will look like after some annotations:
 ![Demo.png](Demo.png)
 
+And here is a demo tutorial on how to use the application:
+
 That is it! You are now ready to use the application :)
 
 
